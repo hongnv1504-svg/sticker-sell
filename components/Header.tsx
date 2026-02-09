@@ -1,0 +1,34 @@
+'use client';
+
+import Link from 'next/link';
+
+export default function Header() {
+    return (
+        <header className="fixed top-0 left-0 right-0 z-50">
+            <div className="glass-card mx-4 mt-4 px-6 py-4 flex items-center justify-between">
+                <Link href="/" className="flex items-center gap-2 group">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform">
+                        🎨
+                    </div>
+                    <span className="text-xl font-bold gradient-text">StickerMe</span>
+                </Link>
+
+                <nav className="hidden md:flex items-center gap-6">
+                    <Link href="/packs" className="text-gray-400 hover:text-white transition-colors">
+                        Styles
+                    </Link>
+                    <Link href="/#how-it-works" className="text-gray-400 hover:text-white transition-colors">
+                        How It Works
+                    </Link>
+                    <Link href="/#pricing" className="text-gray-400 hover:text-white transition-colors">
+                        Pricing
+                    </Link>
+                </nav>
+
+                <Link href="/packs" className="btn btn-primary text-sm py-2 px-5">
+                    Get Started
+                </Link>
+            </div>
+        </header>
+    );
+}
