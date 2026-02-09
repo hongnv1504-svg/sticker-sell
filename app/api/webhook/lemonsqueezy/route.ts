@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { orders, jobs, startGeneration } from '../../upload/route';
+import { startGeneration } from '../../upload/route';
 import { analytics } from '@/lib/analytics';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
     try {
@@ -37,6 +38,8 @@ export async function POST(request: NextRequest) {
 
         console.log('Lemon Squeezy webhook received:', eventName);
 
+        const supabase = getSupabaseAdmin();
+
         // Handle order_created event
         if (eventName === 'order_created') {
             const orderId = payload.data?.id;
@@ -53,29 +56,29 @@ export async function POST(request: NextRequest) {
 
             console.log(`Payment confirmed for job ${jobId}`);
 
-            // Update order status to paid
-            const order = orders.get(jobId);
-            if (order) {
-                order.status = 'paid';
-                orders.set(jobId, order);
-            } else {
-                // Create new order record if it doesn't exist
-                orders.set(jobId, {
-                    id: orderId,
-                    jobId,
-                    status: 'paid',
-                    amountCents: 499,
-                    currency: 'usd'
-                });
+            // Update order status to paid in Supabase
+            const { error: orderUpdateError } = await supabase
+                .from('orders')
+                .update({ status: 'paid' })
+                .eq('job_id', jobId);
+
+            if (orderUpdateError) {
+                console.error('Failed to update order in Supabase:', orderUpdateError);
+                // Even if order update fails, we might want to check if it exists and proceed
             }
 
             // Track payment completion
             analytics.trackPaymentCompleted(jobId, 499, 'USD');
 
-            // Get job details
-            const job = jobs.get(jobId);
-            if (!job) {
-                console.error(`Job ${jobId} not found`);
+            // Get job details from Supabase
+            const { data: job, error: jobError } = await supabase
+                .from('sticker_jobs')
+                .select('*')
+                .eq('id', jobId)
+                .single();
+
+            if (jobError || !job) {
+                console.error(`Job ${jobId} not found in Supabase:`, jobError);
                 return NextResponse.json(
                     { error: 'Job not found' },
                     { status: 404 }
@@ -84,10 +87,10 @@ export async function POST(request: NextRequest) {
 
             // Start AI generation now that payment is confirmed
             console.log(`Starting generation for job ${jobId}`);
-            analytics.trackGenerationStarted(jobId, job.styleKey);
+            analytics.trackGenerationStarted(jobId, job.style_key);
 
             // Start generation in background
-            startGeneration(jobId, job.sourceImageUrl, job.styleKey);
+            startGeneration(jobId, job.source_image_url, job.style_key);
 
             return NextResponse.json({ success: true });
         }

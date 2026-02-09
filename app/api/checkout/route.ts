@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createCheckout } from '@lemonsqueezy/lemonsqueezy.js';
 import { v4 as uuidv4 } from 'uuid';
-import { jobs, orders } from '../upload/route';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { setupLemonSqueezy, LEMONSQUEEZY_CONFIG } from '@/lib/lemonsqueezy';
 
 const PRICE_AMOUNT = 499; // $4.99 in cents
@@ -18,17 +18,30 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const job = jobs.get(jobId);
+        const supabase = getSupabaseAdmin();
 
-        if (!job) {
+        // Check if job exists in Supabase
+        const { data: job, error: jobError } = await supabase
+            .from('sticker_jobs')
+            .select('*')
+            .eq('id', jobId)
+            .single();
+
+        if (jobError || !job) {
+            console.error('Job not found in Supabase:', jobError);
             return NextResponse.json(
                 { success: false, error: 'Job not found' },
                 { status: 404 }
             );
         }
 
-        // Check if already paid
-        const existingOrder = orders.get(jobId);
+        // Check if already paid in Supabase
+        const { data: existingOrder, error: orderError } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('job_id', jobId)
+            .single();
+
         if (existingOrder?.status === 'paid') {
             return NextResponse.json({
                 success: true,
@@ -69,14 +82,22 @@ export async function POST(request: NextRequest) {
             throw new Error('Failed to create checkout session - no data returned');
         }
 
-        // Create order record
-        orders.set(jobId, {
-            id: uuidv4(),
-            jobId,
-            status: 'pending',
-            amountCents: PRICE_AMOUNT,
-            currency: PRICE_CURRENCY
-        });
+        // Create or update order record in Supabase
+        const orderId = uuidv4();
+        const { error: upsertError } = await supabase
+            .from('orders')
+            .upsert({
+                id: existingOrder?.id || orderId,
+                job_id: jobId,
+                status: 'pending',
+                amount_cents: PRICE_AMOUNT,
+                currency: PRICE_CURRENCY
+            });
+
+        if (upsertError) {
+            console.error('Failed to upsert order in Supabase:', upsertError);
+            throw new Error('Failed to record order');
+        }
 
         return NextResponse.json({
             success: true,

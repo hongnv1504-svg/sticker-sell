@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
-import { stickers, orders } from '../upload/route';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { getStorageProvider } from '@/lib/storage';
 import { sendDownloadEmail } from '@/lib/email';
 
@@ -15,18 +15,29 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Check if paid
-        const order = orders.get(jobId);
-        if (!order || order.status !== 'paid') {
+        const supabase = getSupabaseAdmin();
+
+        // Check if paid in Supabase
+        const { data: order, error: orderError } = await supabase
+            .from('orders')
+            .select('status')
+            .eq('job_id', jobId)
+            .single();
+
+        if (orderError || !order || order.status !== 'paid') {
             return NextResponse.json(
                 { success: false, error: 'Payment required' },
                 { status: 403 }
             );
         }
 
-        // Get stickers
-        const jobStickers = stickers.get(jobId);
-        if (!jobStickers || jobStickers.length === 0) {
+        // Get stickers from Supabase
+        const { data: jobStickers, error: stickersError } = await supabase
+            .from('generated_stickers')
+            .select('*')
+            .eq('job_id', jobId);
+
+        if (stickersError || !jobStickers || jobStickers.length === 0) {
             return NextResponse.json(
                 { success: false, error: 'No stickers found' },
                 { status: 404 }
@@ -39,10 +50,10 @@ export async function POST(request: NextRequest) {
         const zip = new JSZip();
 
         for (const sticker of jobStickers) {
-            if (sticker.imageUrl) {
+            if (sticker.image_url) {
                 // Handle data URL (used in demo mode)
-                if (sticker.imageUrl.startsWith('data:')) {
-                    const matches = sticker.imageUrl.match(/^data:([^;]+);base64,(.+)$/);
+                if (sticker.image_url.startsWith('data:')) {
+                    const matches = sticker.image_url.match(/^data:([^;]+);base64,(.+)$/);
                     if (matches) {
                         const base64Data = matches[2];
                         const extension = matches[1].includes('svg') ? 'svg' : 'png';
@@ -55,7 +66,7 @@ export async function POST(request: NextRequest) {
                 } else {
                     // Handle external URL
                     try {
-                        const response = await fetch(sticker.imageUrl);
+                        const response = await fetch(sticker.image_url);
                         const buffer = await response.arrayBuffer();
                         zip.file(`sticker-${sticker.emotion}.png`, buffer);
                     } catch (err) {

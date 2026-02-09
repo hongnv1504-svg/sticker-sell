@@ -3,35 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { getPackById } from '@/lib/packs';
 import { StickerStyleKey } from '@/lib/ai/sticker-styles';
 
-// In-memory store for demo (replace with Supabase in production)
-const jobs = new Map<string, {
-    id: string;
-    status: 'pending' | 'processing' | 'completed' | 'failed';
-    progress: number;
-    sourceImageUrl: string;
-    styleKey: StickerStyleKey; // Added to track which style to use
-    createdAt: string;
-}>();
-
-const stickers = new Map<string, Array<{
-    id: string;
-    jobId: string;
-    emotion: string;
-    imageUrl: string | null;
-    thumbnailUrl: string | null;
-    createdAt: string;
-}>>();
-
-const orders = new Map<string, {
-    id: string;
-    jobId: string;
-    status: 'pending' | 'paid' | 'failed';
-    amountCents: number;
-    currency: string;
-}>();
-
-// Export for use in other routes
-export { jobs, stickers, orders };
+import { getSupabaseAdmin } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
     try {
@@ -79,25 +51,27 @@ export async function POST(request: NextRequest) {
 
         // Create job
         const jobId = uuidv4();
-        const job = {
-            id: jobId,
-            status: 'pending' as const, // Will be 'pending' until payment confirmed
-            progress: 0,
-            sourceImageUrl,
-            styleKey: pack.styleKey, // Use the style from the selected pack
-            createdAt: new Date().toISOString()
-        };
 
-        jobs.set(jobId, job);
-        stickers.set(jobId, []);
+        const supabase = getSupabaseAdmin();
+        const { error: jobError } = await supabase
+            .from('sticker_jobs')
+            .insert({
+                id: jobId,
+                status: 'pending',
+                progress: 0,
+                source_image_url: sourceImageUrl,
+                style_key: pack.styleKey
+            });
 
-        // DO NOT start generation yet - user must pay first
-        // Generation will be triggered by webhook after payment
+        if (jobError) {
+            console.error('Failed to create job in Supabase:', jobError);
+            throw new Error('Failed to create job');
+        }
 
         return NextResponse.json({
             success: true,
             jobId,
-            sourceImageUrl: '[stored]' // Don't return base64 in response
+            sourceImageUrl: '[stored]'
         });
 
     } catch (error) {
@@ -111,20 +85,13 @@ export async function POST(request: NextRequest) {
 
 // Background generation function (exported for use in webhook)
 export async function startGeneration(jobId: string, sourceImageUrl: string, styleKey: StickerStyleKey) {
-    const job = jobs.get(jobId);
-    if (!job) return;
+    const supabase = getSupabaseAdmin();
 
     // Update status to processing
-    job.status = 'processing';
-    jobs.set(jobId, job);
-
-    const emotions = [
-        'surprised', 'annoyed', 'confused',
-        'frustrated', 'happy', 'sarcastic',
-        'worried', 'bored', 'curious'
-    ];
-
-    const jobStickers = stickers.get(jobId) || [];
+    await supabase
+        .from('sticker_jobs')
+        .update({ status: 'processing' })
+        .eq('id', jobId);
 
     try {
         // Import the generateStickers function
@@ -134,35 +101,44 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
         const generatedStickers = await generateStickers(
             sourceImageUrl,
             styleKey,
-            (completed, total) => {
+            async (completed, total) => {
                 // Update progress
-                job.progress = completed;
-                jobs.set(jobId, job);
+                await supabase
+                    .from('sticker_jobs')
+                    .update({ progress: completed })
+                    .eq('id', jobId);
             }
         );
 
         // Store the generated stickers
-        for (const sticker of generatedStickers) {
-            jobStickers.push({
-                id: uuidv4(),
-                jobId,
-                emotion: sticker.emotion,
-                imageUrl: sticker.imageUrl,
-                thumbnailUrl: sticker.thumbnailUrl,
-                createdAt: new Date().toISOString()
-            });
+        const stickerInserts = generatedStickers.map(sticker => ({
+            job_id: jobId,
+            emotion: sticker.emotion,
+            image_url: sticker.imageUrl,
+            thumbnail_url: sticker.thumbnailUrl
+        }));
+
+        const { error: stickerError } = await supabase
+            .from('generated_stickers')
+            .insert(stickerInserts);
+
+        if (stickerError) {
+            console.error('Failed to store stickers in Supabase:', stickerError);
+            throw stickerError;
         }
 
-        stickers.set(jobId, jobStickers);
-
         // Mark as completed
-        job.status = 'completed';
-        jobs.set(jobId, job);
+        await supabase
+            .from('sticker_jobs')
+            .update({ status: 'completed' })
+            .eq('id', jobId);
 
     } catch (error) {
         console.error('Generation error:', error);
-        job.status = 'failed';
-        jobs.set(jobId, job);
+        await supabase
+            .from('sticker_jobs')
+            .update({ status: 'failed' })
+            .eq('id', jobId);
     }
 }
 
