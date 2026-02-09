@@ -60,8 +60,13 @@ export async function POST(request: NextRequest) {
             }
         );
 
+        if (checkout.error) {
+            console.error('Lemon Squeezy API error:', checkout.error);
+            throw new Error(`Lemon Squeezy error: ${checkout.error.message || 'Unknown error'}`);
+        }
+
         if (!checkout.data) {
-            throw new Error('Failed to create checkout session');
+            throw new Error('Failed to create checkout session - no data returned');
         }
 
         // Create order record
@@ -79,9 +84,12 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
-        console.error('Checkout error:', error);
+        console.error('Checkout error details:', error);
         return NextResponse.json(
-            { success: false, error: 'Failed to create checkout session' },
+            {
+                success: false,
+                error: error instanceof Error ? error.message : 'Failed to create checkout session'
+            },
             { status: 500 }
         );
     }
