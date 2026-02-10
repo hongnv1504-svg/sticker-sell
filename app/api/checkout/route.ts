@@ -58,18 +58,26 @@ export async function POST(request: NextRequest) {
         setupLemonSqueezy();
 
         // Create Lemon Squeezy checkout
+        // We pass jobId in multiple places to ensure it's captured by the webhook
         const checkout = await createCheckout(
             LEMONSQUEEZY_CONFIG.storeId,
             LEMONSQUEEZY_CONFIG.variantId,
             {
                 checkoutData: {
                     custom: {
-                        jobId, // Pass jobId to identify the order
+                        jobId,
+                        job_id: jobId
                     },
                 },
                 productOptions: {
                     redirectUrl: `${baseUrl}/generate/${jobId}`,
                 },
+                // Some versions/configurations might expect it here
+                // @ts-ignore
+                custom_data: {
+                    jobId,
+                    job_id: jobId
+                }
             }
         );
 

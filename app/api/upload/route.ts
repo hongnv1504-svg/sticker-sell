@@ -53,6 +53,9 @@ export async function POST(request: NextRequest) {
         const jobId = uuidv4();
 
         const supabase = getSupabaseAdmin();
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'unknown';
+        console.log(`[DEBUG] Target Supabase URL: ${supabaseUrl.substring(0, 15)}... (Project check)`);
+
         const { error: jobError } = await supabase
             .from('sticker_jobs')
             .insert({

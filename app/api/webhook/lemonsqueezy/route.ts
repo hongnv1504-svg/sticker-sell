@@ -36,7 +36,9 @@ export async function POST(request: NextRequest) {
         const payload = JSON.parse(rawBody);
         const eventName = payload.meta?.event_name;
 
-        console.log('Lemon Squeezy webhook received:', eventName);
+        console.log(`[DEBUG] Lemon Squeezy webhook received: ${eventName}`);
+        console.log('[DEBUG] Full Webhook Payload:', JSON.stringify(payload));
+        console.log(`[DEBUG] Webhook Target Supabase URL: ${process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 15)}...`);
 
         const supabase = getSupabaseAdmin();
 
@@ -44,17 +46,20 @@ export async function POST(request: NextRequest) {
         if (eventName === 'order_created') {
             const orderId = payload.data?.id;
             const customData = payload.meta?.custom_data;
-            const jobId = customData?.jobId;
+            console.log('[DEBUG] Webhook Meta Object:', JSON.stringify(payload.meta));
+
+            // Check for jobId in different possible locations for robustness
+            const jobId = customData?.jobId || customData?.job_id || payload.meta?.custom?.jobId;
 
             if (!jobId) {
-                console.error('No jobId in webhook payload');
+                console.error('[DEBUG] No jobId in webhook payload. Raw Meta:', JSON.stringify(payload.meta));
                 return NextResponse.json(
                     { error: 'Missing jobId' },
                     { status: 400 }
                 );
             }
 
-            console.log(`Payment confirmed for job ${jobId}`);
+            console.log(`[DEBUG] Payment confirmed for job ${jobId}`);
 
             // Update order status to paid in Supabase
             const { error: orderUpdateError } = await supabase
@@ -85,12 +90,9 @@ export async function POST(request: NextRequest) {
                 );
             }
 
-            // Start AI generation now that payment is confirmed
-            console.log(`Starting generation for job ${jobId}`);
-            analytics.trackGenerationStarted(jobId, job.style_key);
-
-            // Start generation in background
-            startGeneration(jobId, job.source_image_url, job.style_key);
+            // Start AI generation is now handled incrementally by the Status API
+            // so we don't need to trigger a background loop here that Vercel might kill.
+            console.log(`Payment confirmed for job ${jobId}. Polling will handle generation.`);
 
             return NextResponse.json({ success: true });
         }

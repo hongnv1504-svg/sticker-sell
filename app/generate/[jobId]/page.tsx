@@ -16,7 +16,7 @@ export default function GeneratePage({ params }: Props) {
     const router = useRouter();
     const [progress, setProgress] = useState(0);
     const [stickers, setStickers] = useState<Sticker[]>([]);
-    const [status, setStatus] = useState<'processing' | 'completed' | 'failed'>('processing');
+    const [status, setStatus] = useState<'loading' | 'processing' | 'completed' | 'failed'>('loading');
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -53,6 +53,8 @@ export default function GeneratePage({ params }: Props) {
                     setStatus('failed');
                     setError('Generation failed. Please try again.');
                 } else {
+                    // Update to processing after first successful fetch
+                    setStatus('processing');
                     // Continue polling
                     setTimeout(pollStatus, 1000);
                 }
@@ -106,6 +108,16 @@ export default function GeneratePage({ params }: Props) {
                                 <h1 className="text-4xl font-bold mb-4">Generation Failed</h1>
                                 <p className="text-gray-400 text-lg">
                                     {error || 'Something went wrong'}
+                                </p>
+                            </>
+                        ) : status === 'loading' ? (
+                            <>
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-500/20 mb-4">
+                                    <span className="text-4xl animate-spin">⏳</span>
+                                </div>
+                                <h1 className="text-4xl font-bold mb-4">Checking Status...</h1>
+                                <p className="text-gray-400 text-lg">
+                                    Verifying payment and job status...
                                 </p>
                             </>
                         ) : (

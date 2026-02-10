@@ -49,6 +49,41 @@ function delay(ms: number) {
 }
 
 /**
+ * Generate a single sticker for a specific emotion
+ */
+export async function generateSingleSticker(
+    sourceImageUrl: string,
+    styleKey: StickerStyleKey,
+    emotion: StickerEmotion
+): Promise<GeneratedSticker> {
+    const style = STICKER_STYLES[styleKey];
+    if (!style) throw new Error(`Sticker style not found: ${styleKey}`);
+
+    const useAI = hasRealAIAPI();
+    let imageUrl: string;
+
+    if (useAI) {
+        try {
+            const replicateService = new ReplicateStickerService();
+            imageUrl = await replicateService.generateSticker(sourceImageUrl, style, emotion);
+            console.log(`Generated AI sticker for emotion: ${emotion}`);
+        } catch (error) {
+            console.error(`AI generation failed for ${emotion}, using placeholder:`, error);
+            imageUrl = generatePlaceholderSVG(emotion);
+        }
+    } else {
+        await delay(500 + Math.random() * 500);
+        imageUrl = generatePlaceholderSVG(emotion);
+    }
+
+    return {
+        emotion,
+        imageUrl,
+        thumbnailUrl: imageUrl
+    };
+}
+
+/**
  * Generate stickers using AI (FLUX on Replicate) or fallback to placeholders
  */
 export async function generateStickers(
@@ -56,61 +91,12 @@ export async function generateStickers(
     styleKey: StickerStyleKey,
     onProgress?: (completed: number, total: number) => void
 ): Promise<GeneratedSticker[]> {
-    const style = STICKER_STYLES[styleKey];
-
-    if (!style) {
-        throw new Error(`Sticker style not found: ${styleKey}`);
-    }
-
     const stickers: GeneratedSticker[] = [];
-    const useAI = hasRealAIAPI();
-
-    // Initialize Replicate service if API is configured
-    let replicateService: ReplicateStickerService | null = null;
-    if (useAI) {
-        try {
-            replicateService = new ReplicateStickerService();
-            console.log('Using FLUX AI for sticker generation');
-        } catch (error) {
-            console.warn('Failed to initialize Replicate service, falling back to demo mode:', error);
-        }
-    } else {
-        console.log('No API key configured, using demo mode with placeholders');
-    }
 
     for (let i = 0; i < STICKER_EMOTIONS.length; i++) {
         const emotion = STICKER_EMOTIONS[i];
-
-        // Add delay for demo mode to simulate processing
-        if (!replicateService) {
-            await delay(500 + Math.random() * 500);
-        }
-
-        let imageUrl: string;
-
-        // Try AI generation first, fallback to placeholder on error
-        if (replicateService) {
-            try {
-                imageUrl = await replicateService.generateSticker(
-                    sourceImageUrl,
-                    style,
-                    emotion
-                );
-                console.log(`Generated AI sticker for emotion: ${emotion}`);
-            } catch (error) {
-                console.error(`AI generation failed for ${emotion}, using placeholder:`, error);
-                imageUrl = generatePlaceholderSVG(emotion);
-            }
-        } else {
-            imageUrl = generatePlaceholderSVG(emotion);
-        }
-
-        stickers.push({
-            emotion,
-            imageUrl,
-            thumbnailUrl: imageUrl
-        });
-
+        const sticker = await generateSingleSticker(sourceImageUrl, styleKey, emotion);
+        stickers.push(sticker);
         onProgress?.(i + 1, STICKER_EMOTIONS.length);
     }
 
