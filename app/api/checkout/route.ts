@@ -110,9 +110,9 @@ export async function POST(request: NextRequest) {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'unknown';
         return NextResponse.json({
             success: true,
-            checkoutUrl: checkout.data.data.attributes.url,
+            url: checkout.data.data.attributes.url,
             debug: {
-                targetUrl: supabaseUrl
+                target_url: supabaseUrl
             }
         });
 
