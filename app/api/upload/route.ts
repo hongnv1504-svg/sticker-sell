@@ -74,7 +74,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
             success: true,
             jobId,
-            sourceImageUrl: '[stored]'
+            sourceImageUrl: '[stored]',
+            debug: {
+                targetUrl: supabaseUrl
+            }
         });
 
     } catch (error) {

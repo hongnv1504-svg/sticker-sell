@@ -107,9 +107,13 @@ export async function POST(request: NextRequest) {
             throw new Error('Failed to record order');
         }
 
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'unknown';
         return NextResponse.json({
             success: true,
-            url: checkout.data.data.attributes.url
+            checkoutUrl: checkout.data.data.attributes.url,
+            debug: {
+                targetUrl: supabaseUrl
+            }
         });
 
     } catch (error) {
