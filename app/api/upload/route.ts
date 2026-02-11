@@ -46,15 +46,35 @@ export async function POST(request: NextRequest) {
         // Create a mock URL for the uploaded image
         // In production, upload to Supabase Storage
         const bytes = await file.arrayBuffer();
-        const base64 = Buffer.from(bytes).toString('base64');
-        const sourceImageUrl = `data:${file.type};base64,${base64}`;
-
+        const buffer = Buffer.from(bytes);
         // Create job
         const jobId = uuidv4();
-
         const supabase = getSupabaseAdmin();
+
+        // 1. Upload to Supabase Storage for stability (Replicate prefers URLs)
+        const fileName = `${jobId}/source.${file.type.split('/')[1] || 'png'}`;
+
+        console.log(`[DEBUG] Uploading source image to storage: ${fileName}`);
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('source-images') // Make sure this bucket exists and is public
+            .upload(fileName, buffer, {
+                contentType: file.type,
+                upsert: true
+            });
+
+        if (uploadError) {
+            console.error('Failed to upload to Supabase Storage:', uploadError);
+            // Fallback to base64 if storage fails, but warn
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+            .from('source-images')
+            .getPublicUrl(fileName);
+
+        const sourceImageUrl = publicUrl || `data:${file.type};base64,${buffer.toString('base64')}`;
+
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'unknown';
-        console.log(`[DEBUG] Target Supabase URL: ${supabaseUrl.substring(0, 15)}... (Project check)`);
+        console.log(`[DEBUG] Job Source URL: ${sourceImageUrl.substring(0, 50)}...`);
 
         const { error: jobError } = await supabase
             .from('sticker_jobs')

@@ -135,9 +135,9 @@ export class ReplicateStickerService {
     }
 
     /**
-     * Build a comprehensive prompt for FLUX
+     * Build a comprehensive prompt for FLUX or DALL-E 3
      */
-    public buildPrompt(style: StickerStyleConfig, emotion: StickerEmotion): string {
+    public buildPrompt(style: StickerStyleConfig, emotion: StickerEmotion, isDalle: boolean = false): string {
         // Emotion-specific descriptions
         const emotionDescriptions: Record<StickerEmotion, string> = {
             surprised: 'wide-eyed surprised expression, mouth open in shock, eyebrows raised high',

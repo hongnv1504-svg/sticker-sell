@@ -85,7 +85,7 @@ export async function GET(
                     console.log(`[DEBUG] Creating prediction for ${emotion} with style ${job.style_key}`);
                     try {
                         const predictionId = await replicate.createPrediction({
-                            image: job.source_image_url,
+                            image: job.source_image_url, // Use the Storage URL directly
                             prompt,
                             negative_prompt: "bad quality, blurry, low resolution, distorted face, extra limbs",
                             width: 1024,
@@ -104,7 +104,18 @@ export async function GET(
                         console.log(`[DEBUG] Step 1 (Gen) started for ${emotion}, Result ID: ${predictionId}`);
                     } catch (err: any) {
                         console.error(`[ERROR] Failed to start prediction for ${emotion}:`, err.message || err);
-                        // Fallback: mark as failed or try next
+
+                        // FALLBACK TO DALL-E 3 IF REQUESTED OR IF FIRST ONE FAILS
+                        console.log(`[DEBUG] Attempting DALL-E 3 Fallback for ${emotion}`);
+                        const dallePredictionId = await replicate.createPrediction({
+                            prompt: replicate.buildPrompt(style, emotion, true)
+                        }, "lucataco/dalle-3:288009bb3995f54366af2ac74850c90c6819d9688755b99a341bda5189f36f1c");
+
+                        await supabase.from('generated_stickers').insert({
+                            job_id: jobId,
+                            emotion: emotion,
+                            image_url: JSON.stringify({ predictionId: dallePredictionId, step: 'gen', isDalle: true })
+                        });
                     }
                 } else if (currentSticker.image_url?.startsWith('{')) {
                     // STEP 1 or 2 in progress: Check Replicate status
@@ -113,20 +124,32 @@ export async function GET(
 
                     if (prediction.status === 'succeeded') {
                         if (state.step === 'gen') {
-                            // Step 1 done -> Start Step 2 (BG Removal)
+                            // Step 1 done
                             let genUrl = '';
                             if (typeof prediction.output === 'string') genUrl = prediction.output;
                             else if (Array.isArray(prediction.output)) genUrl = prediction.output[0];
 
-                            console.log(`[DEBUG] Step 1 done for ${emotion}, starting Step 2 (Rembg)`);
-                            const newPredictionId = await replicate.createPrediction(
-                                { image: genUrl },
-                                "cjwbw/rembg:fb8a57bb21701c770572d89d42f354d7ade6819746616cd5ef9a41768ee579bc"
-                            );
+                            if (state.isDalle) {
+                                // DALL-E 3 usually doesn't need rembg or we skip for simplicity
+                                console.log(`[DEBUG] DALL-E 3 done for ${emotion}, skipping rembg`);
+                                await supabase.from('generated_stickers').update({
+                                    image_url: genUrl,
+                                    thumbnail_url: genUrl
+                                }).eq('id', currentSticker.id);
 
-                            await supabase.from('generated_stickers').update({
-                                image_url: JSON.stringify({ predictionId: newPredictionId, step: 'rembg', genUrl })
-                            }).eq('id', currentSticker.id);
+                                await this.updateJobProgress(supabase, jobId, currentProgress);
+                            } else {
+                                // Start Step 2 (BG Removal)
+                                console.log(`[DEBUG] Step 1 done for ${emotion}, starting Step 2 (Rembg)`);
+                                const newPredictionId = await replicate.createPrediction(
+                                    { image: genUrl },
+                                    "cjwbw/rembg:fb8a57bb21701c770572d89d42f354d7ade6819746616cd5ef9a41768ee579bc"
+                                );
+
+                                await supabase.from('generated_stickers').update({
+                                    image_url: JSON.stringify({ predictionId: newPredictionId, step: 'rembg', genUrl })
+                                }).eq('id', currentSticker.id);
+                            }
                         } else if (state.step === 'rembg') {
                             // Step 2 done -> Finalize
                             let finalUrl = '';
