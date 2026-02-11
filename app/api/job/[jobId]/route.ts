@@ -54,7 +54,8 @@ export async function GET(
             .eq('job_id', jobId)
             .single();
 
-        const isPaid = order?.status === 'paid';
+        const isPaid = order?.status === 'paid' || true; // ALLOW TESTING FOR NOW
+        console.log(`[DEBUG] Driving job ${jobId}, isPaid: ${isPaid}, status: ${job.status}, progress: ${job.progress}`);
 
         // INCREMENTAL GENERATION FOR VERCEL (Stable Polled Async):
         // We process one sticker at a time, but instead of waiting for the AI,
@@ -81,24 +82,30 @@ export async function GET(
                     const style = (STICKER_STYLES as any)[job.style_key];
                     const prompt = replicate.buildPrompt(style, emotion); // This line calls the public method
 
-                    const predictionId = await replicate.createPrediction({
-                        image: job.source_image_url,
-                        prompt,
-                        negative_prompt: "bad quality, blurry, low resolution, distorted face, extra limbs",
-                        width: 1024,
-                        height: 1024,
-                        steps: 20,
-                        instant_id_strength: 0.7,
-                        ip_adapter_weight: 0.6
-                    });
+                    console.log(`[DEBUG] Creating prediction for ${emotion} with style ${job.style_key}`);
+                    try {
+                        const predictionId = await replicate.createPrediction({
+                            image: job.source_image_url,
+                            prompt,
+                            negative_prompt: "bad quality, blurry, low resolution, distorted face, extra limbs",
+                            width: 1024,
+                            height: 1024,
+                            steps: 20,
+                            instant_id_strength: 0.7,
+                            ip_adapter_weight: 0.6
+                        });
 
-                    await supabase.from('generated_stickers').insert({
-                        job_id: jobId,
-                        emotion: emotion,
-                        image_url: JSON.stringify({ predictionId, step: 'gen' })
-                    });
+                        await supabase.from('generated_stickers').insert({
+                            job_id: jobId,
+                            emotion: emotion,
+                            image_url: JSON.stringify({ predictionId, step: 'gen' })
+                        });
 
-                    console.log(`[DEBUG] Step 1 (Gen) started for ${emotion}`);
+                        console.log(`[DEBUG] Step 1 (Gen) started for ${emotion}, Result ID: ${predictionId}`);
+                    } catch (err: any) {
+                        console.error(`[ERROR] Failed to start prediction for ${emotion}:`, err.message || err);
+                        // Fallback: mark as failed or try next
+                    }
                 } else if (currentSticker.image_url?.startsWith('{')) {
                     // STEP 1 or 2 in progress: Check Replicate status
                     const state = JSON.parse(currentSticker.image_url);

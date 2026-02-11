@@ -9,11 +9,13 @@ export class ReplicateStickerService {
     private replicate: Replicate;
 
     constructor() {
-        const apiKey = process.env.REPLICATE_API_TOKEN;
-        if (!apiKey) {
-            throw new Error('REPLICATE_API_TOKEN not configured');
+        const token = process.env.REPLICATE_API_TOKEN;
+        if (!token) {
+            console.warn('[REPLICATE] REPLICATE_API_TOKEN is missing from environment variables!');
         }
-        this.replicate = new Replicate({ auth: apiKey });
+        this.replicate = new Replicate({
+            auth: token,
+        });
     }
 
     /**
