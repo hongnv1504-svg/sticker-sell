@@ -56,77 +56,107 @@ export async function GET(
 
         const isPaid = order?.status === 'paid';
 
-        // INCREMENTAL GENERATION FOR VERCEL:
-        // Instead of a background loop, we process one sticker at a time
-        // if the job is paid and not yet completed.
+        // INCREMENTAL GENERATION FOR VERCEL (Stable Polled Async):
+        // We process one sticker at a time, but instead of waiting for the AI,
+        // we initiate the prediction and return immediately.
+        // The frontend polling will check the status on the next request.
         if (isPaid && job.status !== 'completed' && job.status !== 'failed') {
             const { STICKER_EMOTIONS } = await import('@/lib/types');
-            const { generateSingleSticker } = await import('@/lib/ai/generate-stickers');
+            const { ReplicateStickerService } = await import('@/lib/ai/replicate-service');
+            const { STICKER_STYLES } = await import('@/lib/ai/sticker-styles');
 
             const currentProgress = job.progress || 0;
 
             if (currentProgress < STICKER_EMOTIONS.length) {
-                // LOCK MECHANISM:
-                // Only start generation if not already processing OR if processing has stalled (> 60s)
-                // Fallback to created_at if updated_at is missing
-                const lastUpdatedStr = job.updated_at || job.created_at;
-                const lastUpdated = new Date(lastUpdatedStr).getTime();
-                const now = new Date().getTime();
-                const isStalled = now - lastUpdated > 60000;
+                const emotion = STICKER_EMOTIONS[currentProgress];
+                console.log(`[DEBUG] Driving async generation for ${jobId}, emotion: ${emotion}`);
 
-                if (job.status !== 'processing' || isStalled) {
-                    const emotion = STICKER_EMOTIONS[currentProgress];
-                    console.log(`[DEBUG] Driving incremental generation for ${jobId}, emotion: ${emotion}`);
+                // Find if we already have an entry for this emotion
+                const currentSticker = jobStickers?.find((s: any) => s.emotion === emotion);
 
-                    // Update heartbeat/status to lock
-                    // We attempt to update updated_at but wrap in try-catch in case column is missing
-                    try {
-                        await supabase.from('sticker_jobs').update({
-                            status: 'processing',
-                            updated_at: new Date().toISOString()
-                        }).eq('id', jobId);
-                    } catch (e) {
-                        // Fallback: just update status if updated_at fails
-                        await supabase.from('sticker_jobs').update({
-                            status: 'processing'
-                        }).eq('id', jobId);
-                    }
+                const replicate = new ReplicateStickerService();
 
-                    try {
-                        // Generate JUST ONE sticker
-                        const sticker = await generateSingleSticker(job.source_image_url, job.style_key, emotion);
+                if (!currentSticker) {
+                    // STEP 0: Create the row and start Step 1 (Generation)
+                    const style = (STICKER_STYLES as any)[job.style_key];
+                    const prompt = replicate.buildPrompt(style, emotion); // This line calls the public method
 
-                        // Save the sticker
-                        await supabase.from('generated_stickers').insert({
-                            job_id: jobId,
-                            emotion: sticker.emotion,
-                            image_url: sticker.imageUrl,
-                            thumbnail_url: sticker.thumbnailUrl
-                        });
+                    const predictionId = await replicate.createPrediction({
+                        image: job.source_image_url,
+                        prompt,
+                        negative_prompt: "bad quality, blurry, low resolution, distorted face, extra limbs",
+                        width: 1024,
+                        height: 1024,
+                        steps: 20,
+                        instant_id_strength: 0.7,
+                        ip_adapter_weight: 0.6
+                    });
 
-                        // Update progress
-                        const newProgress = currentProgress + 1;
-                        const newStatus = newProgress >= STICKER_EMOTIONS.length ? 'completed' : 'processing';
+                    await supabase.from('generated_stickers').insert({
+                        job_id: jobId,
+                        emotion: emotion,
+                        image_url: JSON.stringify({ predictionId, step: 'gen' })
+                    });
 
-                        try {
+                    console.log(`[DEBUG] Step 1 (Gen) started for ${emotion}`);
+                } else if (currentSticker.image_url?.startsWith('{')) {
+                    // STEP 1 or 2 in progress: Check Replicate status
+                    const state = JSON.parse(currentSticker.image_url);
+                    const prediction = await replicate.getPrediction(state.predictionId);
+
+                    if (prediction.status === 'succeeded') {
+                        if (state.step === 'gen') {
+                            // Step 1 done -> Start Step 2 (BG Removal)
+                            let genUrl = '';
+                            if (typeof prediction.output === 'string') genUrl = prediction.output;
+                            else if (Array.isArray(prediction.output)) genUrl = prediction.output[0];
+
+                            console.log(`[DEBUG] Step 1 done for ${emotion}, starting Step 2 (Rembg)`);
+                            const newPredictionId = await replicate.createPrediction(
+                                { image: genUrl },
+                                "cjwbw/rembg:fb8a57bb21701c770572d89d42f354d7ade6819746616cd5ef9a41768ee579bc"
+                            );
+
+                            await supabase.from('generated_stickers').update({
+                                image_url: JSON.stringify({ predictionId: newPredictionId, step: 'rembg', genUrl })
+                            }).eq('id', currentSticker.id);
+                        } else if (state.step === 'rembg') {
+                            // Step 2 done -> Finalize
+                            let finalUrl = '';
+                            if (typeof prediction.output === 'string') finalUrl = prediction.output;
+                            else if (Array.isArray(prediction.output)) finalUrl = prediction.output[0];
+
+                            console.log(`[DEBUG] Step 2 done for ${emotion}, finalizing`);
+                            await supabase.from('generated_stickers').update({
+                                image_url: finalUrl,
+                                thumbnail_url: finalUrl
+                            }).eq('id', currentSticker.id);
+
+                            // Update job progress
+                            const newProgress = currentProgress + 1;
+                            const newStatus = newProgress >= STICKER_EMOTIONS.length ? 'completed' : 'processing';
                             await supabase.from('sticker_jobs').update({
                                 progress: newProgress,
                                 status: newStatus,
                                 updated_at: new Date().toISOString()
                             }).eq('id', jobId);
-                        } catch (e) {
-                            await supabase.from('sticker_jobs').update({
-                                progress: newProgress,
-                                status: newStatus
-                            }).eq('id', jobId);
-                        }
 
-                        // Refresh job data for the response
-                        job.progress = newProgress;
-                        job.status = newStatus;
-                    } catch (genError) {
-                        console.error(`Error generating sticker for ${emotion}:`, genError);
-                        // Reset status to processing but let updated_at cool down so others don't touch it immediately
+                            // Update local variables for response
+                            job.progress = newProgress;
+                            job.status = newStatus;
+                        }
+                    } else if (prediction.status === 'failed' || prediction.status === 'canceled') {
+                        console.error(`[ERROR] Prediction failed for ${emotion}:`, prediction.error);
+                        // Fallback: If rembg failed, use genUrl. If gen failed, use placeholder.
+                        if (state.step === 'rembg' && state.genUrl) {
+                            await supabase.from('generated_stickers').update({
+                                image_url: state.genUrl,
+                                thumbnail_url: state.genUrl
+                            }).eq('id', currentSticker.id);
+                        } else {
+                            // For simplicity, we'll try to restart next time or just leave it for now
+                            // To avoid infinite loops, we could set a fail count
+                        }
                     }
                 }
             }

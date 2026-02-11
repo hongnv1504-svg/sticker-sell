@@ -29,9 +29,10 @@ export default function StickerGrid({
         <div className="sticker-grid">
             {emotions.map((emotion, index) => {
                 const sticker = stickers.find(s => s.emotion === emotion);
-                const isGenerated = !!sticker?.imageUrl;
-                const isGenerating = loading && progress === index;
-                const isPending = loading && progress < index;
+                const isAsyncGenerating = sticker?.imageUrl?.startsWith('{');
+                const isGenerated = !!sticker?.imageUrl && !isAsyncGenerating;
+                const isGenerating = (loading && progress === index) || isAsyncGenerating;
+                const isPending = loading && progress < index && !isAsyncGenerating;
 
                 return (
                     <div

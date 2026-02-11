@@ -103,9 +103,39 @@ export class ReplicateStickerService {
     }
 
     /**
+     * Start generating a sticker (Step 1 or Step 2)
+     */
+    async createPrediction(
+        input: any,
+        model: string = "fofr/face-to-sticker:764d4b1a9985834924c585040e3f019623832c3bb1278142838722c140411e74"
+    ): Promise<string> {
+        const prediction = await this.replicate.predictions.create({
+            version: model.split(':')[1],
+            input
+        });
+        return prediction.id;
+    }
+
+    /**
+     * Get prediction status and result
+     */
+    async getPrediction(predictionId: string): Promise<{
+        status: 'starting' | 'processing' | 'succeeded' | 'failed' | 'canceled';
+        output: any;
+        error: any;
+    }> {
+        const prediction = await this.replicate.predictions.get(predictionId);
+        return {
+            status: prediction.status as any,
+            output: prediction.output,
+            error: prediction.error
+        };
+    }
+
+    /**
      * Build a comprehensive prompt for FLUX
      */
-    private buildPrompt(style: StickerStyleConfig, emotion: StickerEmotion): string {
+    public buildPrompt(style: StickerStyleConfig, emotion: StickerEmotion): string {
         // Emotion-specific descriptions
         const emotionDescriptions: Record<StickerEmotion, string> = {
             surprised: 'wide-eyed surprised expression, mouth open in shock, eyebrows raised high',
