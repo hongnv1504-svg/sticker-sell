@@ -42,6 +42,11 @@ export async function GET(
             console.error('Error fetching stickers:', stickersError);
         }
 
+        console.log(`[DEBUG] Fetched ${jobStickers?.length || 0} stickers for job ${jobId}`);
+        if (jobStickers && jobStickers.length > 0) {
+            console.log(`[DEBUG] First sticker:`, JSON.stringify(jobStickers[0]));
+        }
+
         // Query order status
         const { data: order } = await supabase
             .from('orders')

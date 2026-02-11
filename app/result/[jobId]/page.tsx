@@ -22,8 +22,13 @@ export default function ResultPage({ params }: Props) {
     const [email, setEmail] = useState('');
     const [isEmailSent, setIsEmailSent] = useState(false);
 
+    const [status, setStatus] = useState<string>('pending');
+    const [progress, setProgress] = useState(0);
+
     // Fetch stickers
     useEffect(() => {
+        let pollInterval: NodeJS.Timeout;
+
         const fetchStickers = async () => {
             try {
                 const response = await fetch(`/api/job/${jobId}`);
@@ -35,10 +40,18 @@ export default function ResultPage({ params }: Props) {
 
                 setStickers(data.stickers || []);
                 setIsPaid(data.isPaid);
+                setStatus(data.job?.status || 'pending');
+                setProgress(data.job?.progress || 0);
 
                 // If not paid, redirect to paywall
                 if (!data.isPaid) {
                     window.location.href = `/pay/${jobId}`;
+                    return;
+                }
+
+                // If job is completed or failed, stop polling
+                if (data.job?.status === 'completed' || data.job?.status === 'failed') {
+                    if (pollInterval) clearInterval(pollInterval);
                 }
             } catch (err) {
                 console.error('Fetch error:', err);
@@ -48,15 +61,18 @@ export default function ResultPage({ params }: Props) {
             }
         };
 
+        // Initial fetch
         fetchStickers();
+
+        // Start polling every 3 seconds
+        pollInterval = setInterval(fetchStickers, 3000);
+
+        return () => {
+            if (pollInterval) clearInterval(pollInterval);
+        };
     }, [jobId]);
 
     const handleDownloadFlow = async () => {
-        if (!email) {
-            setError('Please enter your email address');
-            return;
-        }
-
         setIsDownloading(true);
         setError(null);
 
@@ -113,11 +129,24 @@ export default function ResultPage({ params }: Props) {
                 <div className="max-w-4xl mx-auto">
                     {/* Success Banner */}
                     <div className="glass-card p-6 mb-8 text-center bg-gradient-to-r from-purple-900/30 to-pink-900/30">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
-                            <span className="text-4xl">🎉</span>
-                        </div>
-                        <h1 className="text-3xl font-bold mb-2">Your Stickers Are Ready!</h1>
-                        <p className="text-gray-400">Thank you for your purchase. Enjoy your personalized stickers!</p>
+                        {status === 'completed' ? (
+                            <>
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
+                                    <span className="text-4xl">🎉</span>
+                                </div>
+                                <h1 className="text-3xl font-bold mb-2">Your Stickers Are Ready!</h1>
+                                <p className="text-gray-400">Thank you for your purchase. Enjoy your personalized stickers!</p>
+                            </>
+                        ) : (
+                            <>
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500/20 mb-4">
+                                    <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                                </div>
+                                <h1 className="text-3xl font-bold mb-2">Generating Stickers...</h1>
+                                <p className="text-gray-400">Please wait while we create your personalized pack. {progress}/9 stickers done.</p>
+                                <p className="text-xs text-purple-400 mt-2">This usually takes about 30-60 seconds.</p>
+                            </>
+                        )}
                     </div>
 
                     {/* Stickers Grid */}
@@ -128,6 +157,8 @@ export default function ResultPage({ params }: Props) {
                         <StickerGrid
                             stickers={stickers}
                             locked={false}
+                            loading={status === 'processing'}
+                            progress={progress}
                         />
                     </div>
 
@@ -137,7 +168,7 @@ export default function ResultPage({ params }: Props) {
                             <span>📥</span> Download Sticker Pack
                         </h3>
                         <p className="text-gray-400 text-sm mb-6">
-                            We'll bundle your stickers into a ZIP file and send a secure download link to your email.
+                            We&apos;ll bundle your stickers into a ZIP file for you to download directly.
                         </p>
 
                         {error && (
@@ -149,7 +180,7 @@ export default function ResultPage({ params }: Props) {
                         <div className="space-y-4">
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">
-                                    Email Address (for download link)
+                                    Email Address (optional, for backup link)
                                 </label>
                                 <input
                                     type="email"
@@ -163,28 +194,34 @@ export default function ResultPage({ params }: Props) {
 
                             <button
                                 onClick={handleDownloadFlow}
-                                disabled={isDownloading || !email}
+                                disabled={isDownloading}
                                 className="btn btn-primary w-full flex items-center justify-center gap-2"
                             >
                                 {isDownloading ? (
                                     <>
                                         <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        Processing Pack...
+                                        Bundling Pack...
                                     </>
                                 ) : (
                                     <>
                                         <span>📦</span>
-                                        {isEmailSent ? 'Send Link Again' : 'Bundle & Send Download Link'}
+                                        {isEmailSent ? 'Download Again' : 'Bundle & Download Pack'}
                                     </>
                                 )}
                             </button>
 
+                            <div className="text-center">
+                                <p className="text-xs text-gray-500 bg-white/5 py-2 px-4 rounded-lg inline-block">
+                                    🔒 Ảnh của bạn sẽ được lưu trữ trong 48 giờ, sau đó sẽ tự động xóa để bảo mật.
+                                </p>
+                            </div>
+
                             {isEmailSent && (
                                 <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-start gap-3">
-                                    <span className="text-xl">📧</span>
+                                    <span className="text-xl">✅</span>
                                     <div>
-                                        <p className="text-green-400 font-medium">Link sent to your email!</p>
-                                        <p className="text-green-500/70 text-sm">You can re-download your pack using the link in your email for the next 48 hours.</p>
+                                        <p className="text-green-400 font-medium">Ready for download!</p>
+                                        <p className="text-green-500/70 text-sm">If the download didn&apos;t start automatically, please refresh or check your email.</p>
                                     </div>
                                 </div>
                             )}

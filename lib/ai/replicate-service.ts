@@ -28,29 +28,49 @@ export class ReplicateStickerService {
             // Build the prompt combining style and emotion
             const prompt = this.buildPrompt(style, emotion);
 
-            // Use FLUX 1.1 Pro for high-quality sticker generation
+            // Use face-to-sticker model for better likeness preservation
             const output = await this.replicate.run(
-                "black-forest-labs/flux-1.1-pro",
+                "fofr/face-to-sticker:764d4b1a9985834924c585040e3f019623832c3bb1278142838722c140411e74",
                 {
                     input: {
+                        image: sourceImageUrl,
                         prompt: prompt,
-                        aspect_ratio: "1:1",
-                        output_format: "png",
-                        output_quality: 100,
-                        safety_tolerance: 2,
-                        prompt_upsampling: true
+                        negative_prompt: "bad quality, blurry, low resolution, distorted face, extra limbs",
+                        width: 1024,
+                        height: 1024,
+                        steps: 20,
+                        instant_id_strength: 0.7,
+                        ip_adapter_weight: 0.6,
+                        ip_adapter_noise: 0.5,
+                        upscale: false,
+                        upscale_steps: 10
                     }
                 }
             );
 
-            // FLUX returns a URL string
+            // Handle different output formats from Replicate
+            console.log(`[DEBUG] Replicate output for ${emotion}:`, JSON.stringify(output));
+
+            let resultUrl = '';
+
             if (typeof output === 'string') {
-                return output;
+                resultUrl = output;
             } else if (Array.isArray(output) && output.length > 0) {
-                return output[0] as string;
-            } else {
-                throw new Error('Unexpected output format from FLUX');
+                const first = output[0];
+                if (typeof first === 'string') {
+                    resultUrl = first;
+                } else if (first && typeof first === 'object') {
+                    // Some Replicate models return File-like objects with a url() or toString() method
+                    resultUrl = (first as any).url?.() || first.toString?.() || '';
+                }
             }
+
+            if (!resultUrl || resultUrl === '[object Object]') {
+                console.error(`[ERROR] Failed to extract valid URL from Replicate output:`, output);
+                throw new Error('Invalid image URL generated');
+            }
+
+            return resultUrl;
 
         } catch (error) {
             console.error('Replicate generation error:', error);
@@ -77,22 +97,16 @@ export class ReplicateStickerService {
 
         const emotionDesc = emotionDescriptions[emotion];
 
-        // Combine style base prompt with emotion
+        // Combine style base prompt with emotion in a more streamlined way for face-to-sticker
         const fullPrompt = `${style.basePrompt}
-
-Expression: ${emotionDesc}
-
+The character has ${emotionDesc}.
 ${style.emotionPromptTemplate}
 
-Additional requirements:
-- High quality sticker design
-- Clean transparent background (PNG)
-- Professional character illustration
-- Vibrant colors and sharp details
-- Centered composition
-- Sticker-ready format
-- No text, no watermarks, no logos
-- Single character only`;
+Key Requirements:
+- Maintain EXACT facial likeness from original photo
+- Sticker cutout with white border
+- High resolution, vibrant colors
+- No text, no logos`;
 
         return fullPrompt;
     }

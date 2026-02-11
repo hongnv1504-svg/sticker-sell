@@ -13,7 +13,7 @@ export async function sendDownloadEmail(email: string, downloadUrl: string, jobI
                     'Authorization': `Bearer ${RESEND_API_KEY}`,
                 },
                 body: JSON.stringify({
-                    from: 'AI Stickers <noreply@yourdomain.com>',
+                    from: 'AI Stickers <onboarding@resend.dev>',
                     to: email,
                     subject: 'Your Sticker Pack is Ready!',
                     html: `

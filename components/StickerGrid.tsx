@@ -15,6 +15,10 @@ export default function StickerGrid({
     loading = false,
     progress = 0
 }: StickerGridProps) {
+    console.log(`[DEBUG] StickerGrid received ${stickers.length} stickers, progress: ${progress}`);
+    if (stickers.length > 0) {
+        console.log(`[DEBUG] Sticker 0 emotion: ${stickers[0].emotion}, hasUrl: ${!!stickers[0].imageUrl}`);
+    }
     const emotions: StickerEmotion[] = [
         'surprised', 'annoyed', 'confused',
         'frustrated', 'happy', 'sarcastic',
@@ -32,7 +36,7 @@ export default function StickerGrid({
                 return (
                     <div
                         key={emotion}
-                        className={`sticker-item ${locked ? 'locked' : ''} ${isGenerating ? 'animate-pulse-glow' : ''}`}
+                        className={`sticker-item group ${locked ? 'locked' : ''} ${isGenerating ? 'animate-pulse-glow' : ''}`}
                     >
                         {/* Background gradient */}
                         <div className="absolute inset-0 opacity-50"
@@ -65,6 +69,30 @@ export default function StickerGrid({
                                         alt={emotion}
                                         className={`w-full h-full object-contain ${locked ? 'blur-md' : ''}`}
                                     />
+
+                                    {/* Download Button */}
+                                    {!locked && sticker?.imageUrl && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                const link = document.createElement('a');
+                                                link.href = sticker.imageUrl!;
+                                                link.download = `sticker-${emotion}.png`;
+                                                document.body.appendChild(link);
+                                                link.click();
+                                                document.body.removeChild(link);
+                                            }}
+                                            className="absolute top-2 right-2 p-2 bg-white/10 hover:bg-white/30 backdrop-blur-md rounded-xl text-white transition-all border border-white/20 shadow-lg group-hover:scale-110"
+                                            title="Download Sticker"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path>
+                                                <polyline points="7 10 12 15 17 10"></polyline>
+                                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                                            </svg>
+                                        </button>
+                                    )}
+
                                     <span className="absolute bottom-2 text-xs text-gray-400 capitalize bg-black/50 px-2 py-0.5 rounded-full">
                                         {emotion}
                                     </span>
