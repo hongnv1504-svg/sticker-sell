@@ -70,7 +70,31 @@ export class ReplicateStickerService {
                 throw new Error('Invalid image URL generated');
             }
 
-            return resultUrl;
+            // --- Step 2: Automatic Background Removal ---
+            console.log(`[DEBUG] Starting background removal for ${emotion}`);
+            try {
+                const bgRemovedOutput = await this.replicate.run(
+                    "cjwbw/rembg:fb8a57bb21701c770572d89d42f354d7ade6819746616cd5ef9a41768ee579bc",
+                    {
+                        input: {
+                            image: resultUrl
+                        }
+                    }
+                );
+
+                if (typeof bgRemovedOutput === 'string') {
+                    console.log(`[DEBUG] Background removed successfully for ${emotion}`);
+                    return bgRemovedOutput;
+                } else if (Array.isArray(bgRemovedOutput) && bgRemovedOutput.length > 0) {
+                    return bgRemovedOutput[0] as string;
+                } else {
+                    console.warn(`[WARN] Unexpected rembg output format, falling back to original:`, bgRemovedOutput);
+                    return resultUrl;
+                }
+            } catch (bgError) {
+                console.error(`[ERROR] Background removal failed for ${emotion}, falling back to original:`, bgError);
+                return resultUrl; // Fallback to original if removal fails
+            }
 
         } catch (error) {
             console.error('Replicate generation error:', error);
