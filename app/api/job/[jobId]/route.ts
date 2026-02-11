@@ -137,7 +137,9 @@ export async function GET(
                                     thumbnail_url: genUrl
                                 }).eq('id', currentSticker.id);
 
-                                await this.updateJobProgress(supabase, jobId, currentProgress);
+                                const { newProgress, newStatus } = await updateJobProgress(supabase, jobId, currentProgress, STICKER_EMOTIONS.length);
+                                job.progress = newProgress;
+                                job.status = newStatus;
                             } else {
                                 // Start Step 2 (BG Removal)
                                 console.log(`[DEBUG] Step 1 done for ${emotion}, starting Step 2 (Rembg)`);
@@ -163,13 +165,7 @@ export async function GET(
                             }).eq('id', currentSticker.id);
 
                             // Update job progress
-                            const newProgress = currentProgress + 1;
-                            const newStatus = newProgress >= STICKER_EMOTIONS.length ? 'completed' : 'processing';
-                            await supabase.from('sticker_jobs').update({
-                                progress: newProgress,
-                                status: newStatus,
-                                updated_at: new Date().toISOString()
-                            }).eq('id', jobId);
+                            const { newProgress, newStatus } = await updateJobProgress(supabase, jobId, currentProgress, STICKER_EMOTIONS.length);
 
                             // Update local variables for response
                             job.progress = newProgress;
@@ -216,4 +212,20 @@ export async function GET(
             { status: 500 }
         );
     }
+}
+
+async function updateJobProgress(supabase: any, jobId: string, currentProgress: number, totalEmotions: number) {
+    const newProgress = currentProgress + 1;
+    const newStatus = newProgress >= totalEmotions ? 'completed' : 'processing';
+    console.log(`[DEBUG] Updating job ${jobId} status to ${newStatus}, progress to ${newProgress}`);
+
+    const { error } = await supabase.from('sticker_jobs').update({
+        progress: newProgress,
+        status: newStatus,
+        updated_at: new Date().toISOString()
+    }).eq('id', jobId);
+
+    if (error) console.error('[ERROR] Failed to update job progress:', error);
+
+    return { newProgress, newStatus };
 }
