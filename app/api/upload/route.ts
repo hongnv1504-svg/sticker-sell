@@ -181,27 +181,27 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
 // Generate a placeholder SVG sticker
 function generatePlaceholderSticker(emotion: string): string {
     const emojis: Record<string, string> = {
-        laughing:     '😂',
-        rolling_laugh:'🤣',
+        laughing: '😂',
+        rolling_laugh: '🤣',
         affectionate: '🥰',
-        love_struck:  '😍',
-        thinking:     '🤔',
-        winking:      '😉',
-        pleading:     '🥺',
+        love_struck: '😍',
+        thinking: '🤔',
+        winking: '😉',
+        pleading: '🥺',
         blowing_kiss: '😘',
-        crying:       '😢',
+        crying: '😢',
     };
 
     const colors: Record<string, string> = {
-        laughing:     '#FFD93D',
-        rolling_laugh:'#FF8C42',
+        laughing: '#FFD93D',
+        rolling_laugh: '#FF8C42',
         affectionate: '#FF9ECD',
-        love_struck:  '#FF6B6B',
-        thinking:     '#4ECDC4',
-        winking:      '#9B59B6',
-        pleading:     '#3498DB',
+        love_struck: '#FF6B6B',
+        thinking: '#4ECDC4',
+        winking: '#9B59B6',
+        pleading: '#3498DB',
         blowing_kiss: '#E91E63',
-        crying:       '#95A5A6',
+        crying: '#95A5A6',
     };
 
     const emoji = emojis[emotion] || '😊';
