@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { getPackById } from '@/lib/packs';
 import { StickerStyleKey } from '@/lib/ai/sticker-styles';
@@ -91,15 +91,23 @@ export async function POST(request: NextRequest) {
             throw new Error('Failed to create job');
         }
 
-        // Fire-and-forget: kick off background generation immediately.
-        // We don't await so the upload response returns instantly to the client.
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
+        // Use after() to trigger generation AFTER the response is sent.
+        // This keeps the Vercel function alive until the fetch is dispatched,
+        // preventing the race condition where the function terminates before
+        // the background fetch can initiate.
+        const baseUrl = request.nextUrl.origin;
         const generateUrl = `${baseUrl}/api/generate/${jobId}`;
         console.log(`[UPLOAD] Triggering generation at: ${generateUrl}`);
-        fetch(generateUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        }).catch((err) => console.error('[UPLOAD] Failed to trigger generation:', err));
+        after(async () => {
+            try {
+                await fetch(generateUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            } catch (err) {
+                console.error('[UPLOAD] Failed to trigger generation:', err);
+            }
+        });
 
         return NextResponse.json({
             success: true,
