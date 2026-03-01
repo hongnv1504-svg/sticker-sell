@@ -49,10 +49,10 @@ export default function PaywallPage({ params }: Props) {
                 <div className="max-w-2xl mx-auto">
                     {/* Title */}
                     <div className="text-center mb-8">
-                        <h1 className="text-4xl font-bold mb-4">
+                        <h1 className="text-4xl font-bold mb-4 text-[#222222]">
                             Create Your AI Stickers 🎨
                         </h1>
-                        <p className="text-gray-400 text-lg">
+                        <p className="text-[#a7a7a7] text-lg">
                             Pay now to generate your personalized sticker pack
                         </p>
                     </div>
@@ -64,14 +64,14 @@ export default function PaywallPage({ params }: Props) {
                                 <span className="text-5xl">✨</span>
                             </div>
 
-                            <h2 className="text-2xl font-bold mb-2">AI Sticker Pack</h2>
-                            <p className="text-gray-400">9 personalized AI-generated stickers</p>
+                            <h2 className="text-2xl font-bold mb-2 text-[#222222]">AI Sticker Pack</h2>
+                            <p className="text-[#a7a7a7]">9 personalized AI-generated stickers</p>
                         </div>
 
                         {/* Price */}
                         <div className="text-center mb-8">
                             <div className="text-5xl font-bold gradient-text mb-1">$4.99</div>
-                            <p className="text-gray-400 text-sm">~125,000 VND • One-time payment</p>
+                            <p className="text-[#a7a7a7] text-sm">~125,000 VND • One-time payment</p>
                         </div>
 
                         {/* Features */}
@@ -83,7 +83,7 @@ export default function PaywallPage({ params }: Props) {
                                 'Download as ZIP file',
                                 'Instant generation after payment'
                             ].map((feature, i) => (
-                                <li key={i} className="flex items-center gap-3 text-gray-300">
+                                <li key={i} className="flex items-center gap-3 text-[#555555]">
                                     <span className="text-green-400">✓</span>
                                     {feature}
                                 </li>
@@ -117,7 +117,7 @@ export default function PaywallPage({ params }: Props) {
                         </button>
 
                         {/* Trust badges */}
-                        <div className="mt-6 flex items-center justify-center gap-4 text-sm text-gray-500">
+                        <div className="mt-6 flex items-center justify-center gap-4 text-sm text-[#a7a7a7]">
                             <span className="flex items-center gap-1">
                                 <span>🔒</span> Secure
                             </span>

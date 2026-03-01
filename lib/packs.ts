@@ -23,7 +23,7 @@ export const STICKER_PACKS: StickerPack[] = [
         style: 'Pixar-style 3D cartoon character, big eyes, chibi proportions, cute friendly',
         styleKey: 'pixar3d',
         icon: '🎬',
-        previewEmojis: ['😊', '😲', '🤔', '😏', '😤', '😟', '😒', '😑', '🧐'],
+        previewEmojis: ['😂', '🤣', '🥰', '😍', '🤔', '😉', '🥺', '😘', '😢'],
         price: 499,
         popular: true,
         colors: {

@@ -14,10 +14,10 @@ export default function PacksPage() {
                 <div className="max-w-6xl mx-auto">
                     {/* Title */}
                     <div className="text-center mb-12">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#222222]">
                             Choose Your <span className="gradient-text">Sticker Style</span>
                         </h1>
-                        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                        <p className="text-[#a7a7a7] text-lg max-w-2xl mx-auto">
                             Each pack transforms your photo into 9 unique stickers with different emotions.
                             Pick the style that matches your vibe!
                         </p>
@@ -32,7 +32,7 @@ export default function PacksPage() {
                                 className="group"
                             >
                                 <div
-                                    className="glass-card p-6 h-full relative overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-lg"
+                                    className="glass-card p-6 h-full flex flex-col relative overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-lg"
                                     style={{
                                         borderColor: `${pack.colors.primary}40`,
                                     }}
@@ -56,13 +56,13 @@ export default function PacksPage() {
                                             {pack.icon}
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-bold text-white">{pack.name}</h3>
-                                            <p className="text-sm text-gray-400">${(pack.price / 100).toFixed(2)}</p>
+                                            <h3 className="text-xl font-bold text-[#222222]">{pack.name}</h3>
+                                            <p className="text-sm text-[#a7a7a7]">${(pack.price / 100).toFixed(2)}</p>
                                         </div>
                                     </div>
 
                                     {/* Description */}
-                                    <p className="text-gray-400 text-sm mb-4">
+                                    <p className="text-[#a7a7a7] text-sm mb-4">
                                         {pack.description}
                                     </p>
 
@@ -84,7 +84,7 @@ export default function PacksPage() {
 
                                     {/* CTA */}
                                     <div
-                                        className="w-full py-3 rounded-full text-center font-medium text-white transition-all group-hover:scale-105"
+                                        className="mt-auto w-full py-3 rounded-full text-center font-medium text-white transition-all group-hover:scale-105"
                                         style={{ background: `linear-gradient(135deg, ${pack.colors.primary}, ${pack.colors.secondary})` }}
                                     >
                                         Select This Style →
@@ -95,7 +95,7 @@ export default function PacksPage() {
                     </div>
 
                     {/* Info */}
-                    <div className="mt-12 text-center text-gray-400">
+                    <div className="mt-12 text-center text-[#a7a7a7]">
                         <p>All packs include 9 different expressions • Transparent PNG • Instant download</p>
                     </div>
                 </div>

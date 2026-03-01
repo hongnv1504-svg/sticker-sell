@@ -140,15 +140,15 @@ export class ReplicateStickerService {
     public buildPrompt(style: StickerStyleConfig, emotion: StickerEmotion, isDalle: boolean = false): string {
         // Emotion-specific descriptions
         const emotionDescriptions: Record<StickerEmotion, string> = {
-            surprised: 'wide-eyed surprised expression, mouth open in shock, eyebrows raised high',
-            annoyed: 'annoyed frustrated expression, furrowed brows, slight frown, eye roll',
-            confused: 'confused puzzled expression, tilted head, questioning look, one eyebrow raised',
-            frustrated: 'frustrated stressed expression, gritted teeth, tense face, exasperated look',
-            happy: 'bright happy smile, joyful expression, sparkling eyes, cheerful demeanor',
-            sarcastic: 'sarcastic smirk, knowing look, raised eyebrow, playful mocking expression',
-            worried: 'worried anxious expression, concerned eyes, slight frown, nervous look',
-            bored: 'bored uninterested expression, half-closed eyes, neutral mouth, disengaged look',
-            curious: 'curious interested expression, wide attentive eyes, slight smile, engaged look'
+            laughing:     'head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement',
+            rolling_laugh:'leaning back dramatically, eyes squeezed shut, very wide open mouth, exaggerated laughing pose',
+            affectionate: 'soft smile, glowing eyes, slight head tilt, hands gently close to chest',
+            love_struck:  'big sparkling eyes, wide dreamy smile, forward-leaning excited posture',
+            thinking:     'slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt',
+            winking:      'one eye closed, playful smirk, confident relaxed posture',
+            pleading:     'large glossy eyes, slightly raised inner eyebrows, small pout, hands close together near chest',
+            blowing_kiss: 'puckered lips, soft closed eyes or gentle wink, hand near mouth in kiss gesture',
+            crying:       'teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression',
         };
 
         const emotionDesc = emotionDescriptions[emotion];

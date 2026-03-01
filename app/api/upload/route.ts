@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
         console.log(`[DEBUG] Uploading source image to storage: ${fileName}`);
         const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('source-images') // Make sure this bucket exists and is public
+            .from('stickers') // Make sure this bucket exists and is public
             .upload(fileName, buffer, {
                 contentType: file.type,
                 upsert: true
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
         }
 
         const { data: { publicUrl } } = supabase.storage
-            .from('source-images')
+            .from('stickers')
             .getPublicUrl(fileName);
 
         const sourceImageUrl = publicUrl || `data:${file.type};base64,${buffer.toString('base64')}`;
@@ -90,6 +90,16 @@ export async function POST(request: NextRequest) {
             console.error('Failed to create job in Supabase:', jobError);
             throw new Error('Failed to create job');
         }
+
+        // Fire-and-forget: kick off background generation immediately.
+        // We don't await so the upload response returns instantly to the client.
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
+        const generateUrl = `${baseUrl}/api/generate/${jobId}`;
+        console.log(`[UPLOAD] Triggering generation at: ${generateUrl}`);
+        fetch(generateUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        }).catch((err) => console.error('[UPLOAD] Failed to trigger generation:', err));
 
         return NextResponse.json({
             success: true,
@@ -171,27 +181,27 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
 // Generate a placeholder SVG sticker
 function generatePlaceholderSticker(emotion: string): string {
     const emojis: Record<string, string> = {
-        surprised: '😲',
-        annoyed: '😒',
-        confused: '🤔',
-        frustrated: '😤',
-        happy: '😊',
-        sarcastic: '😏',
-        worried: '😟',
-        bored: '😑',
-        curious: '🧐'
+        laughing:     '😂',
+        rolling_laugh:'🤣',
+        affectionate: '🥰',
+        love_struck:  '😍',
+        thinking:     '🤔',
+        winking:      '😉',
+        pleading:     '🥺',
+        blowing_kiss: '😘',
+        crying:       '😢',
     };
 
     const colors: Record<string, string> = {
-        surprised: '#FFD93D',
-        annoyed: '#FF6B6B',
-        confused: '#4ECDC4',
-        frustrated: '#FF8C42',
-        happy: '#6BCB77',
-        sarcastic: '#9B59B6',
-        worried: '#3498DB',
-        bored: '#95A5A6',
-        curious: '#E91E63'
+        laughing:     '#FFD93D',
+        rolling_laugh:'#FF8C42',
+        affectionate: '#FF9ECD',
+        love_struck:  '#FF6B6B',
+        thinking:     '#4ECDC4',
+        winking:      '#9B59B6',
+        pleading:     '#3498DB',
+        blowing_kiss: '#E91E63',
+        crying:       '#95A5A6',
     };
 
     const emoji = emojis[emotion] || '😊';

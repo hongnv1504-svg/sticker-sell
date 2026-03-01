@@ -134,16 +134,16 @@ export default function ResultPage({ params }: Props) {
                                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
                                     <span className="text-4xl">🎉</span>
                                 </div>
-                                <h1 className="text-3xl font-bold mb-2">Your Stickers Are Ready!</h1>
-                                <p className="text-gray-400">Thank you for your purchase. Enjoy your personalized stickers!</p>
+                                <h1 className="text-3xl font-bold mb-2 text-[#222222]">Your Stickers Are Ready!</h1>
+                                <p className="text-[#a7a7a7]">Thank you for your purchase. Enjoy your personalized stickers!</p>
                             </>
                         ) : (
                             <>
                                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500/20 mb-4">
                                     <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
                                 </div>
-                                <h1 className="text-3xl font-bold mb-2">Generating Stickers...</h1>
-                                <p className="text-gray-400">Please wait while we create your personalized pack. {progress}/9 stickers done.</p>
+                                <h1 className="text-3xl font-bold mb-2 text-[#222222]">Generating Stickers...</h1>
+                                <p className="text-[#a7a7a7]">Please wait while we create your personalized pack. {progress}/9 stickers done.</p>
                                 <p className="text-xs text-purple-400 mt-2">This usually takes about 30-60 seconds.</p>
                             </>
                         )}
@@ -151,7 +151,7 @@ export default function ResultPage({ params }: Props) {
 
                     {/* Stickers Grid */}
                     <div className="glass-card p-6 mb-8">
-                        <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+                        <h3 className="font-semibold text-[#222222] mb-4 flex items-center gap-2">
                             <span>✨</span> Your Sticker Pack
                         </h3>
                         <StickerGrid
@@ -164,10 +164,10 @@ export default function ResultPage({ params }: Props) {
 
                     {/* Download Section */}
                     <div className="glass-card p-6 mb-8">
-                        <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
+                        <h3 className="font-semibold text-[#222222] mb-2 flex items-center gap-2">
                             <span>📥</span> Download Sticker Pack
                         </h3>
-                        <p className="text-gray-400 text-sm mb-6">
+                        <p className="text-[#a7a7a7] text-sm mb-6">
                             We&apos;ll bundle your stickers into a ZIP file for you to download directly.
                         </p>
 
@@ -179,14 +179,14 @@ export default function ResultPage({ params }: Props) {
 
                         <div className="space-y-4">
                             <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">
+                                <label htmlFor="email" className="block text-sm font-medium text-[#a7a7a7] mb-2">
                                     Email Address (optional, for backup link)
                                 </label>
                                 <input
                                     type="email"
                                     id="email"
                                     placeholder="your@email.com"
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+                                    className="w-full bg-[#f5f5f5] border border-[#dedede] rounded-xl px-4 py-3 text-[#222222] placeholder-[#a7a7a7] focus:outline-none focus:ring-2 focus:ring-[#FA5D29]/30 focus:border-[#FA5D29] transition-all"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
@@ -211,7 +211,7 @@ export default function ResultPage({ params }: Props) {
                             </button>
 
                             <div className="text-center">
-                                <p className="text-xs text-gray-500 bg-white/5 py-2 px-4 rounded-lg inline-block">
+                                <p className="text-xs text-[#a7a7a7] bg-[#f0f0f0] py-2 px-4 rounded-lg inline-block">
                                     🔒 Ảnh của bạn sẽ được lưu trữ trong 48 giờ, sau đó sẽ tự động xóa để bảo mật.
                                 </p>
                             </div>
@@ -230,20 +230,20 @@ export default function ResultPage({ params }: Props) {
 
                     {/* Tutorial Section */}
                     <div className="glass-card p-6">
-                        <h3 className="font-semibold text-white mb-6 flex items-center gap-2">
+                        <h3 className="font-semibold text-[#222222] mb-6 flex items-center gap-2">
                             <span>📚</span> How to Use Your Stickers
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Telegram */}
-                            <div className="bg-white/5 rounded-xl p-5">
+                            <div className="bg-[#f5f5f5] rounded-xl p-5">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">
                                         📱
                                     </div>
                                     <h4 className="font-medium">Telegram</h4>
                                 </div>
-                                <ol className="space-y-2 text-sm text-gray-400">
+                                <ol className="space-y-2 text-sm text-[#a7a7a7]">
                                     <li className="flex gap-2">
                                         <span className="text-purple-400">1.</span>
                                         Open Telegram and search for @Stickers bot
@@ -268,14 +268,14 @@ export default function ResultPage({ params }: Props) {
                             </div>
 
                             {/* WhatsApp */}
-                            <div className="bg-white/5 rounded-xl p-5">
+                            <div className="bg-[#f5f5f5] rounded-xl p-5">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl">
                                         💬
                                     </div>
                                     <h4 className="font-medium">WhatsApp</h4>
                                 </div>
-                                <ol className="space-y-2 text-sm text-gray-400">
+                                <ol className="space-y-2 text-sm text-[#a7a7a7]">
                                     <li className="flex gap-2">
                                         <span className="text-green-400">1.</span>
                                         Install a sticker maker app (e.g., Sticker Maker Studio)
@@ -303,7 +303,7 @@ export default function ResultPage({ params }: Props) {
 
                     {/* Create More */}
                     <div className="mt-8 text-center">
-                        <p className="text-gray-400 mb-4">Want to create more stickers?</p>
+                        <p className="text-[#a7a7a7] mb-4">Want to create more stickers?</p>
                         <Link href="/upload" className="btn btn-secondary">
                             Create Another Pack
                         </Link>

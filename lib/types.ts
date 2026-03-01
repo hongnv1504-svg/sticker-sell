@@ -1,29 +1,29 @@
 // Sticker emotions type
 export const STICKER_EMOTIONS = [
-    'surprised',
-    'annoyed',
-    'confused',
-    'frustrated',
-    'happy',
-    'sarcastic',
-    'worried',
-    'bored',
-    'curious'
+    'laughing',
+    'rolling_laugh',
+    'affectionate',
+    'love_struck',
+    'thinking',
+    'winking',
+    'pleading',
+    'blowing_kiss',
+    'crying'
 ] as const;
 
 export type StickerEmotion = typeof STICKER_EMOTIONS[number];
 
 // Emoji mappings for each emotion
 export const EMOTION_EMOJIS: Record<StickerEmotion, string> = {
-    surprised: '😲',
-    annoyed: '😒',
-    confused: '🤔',
-    frustrated: '😤',
-    happy: '😊',
-    sarcastic: '😏',
-    worried: '😟',
-    bored: '😑',
-    curious: '🧐'
+    laughing:     '😂',
+    rolling_laugh:'🤣',
+    affectionate: '🥰',
+    love_struck:  '😍',
+    thinking:     '🤔',
+    winking:      '😉',
+    pleading:     '🥺',
+    blowing_kiss: '😘',
+    crying:       '😢',
 };
 
 // Job status type

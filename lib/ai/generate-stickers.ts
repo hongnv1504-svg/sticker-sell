@@ -9,29 +9,29 @@ export interface GeneratedSticker {
 }
 
 const PLACEHOLDER_COLORS: Record<StickerEmotion, string> = {
-    surprised: '#FFD93D',
-    annoyed: '#FF6B6B',
-    confused: '#4ECDC4',
-    frustrated: '#FF8C42',
-    happy: '#6BCB77',
-    sarcastic: '#9B59B6',
-    worried: '#3498DB',
-    bored: '#95A5A6',
-    curious: '#E91E63'
+    laughing:     '#FFD93D',
+    rolling_laugh:'#FF8C42',
+    affectionate: '#FF9ECD',
+    love_struck:  '#FF6B6B',
+    thinking:     '#4ECDC4',
+    winking:      '#9B59B6',
+    pleading:     '#3498DB',
+    blowing_kiss: '#E91E63',
+    crying:       '#95A5A6',
 };
 
 function generatePlaceholderSVG(emotion: StickerEmotion): string {
     const color = PLACEHOLDER_COLORS[emotion];
     const emoji = {
-        surprised: '😲',
-        annoyed: '😒',
-        confused: '🤔',
-        frustrated: '😤',
-        happy: '😊',
-        sarcastic: '😏',
-        worried: '😟',
-        bored: '😑',
-        curious: '🧐'
+        laughing:     '😂',
+        rolling_laugh:'🤣',
+        affectionate: '🥰',
+        love_struck:  '😍',
+        thinking:     '🤔',
+        winking:      '😉',
+        pleading:     '🥺',
+        blowing_kiss: '😘',
+        crying:       '😢',
     }[emotion];
 
     const svg = `
@@ -104,6 +104,6 @@ export async function generateStickers(
 }
 
 export function hasRealAIAPI(): boolean {
-    return !!process.env.REPLICATE_API_TOKEN;
+    return !!process.env.OPENAI_API_KEY || !!process.env.REPLICATE_API_TOKEN;
 }
 

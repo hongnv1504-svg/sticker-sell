@@ -3,52 +3,72 @@
 
 @import "tailwindcss";
 
-/* Design System Variables */
+/* ============================================================
+   DESIGN SYSTEM — Awwwards-inspired color tokens
+   Reference: awwwards.com
+   - Dark neutrals as base (#1a1a1a, #222)
+   - Orange (#FA5D29) as primary accent
+   - Category colors: blue, mint, purple, yellow
+   - See full token map: lib/design-tokens.ts
+   ============================================================ */
 :root {
-  /* Primary Colors - Vibrant Purple/Pink */
-  --primary: #8b5cf6;
-  --primary-hover: #7c3aed;
-  --primary-light: #c4b5fd;
-  --primary-dark: #6d28d9;
+  /* Primary accent — Awwwards orange */
+  --primary: #FA5D29;
+  --primary-hover: #FF7A4D;
+  --primary-light: #FF9667;
+  --primary-dark: #d94a1a;
+  --primary-tint: rgba(250, 93, 41, 0.12);
 
-  /* Accent Colors */
-  --accent: #ec4899;
-  --accent-hover: #db2777;
-  --accent-light: #f9a8d4;
+  /* Removed: separate accent (orange IS the accent now) */
+  --accent: #FF9667;
+  --accent-hover: #FA5D29;
+  --accent-light: #FFE4D9;
 
-  /* Neutral Colors */
-  --background: #0f0f23;
-  --background-secondary: #1a1a2e;
-  --background-card: #16162a;
-  --foreground: #f1f5f9;
-  --foreground-muted: #94a3b8;
-  --foreground-dim: #64748b;
+  /* Backgrounds — Awwwards light */
+  --background: #f8f8f8;
+  --background-secondary: #f0f0f0;
+  --background-card: #ffffff;
+  --background-elevated: #ffffff;
 
-  /* Status Colors */
+  /* Text — Awwwards dark editorial */
+  --foreground: #222222;
+  --foreground-muted: #a7a7a7;
+  --foreground-dim: #dedede;
+
+  /* Status */
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f97316 100%);
-  --gradient-card: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-  --gradient-glow: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%);
+  /* Category accents (Awwwards section palette) */
+  --cat-connect: #49B3FC;
+  --cat-inspire: #AAEEC4;
+  --cat-awards:  #502bd8;
+  --cat-learn:   #FFF083;
+  --cat-jobs:    #74bcff;
 
-  /* Glass Effect */
-  --glass-bg: rgba(22, 22, 42, 0.7);
-  --glass-border: rgba(139, 92, 246, 0.2);
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FA5D29 0%, #FF9667 100%);
+  --gradient-card: linear-gradient(135deg, rgba(250, 93, 41, 0.08) 0%, rgba(255, 150, 103, 0.05) 100%);
+  --gradient-glow: radial-gradient(circle at 50% 50%, rgba(250, 93, 41, 0.20) 0%, transparent 60%);
+  --gradient-hero: radial-gradient(ellipse at 60% 0%, rgba(250, 93, 41, 0.15) 0%, transparent 50%),
+                   radial-gradient(ellipse at 10% 90%, rgba(73, 179, 252, 0.10) 0%, transparent 50%);
+
+  /* Glass effect — Awwwards white glass */
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: #ededed;
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.40);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.50);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.60);
+  --shadow-glow: 0 0 40px rgba(250, 93, 41, 0.25);
 
-  /* Border Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  /* Border Radius — Awwwards uses sharper corners */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 }
 
@@ -79,19 +99,19 @@ body {
 /* Background Effects */
 .bg-mesh {
   background-image:
-    var(--gradient-glow),
-    radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
+    radial-gradient(circle at 80% 10%, rgba(250, 93, 41, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(73, 179, 252, 0.05) 0%, transparent 40%);
   background-attachment: fixed;
 }
 
-/* Glass Card */
+/* Glass Card — Awwwards: white bg, subtle border, clean shadow */
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--background-card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
 /* Gradient Text */
@@ -123,65 +143,66 @@ body {
   cursor: not-allowed;
 }
 
-/* Primary Button */
+/* Primary Button — Awwwards: clean orange, light shadow */
 .btn-primary {
   background: var(--gradient-primary);
   color: white;
-  box-shadow: var(--shadow-md), 0 0 20px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 2px 8px rgba(250, 93, 41, 0.25);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg), 0 0 40px rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(250, 93, 41, 0.35);
 }
 
 .btn-primary:active:not(:disabled) {
   transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(250, 93, 41, 0.20);
 }
 
-/* Secondary Button */
+/* Secondary Button — Awwwards: white bg, dark border */
 .btn-secondary {
-  background: var(--background-secondary);
-  color: var(--foreground);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  color: #222222;
+  border: 1px solid #dedede;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--background-card);
-  border-color: var(--primary);
+  border-color: #FA5D29;
+  color: #FA5D29;
 }
 
 /* Ghost Button */
 .btn-ghost {
   background: transparent;
-  color: var(--foreground-muted);
+  color: #a7a7a7;
 }
 
 .btn-ghost:hover:not(:disabled) {
-  color: var(--foreground);
-  background: rgba(255, 255, 255, 0.05);
+  color: #222222;
+  background: rgba(0, 0, 0, 0.04);
 }
 
-/* Input Styles */
+/* Input Styles — Awwwards clean */
 .input {
   width: 100%;
   padding: 14px 18px;
-  background: var(--background-secondary);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  border: 1px solid #dedede;
   border-radius: var(--radius-md);
-  color: var(--foreground);
+  color: #222222;
   font-size: 16px;
   transition: all 0.2s;
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+  border-color: #FA5D29;
+  box-shadow: 0 0 0 3px rgba(250, 93, 41, 0.12);
 }
 
 .input::placeholder {
-  color: var(--foreground-dim);
+  color: #a7a7a7;
 }
 
 /* Sticker Grid */
@@ -195,15 +216,17 @@ body {
   aspect-ratio: 1;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: var(--background-card);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  border: 1px solid #ededed;
   position: relative;
   transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .sticker-item:hover {
-  transform: scale(1.05);
-  box-shadow: var(--shadow-glow);
+  transform: scale(1.04);
+  box-shadow: 0 4px 20px rgba(250,93,41,0.15);
+  border-color: #FA5D29;
 }
 
 .sticker-item.locked::after {
@@ -217,8 +240,8 @@ body {
 /* Progress Bar */
 .progress-bar {
   width: 100%;
-  height: 8px;
-  background: var(--background-secondary);
+  height: 6px;
+  background: #ededed;
   border-radius: var(--radius-full);
   overflow: hidden;
 }
@@ -247,11 +270,11 @@ body {
 
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 20px rgba(250, 93, 41, 0.25);
   }
 
   50% {
-    box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 40px rgba(250, 93, 41, 0.45);
   }
 }
 
@@ -285,9 +308,9 @@ body {
 
 .animate-shimmer {
   background: linear-gradient(90deg,
-      var(--background-card) 25%,
-      var(--background-secondary) 50%,
-      var(--background-card) 75%);
+      #f0f0f0 25%,
+      #e8e8e8 50%,
+      #f0f0f0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -308,12 +331,12 @@ body {
 
 .dropzone:hover,
 .dropzone.active {
-  border-color: var(--primary);
-  background: rgba(139, 92, 246, 0.05);
+  border-color: #FA5D29;
+  background: rgba(250, 93, 41, 0.04);
 }
 
 .dropzone.active {
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 0 0 4px rgba(250, 93, 41, 0.10);
 }
 
 /* Responsive */

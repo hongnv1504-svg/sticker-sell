@@ -93,13 +93,13 @@ function UploadContent() {
                                 {selectedPack.icon}
                             </div>
                             <div>
-                                <h3 className="font-semibold text-white">{selectedPack.name}</h3>
-                                <p className="text-sm text-gray-400">${(selectedPack.price / 100).toFixed(2)} • 9 stickers</p>
+                                <h3 className="font-semibold text-[#222222]">{selectedPack.name}</h3>
+                                <p className="text-sm text-[#a7a7a7]">${(selectedPack.price / 100).toFixed(2)} • 9 stickers</p>
                             </div>
                         </div>
                         <Link
                             href="/packs"
-                            className="text-sm text-gray-400 hover:text-white transition-colors"
+                            className="text-sm text-[#a7a7a7] hover:text-[#222222] transition-colors"
                         >
                             Change Style →
                         </Link>
@@ -107,10 +107,10 @@ function UploadContent() {
 
                     {/* Title */}
                     <div className="text-center mb-12">
-                        <h1 className="text-4xl font-bold mb-4">
+                        <h1 className="text-4xl font-bold mb-4 text-[#222222]">
                             Upload Your Photo
                         </h1>
-                        <p className="text-gray-400 text-lg">
+                        <p className="text-[#a7a7a7] text-lg">
                             Choose a clear selfie with good lighting for best results
                         </p>
                     </div>
@@ -150,7 +150,7 @@ function UploadContent() {
                                 )}
                             </button>
 
-                            <p className="mt-4 text-sm text-gray-400">
+                            <p className="mt-4 text-sm text-[#a7a7a7]">
                                 Takes about 30 seconds • Pay only if you like the result
                             </p>
                         </div>
@@ -158,10 +158,10 @@ function UploadContent() {
 
                     {/* Tips */}
                     <div className="mt-12 glass-card p-6">
-                        <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+                        <h3 className="font-semibold text-[#222222] mb-4 flex items-center gap-2">
                             <span>💡</span> Tips for Best Results
                         </h3>
-                        <ul className="space-y-2 text-gray-400">
+                        <ul className="space-y-2 text-[#a7a7a7]">
                             <li className="flex items-start gap-2">
                                 <span className="text-green-400">✓</span>
                                 Use a photo with just one face clearly visible

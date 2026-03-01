@@ -64,15 +64,15 @@ CONSISTENCY REQUIREMENTS:
 - Change ONLY facial expression and pose according to the selected emotion
 
 POSE & EXPRESSION GUIDELINES:
-- Surprised: Hands touching cheeks, wide eyes, O-shaped mouth
-- Annoyed: Arms crossed, sharp side-eye, furrowed brow
-- Confused: Head tilted 45 degrees, one hand scratching head
-- Frustrated: Facepalming with one hand, clenched jaw
-- Happy: Big smile, sparkling eyes, cheerful pose
-- Sarcastic: Raised eyebrow, playful smirk
-- Worried: Biting nails, slightly hunched shoulders
-- Bored: Chin resting on palm, sleepy eyes
-- Curious: Leaning forward slightly, inquisitive expression
+- 😂 Laughing: Head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement
+- 🤣 Rolling Laugh: Leaning back dramatically, eyes squeezed shut, very wide open mouth, exaggerated laughing pose
+- 🥰 Affectionate: Soft smile, glowing eyes, slight head tilt, hands gently close to chest
+- 😍 Love-Struck: Big sparkling eyes, wide dreamy smile, forward-leaning excited posture
+- 🤔 Thinking: Slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt
+- 😉 Winking: One eye closed, playful smirk, confident relaxed posture
+- 🥺 Pleading: Large glossy eyes, slightly raised inner eyebrows, small pout, hands close together near chest
+- 😘 Blowing Kiss: Puckered lips, soft closed eyes or gentle wink, hand near mouth in kiss gesture
+- 😢 Crying: Teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression
 
 FORBIDDEN ELEMENTS:
 - No text, no emoji, no symbols, no speech bubbles
@@ -131,15 +131,15 @@ CONSISTENCY REQUIREMENTS:
 - Change ONLY facial expression and pose according to the selected emotion
 
 POSE & EXPRESSION GUIDELINES:
-- Surprised: Hands touching cheeks, wide sparkling eyes, small open mouth
-- Annoyed: Arms crossed, puffed cheeks, sharp side-eye
-- Confused: Head tilted 45 degrees, one hand scratching head, puzzled eyes
-- Frustrated: Facepalming with one hand, slightly clenched teeth
-- Happy: Big cheerful smile, sparkling eyes, energetic pose
-- Sarcastic: One eyebrow raised, playful smirk
-- Worried: Hands clasped near chest, anxious eyes
-- Bored: Chin resting on palm, half-closed sleepy eyes
-- Curious: Leaning forward slightly, wide inquisitive eyes
+- 😂 Laughing: Head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement
+- 🤣 Rolling Laugh: Leaning back dramatically, eyes squeezed shut, very wide open mouth, exaggerated laughing pose
+- 🥰 Affectionate: Soft smile, glowing eyes, slight head tilt, hands gently close to chest
+- 😍 Love-Struck: Big sparkling eyes, wide dreamy smile, forward-leaning excited posture
+- 🤔 Thinking: Slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt
+- 😉 Winking: One eye closed, playful smirk, confident relaxed posture
+- 🥺 Pleading: Large glossy eyes, slightly raised inner eyebrows, small pout, hands close together near chest
+- 😘 Blowing Kiss: Puckered lips, soft closed eyes or gentle wink, hand near mouth in kiss gesture
+- 😢 Crying: Teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression
 
 FORBIDDEN ELEMENTS:
 - No text, no emoji, no symbols, no speech bubbles
@@ -198,15 +198,15 @@ CONSISTENCY REQUIREMENTS:
 - Change ONLY facial expression and pose according to the selected emotion
 
 POSE & EXPRESSION GUIDELINES:
-- Surprised: Hands up near face, wide eyes, open mouth
-- Annoyed: Arms crossed, tilted head, annoyed gamer stare
-- Confused: Scratching head, puzzled look, tilted head
-- Frustrated: Clenched fists, angry eyebrows, gamer rage face
-- Happy: Big grin, excited eyes, celebratory pose
-- Sarcastic: Smirking, one eyebrow raised, confident posture
-- Worried: Shoulders hunched, nervous eyes, hands fidgeting
-- Bored: Slouched posture, sleepy eyes, chin resting on palm
-- Curious: Leaning forward, curious eyes, slight head tilt
+- 😂 Laughing: Head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement
+- 🤣 Rolling Laugh: Leaning back dramatically, eyes squeezed shut, very wide open mouth, exaggerated laughing pose
+- 🥰 Affectionate: Soft smile, glowing eyes, slight head tilt, hands gently close to chest
+- 😍 Love-Struck: Big sparkling eyes, wide dreamy smile, forward-leaning excited posture
+- 🤔 Thinking: Slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt
+- 😉 Winking: One eye closed, playful smirk, confident relaxed posture
+- 🥺 Pleading: Large glossy eyes, slightly raised inner eyebrows, small pout, hands close together near chest
+- 😘 Blowing Kiss: Puckered lips, soft closed eyes or gentle wink, hand near mouth in kiss gesture
+- 😢 Crying: Teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression
 
 FORBIDDEN ELEMENTS:
 - No text, no emoji, no symbols, no speech bubbles
@@ -265,15 +265,15 @@ CONSISTENCY REQUIREMENTS:
 - Change ONLY facial expression and pose according to the selected emotion
 
 POSE & EXPRESSION GUIDELINES:
-- Surprised: Hands near cheeks, widened soft eyes, gentle open mouth
-- Annoyed: Arms crossed, subtle frown, side glance
-- Confused: Head tilted, one hand touching temple, puzzled expression
-- Frustrated: Hand on forehead, eyes closed briefly, tense brow
-- Happy: Warm smile, relaxed eyes, open posture
-- Sarcastic: Soft smirk, raised eyebrow, playful look
-- Worried: Hands clasped together, worried eyes, slightly hunched shoulders
-- Bored: Chin resting on palm, droopy eyes, relaxed posture
-- Curious: Leaning forward slightly, gentle inquisitive gaze
+- 😂 Laughing: Head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement
+- 🤣 Rolling Laugh: Leaning back dramatically, eyes squeezed shut, very wide open mouth, exaggerated laughing pose
+- 🥰 Affectionate: Soft smile, glowing eyes, slight head tilt, hands gently close to chest
+- 😍 Love-Struck: Big sparkling eyes, wide dreamy smile, forward-leaning excited posture
+- 🤔 Thinking: Slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt
+- 😉 Winking: One eye closed, playful smirk, confident relaxed posture
+- 🥺 Pleading: Large glossy eyes, slightly raised inner eyebrows, small pout, hands close together near chest
+- 😘 Blowing Kiss: Puckered lips, soft closed eyes or gentle wink, hand near mouth in kiss gesture
+- 😢 Crying: Teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression
 
 FORBIDDEN ELEMENTS:
 - No text, no emoji, no symbols, no speech bubbles
@@ -332,15 +332,15 @@ CONSISTENCY REQUIREMENTS:
 - Change ONLY facial expression and pose according to the selected emotion
 
 POSE & EXPRESSION GUIDELINES:
-- Surprised: Hands raised, wide comic eyes, dramatic open mouth
-- Annoyed: Arms crossed, sharp eyebrows, strong side-eye
-- Confused: Head tilted, puzzled eyes, hand near temple
-- Frustrated: Clenched jaw, tense eyebrows, expressive comic pose
-- Happy: Big bold smile, energetic posture
-- Sarcastic: Raised eyebrow, confident smirk, comic attitude
-- Worried: Hands near face, anxious eyes, tense posture
-- Bored: Slouched pose, half-lidded eyes, unimpressed look
-- Curious: Leaning forward, wide inquisitive eyes, alert posture
+- 😂 Laughing: Head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement
+- 🤣 Rolling Laugh: Leaning back dramatically, eyes squeezed shut, very wide open mouth, exaggerated laughing pose
+- 🥰 Affectionate: Soft smile, glowing eyes, slight head tilt, hands gently close to chest
+- 😍 Love-Struck: Big sparkling eyes, wide dreamy smile, forward-leaning excited posture
+- 🤔 Thinking: Slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt
+- 😉 Winking: One eye closed, playful smirk, confident relaxed posture
+- 🥺 Pleading: Large glossy eyes, slightly raised inner eyebrows, small pout, hands close together near chest
+- 😘 Blowing Kiss: Puckered lips, soft closed eyes or gentle wink, hand near mouth in kiss gesture
+- 😢 Crying: Teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression
 
 FORBIDDEN ELEMENTS:
 - No text, no emoji, no symbols, no speech bubbles
@@ -399,15 +399,15 @@ CONSISTENCY REQUIREMENTS:
 - Change ONLY facial expression and pose according to the selected emotion
 
 POSE & EXPRESSION GUIDELINES:
-- Surprised: Hands near face, simple wide eyes, small open mouth line
-- Annoyed: Arms crossed, angled eyebrows, minimal side-eye
-- Confused: Head tilted, one hand scratching head, puzzled minimal face
-- Frustrated: Hand on forehead, simple tense brow lines
-- Happy: Simple curved smile, relaxed open posture
-- Sarcastic: One eyebrow raised, slight smirk line
-- Worried: Hands clasped, small worried eyes, hunched shoulders
-- Bored: Chin resting on palm, half-closed minimal eyes
-- Curious: Leaning forward slightly, simple wide eyes
+- 😂 Laughing: Head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement
+- 🤣 Rolling Laugh: Leaning back dramatically, eyes squeezed shut, very wide open mouth, exaggerated laughing pose
+- 🥰 Affectionate: Soft smile, glowing eyes, slight head tilt, hands gently close to chest
+- 😍 Love-Struck: Big sparkling eyes, wide dreamy smile, forward-leaning excited posture
+- 🤔 Thinking: Slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt
+- 😉 Winking: One eye closed, playful smirk, confident relaxed posture
+- 🥺 Pleading: Large glossy eyes, slightly raised inner eyebrows, small pout, hands close together near chest
+- 😘 Blowing Kiss: Puckered lips, soft closed eyes or gentle wink, hand near mouth in kiss gesture
+- 😢 Crying: Teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression
 
 FORBIDDEN ELEMENTS:
 - No text, no emoji, no symbols, no speech bubbles

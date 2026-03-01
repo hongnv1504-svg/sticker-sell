@@ -11,8 +11,8 @@ export default function ProgressBar({ current, total, label }: ProgressBarProps)
         <div className="w-full">
             {label && (
                 <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-400">{label}</span>
-                    <span className="text-sm font-medium text-white">
+                    <span className="text-sm text-[#a7a7a7]">{label}</span>
+                    <span className="text-sm font-semibold text-[#222222]">
                         {current}/{total} ({percentage}%)
                     </span>
                 </div>

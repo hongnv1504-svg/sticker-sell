@@ -78,9 +78,12 @@ export default function GeneratePage({ params }: Props) {
         router.push('/upload');
     };
 
-    // Calculate estimated time remaining
+    // Estimated time: stickers generate in parallel batches of 3 (~30s total).
+    // Show a countdown based on how many are done vs total.
     const remainingStickers = STICKER_EMOTIONS.length - progress;
-    const estimatedSeconds = remainingStickers * 2;
+    const estimatedSeconds = progress === 0
+        ? 60                                   // cold start — no info yet
+        : Math.max(5, remainingStickers * 8);  // ~8s per remaining (parallel)
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -139,11 +142,15 @@ export default function GeneratePage({ params }: Props) {
                             <ProgressBar
                                 current={progress}
                                 total={STICKER_EMOTIONS.length}
-                                label={`Rendering sticker ${progress + 1} of ${STICKER_EMOTIONS.length}`}
+                                label={
+                                    progress === 0
+                                        ? `Starting AI generation...`
+                                        : `${progress} of ${STICKER_EMOTIONS.length} stickers ready ✨`
+                                }
                             />
 
                             <p className="text-center text-sm text-gray-400 mt-4">
-                                ⏱️ Estimated time: ~{estimatedSeconds} seconds remaining
+                                ⏱️ ~{estimatedSeconds}s remaining — stickers appear as they finish
                             </p>
                         </div>
                     )}
