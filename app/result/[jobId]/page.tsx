@@ -177,55 +177,87 @@ export default function ResultPage({ params }: Props) {
                             </div>
                         )}
 
-                        <div className="space-y-4">
-                            <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-[#a7a7a7] mb-2">
-                                    Email Address (optional, for backup link)
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="your@email.com"
-                                    className="w-full bg-[#f5f5f5] border border-[#dedede] rounded-xl px-4 py-3 text-[#222222] placeholder-[#a7a7a7] focus:outline-none focus:ring-2 focus:ring-[#FA5D29]/30 focus:border-[#FA5D29] transition-all"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-
-                            <button
-                                onClick={handleDownloadFlow}
-                                disabled={isDownloading}
-                                className="btn btn-primary w-full flex items-center justify-center gap-2"
-                            >
-                                {isDownloading ? (
-                                    <>
-                                        <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        Bundling Pack...
-                                    </>
-                                ) : (
-                                    <>
-                                        <span>📦</span>
-                                        {isEmailSent ? 'Download Again' : 'Bundle & Download Pack'}
-                                    </>
-                                )}
-                            </button>
-
-                            <div className="text-center">
-                                <p className="text-xs text-[#a7a7a7] bg-[#f0f0f0] py-2 px-4 rounded-lg inline-block">
-                                    🔒 Ảnh của bạn sẽ được lưu trữ trong 48 giờ, sau đó sẽ tự động xóa để bảo mật.
-                                </p>
-                            </div>
-
-                            {isEmailSent && (
-                                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-start gap-3">
-                                    <span className="text-xl">✅</span>
+                        {isEmailSent ? (
+                            /* ── Post-download state: clean success UI ── */
+                            <div className="space-y-4">
+                                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center gap-3">
+                                    <span className="text-2xl">✅</span>
                                     <div>
-                                        <p className="text-green-400 font-medium">Ready for download!</p>
-                                        <p className="text-green-500/70 text-sm">If the download didn&apos;t start automatically, please refresh or check your email.</p>
+                                        <p className="text-green-600 font-semibold">Download started!</p>
+                                        <p className="text-green-700/60 text-sm">
+                                            {email
+                                                ? `A backup link was also sent to ${email}.`
+                                                : "If it didn't start automatically, click the button below."}
+                                        </p>
                                     </div>
                                 </div>
-                            )}
-                        </div>
+
+                                <button
+                                    onClick={handleDownloadFlow}
+                                    disabled={isDownloading}
+                                    className="btn btn-primary w-full flex items-center justify-center gap-2"
+                                >
+                                    {isDownloading ? (
+                                        <>
+                                            <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            Bundling Pack...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>📦</span>
+                                            Download Again
+                                        </>
+                                    )}
+                                </button>
+
+                                <div className="text-center">
+                                    <p className="text-xs text-[#a7a7a7] bg-[#f0f0f0] py-2 px-4 rounded-lg inline-block">
+                                        🔒 Ảnh của bạn sẽ được lưu trữ trong 48 giờ, sau đó sẽ tự động xóa để bảo mật.
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            /* ── Pre-download state: email input + download button ── */
+                            <div className="space-y-4">
+                                <div>
+                                    <label htmlFor="email" className="block text-sm font-medium text-[#a7a7a7] mb-2">
+                                        Email Address (optional, for backup link)
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        placeholder="your@email.com"
+                                        className="w-full bg-[#f5f5f5] border border-[#dedede] rounded-xl px-4 py-3 text-[#222222] placeholder-[#a7a7a7] focus:outline-none focus:ring-2 focus:ring-[#FA5D29]/30 focus:border-[#FA5D29] transition-all"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+
+                                <button
+                                    onClick={handleDownloadFlow}
+                                    disabled={isDownloading}
+                                    className="btn btn-primary w-full flex items-center justify-center gap-2"
+                                >
+                                    {isDownloading ? (
+                                        <>
+                                            <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            Bundling Pack...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>📦</span>
+                                            Bundle & Download Pack
+                                        </>
+                                    )}
+                                </button>
+
+                                <div className="text-center">
+                                    <p className="text-xs text-[#a7a7a7] bg-[#f0f0f0] py-2 px-4 rounded-lg inline-block">
+                                        🔒 Ảnh của bạn sẽ được lưu trữ trong 48 giờ, sau đó sẽ tự động xóa để bảo mật.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Tutorial Section */}
