@@ -65,8 +65,8 @@ function UploadContent() {
             analytics.trackImageUploaded(data.jobId);
             // Note: generation will start after payment, so we don't track it here
 
-            // Redirect to payment page (pay-first model)
-            router.push(`/pay/${data.jobId}`);
+            // Paywall disabled — skip payment, go straight to generation
+            router.push(`/generate/${data.jobId}`);
         } catch (err) {
             console.error('Upload error:', err);
             setError(err instanceof Error ? err.message : 'Something went wrong');
