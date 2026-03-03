@@ -1,6 +1,6 @@
 import { STICKER_EMOTIONS, StickerEmotion } from '../types';
 import { STICKER_STYLES, StickerStyleKey } from './sticker-styles';
-import { ReplicateStickerService } from './replicate-service';
+import { OpenAIStickerService } from './openai-service';
 
 export interface GeneratedSticker {
     emotion: StickerEmotion;
@@ -64,8 +64,9 @@ export async function generateSingleSticker(
 
     if (useAI) {
         try {
-            const replicateService = new ReplicateStickerService();
-            imageUrl = await replicateService.generateSticker(sourceImageUrl, style, emotion);
+            const openaiService = new OpenAIStickerService();
+            const buffer = await openaiService.generateSticker(sourceImageUrl, style, emotion);
+            imageUrl = `data:image/png;base64,${buffer.toString('base64')}`;
             console.log(`Generated AI sticker for emotion: ${emotion}`);
         } catch (error) {
             console.error(`AI generation failed for ${emotion}, using placeholder:`, error);
@@ -104,6 +105,6 @@ export async function generateStickers(
 }
 
 export function hasRealAIAPI(): boolean {
-    return !!process.env.OPENAI_API_KEY || !!process.env.REPLICATE_API_TOKEN;
+    return !!process.env.OPENAI_API_KEY;
 }
 
