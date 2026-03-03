@@ -46,7 +46,7 @@ export class OpenAIStickerService {
             background: 'transparent', // native transparency — no flood-fill needed
             output_format: 'png',      // required when background is transparent
             input_fidelity: 'high',    // preserve facial features from source photo
-            quality: 'high',
+            quality: 'medium',
         });
 
         const b64 = result.data?.[0]?.b64_json;
