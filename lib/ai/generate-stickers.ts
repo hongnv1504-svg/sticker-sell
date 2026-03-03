@@ -85,7 +85,7 @@ export async function generateSingleSticker(
 }
 
 /**
- * Generate stickers using AI (FLUX on Replicate) or fallback to placeholders
+ * Generate stickers using OpenAI or fallback to placeholders
  */
 export async function generateStickers(
     sourceImageUrl: string,

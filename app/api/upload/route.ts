@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         const jobId = uuidv4();
         const supabase = getSupabaseAdmin();
 
-        // 1. Upload to Supabase Storage for stability (Replicate prefers URLs)
+        // 1. Upload to Supabase Storage for stability (OpenAI prefers URLs)
         const fileName = `${jobId}/source.${file.type.split('/')[1] || 'png'}`;
 
         console.log(`[DEBUG] Uploading source image to storage: ${fileName}`);
