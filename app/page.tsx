@@ -147,7 +147,7 @@ export default function Home() {
                       {pack.icon}
                     </div>
                     <h3 className="font-semibold text-[#222222] text-sm mb-1">{pack.name}</h3>
-                    <p className="text-xs text-[#a7a7a7]">${(pack.price / 100).toFixed(2)}</p>
+                    <p className="text-xs text-[#a7a7a7]">Free</p>
                   </div>
                 </Link>
               ))}
@@ -265,9 +265,9 @@ export default function Home() {
                       className="text-4xl font-bold"
                       style={{ color: pack.colors.primary }}
                     >
-                      ${(pack.price / 100).toFixed(2)}
+                      Free
                     </span>
-                    <span className="text-[#a7a7a7] ml-1 text-sm">one-time</span>
+                    <span className="text-[#a7a7a7] ml-1 text-sm">limited time</span>
                   </div>
 
                   <ul className="text-left space-y-2 mb-6 text-sm">

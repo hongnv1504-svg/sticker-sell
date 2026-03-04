@@ -57,7 +57,7 @@ export default function PacksPage() {
                                         </div>
                                         <div>
                                             <h3 className="text-xl font-bold text-[#222222]">{pack.name}</h3>
-                                            <p className="text-sm text-[#a7a7a7]">${(pack.price / 100).toFixed(2)}</p>
+                                            <p className="text-sm text-[#a7a7a7]">Free</p>
                                         </div>
                                     </div>
 
