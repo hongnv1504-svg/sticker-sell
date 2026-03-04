@@ -87,7 +87,7 @@ export default function Home() {
                           <img
                             src={`/stickers/${item.file}.png`}
                             alt={item.name}
-                            className="w-full h-full object-contain p-1 opacity-0"
+                            className="w-full h-full object-contain p-1 transition-opacity duration-200 group-hover:opacity-0"
                           />
                           <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                             <span className="text-2xl">{item.emoji}</span>
