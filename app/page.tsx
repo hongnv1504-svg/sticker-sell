@@ -48,12 +48,12 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
 
                   {/* Left — Sample person photo */}
-                  <div className="text-center">
-                    <div className="aspect-square rounded-2xl mb-3 overflow-hidden relative border border-[#ededed]">
+                  <div className="text-center group">
+                    <div className="aspect-square rounded-2xl mb-3 overflow-hidden relative border border-[#ededed] transition-shadow duration-300 group-hover:shadow-md">
                       <img
                         src="/sample-photo.jpg"
                         alt="Sample person"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
                     <span className="text-sm text-[#a7a7a7]">Your Photo</span>
