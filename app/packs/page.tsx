@@ -32,7 +32,7 @@ export default function PacksPage() {
                                 className="group"
                             >
                                 <div
-                                    className="glass-card p-6 h-full flex flex-col relative overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-lg"
+                                    className="glass-card p-6 h-full flex flex-col relative overflow-hidden transition-shadow duration-300 group-hover:shadow-lg"
                                     style={{
                                         borderColor: `${pack.colors.primary}40`,
                                     }}
@@ -71,10 +71,9 @@ export default function PacksPage() {
                                         {pack.previewEmojis.map((emoji, i) => (
                                             <div
                                                 key={i}
-                                                className="aspect-square rounded-lg flex items-center justify-center text-lg transition-transform group-hover:scale-110"
+                                                className="aspect-square rounded-lg flex items-center justify-center text-lg"
                                                 style={{
                                                     background: `linear-gradient(135deg, ${pack.colors.primary}20, ${pack.colors.secondary}20)`,
-                                                    transitionDelay: `${i * 30}ms`
                                                 }}
                                             >
                                                 {emoji}
@@ -84,7 +83,7 @@ export default function PacksPage() {
 
                                     {/* CTA */}
                                     <div
-                                        className="mt-auto w-full py-3 rounded-full text-center font-medium text-white transition-all group-hover:scale-105"
+                                        className="mt-auto w-full py-3 rounded-full text-center font-medium text-white"
                                         style={{ background: `linear-gradient(135deg, ${pack.colors.primary}, ${pack.colors.secondary})` }}
                                     >
                                         Select This Style →
