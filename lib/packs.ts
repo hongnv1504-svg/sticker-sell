@@ -7,6 +7,7 @@ export interface StickerPack {
     styleKey: 'pixar3d' | 'anime_kawaii' | 'chibi_gamer' | 'watercolor_soft' | 'pop_art' | 'minimalist_line'; // Maps to AI style
     icon: string;
     previewEmojis: string[];
+    sampleImage?: string; // path to a real sticker sample image
     price: number; // in cents
     popular?: boolean;
     colors: {
@@ -24,6 +25,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'pixar3d',
         icon: '🎬',
         previewEmojis: ['😂', '🤣', '🥰', '😍', '🤔', '😉', '🥺', '😘', '😢'],
+        sampleImage: '/stickers/laughing.png',
         price: 499,
         popular: true,
         colors: {

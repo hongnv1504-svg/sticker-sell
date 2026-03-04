@@ -66,20 +66,44 @@ export default function PacksPage() {
                                         {pack.description}
                                     </p>
 
-                                    {/* Preview Emojis */}
-                                    <div className="grid grid-cols-9 gap-1 mb-4">
-                                        {pack.previewEmojis.map((emoji, i) => (
+                                    {/* Sample sticker or emoji preview */}
+                                    {pack.sampleImage ? (
+                                        <div className="flex items-center gap-3 mb-4">
                                             <div
-                                                key={i}
-                                                className="aspect-square rounded-lg flex items-center justify-center text-lg"
-                                                style={{
-                                                    background: `linear-gradient(135deg, ${pack.colors.primary}20, ${pack.colors.secondary}20)`,
-                                                }}
+                                                className="w-24 h-24 rounded-2xl flex items-center justify-center flex-shrink-0"
+                                                style={{ background: `linear-gradient(135deg, ${pack.colors.primary}15, ${pack.colors.secondary}15)` }}
                                             >
-                                                {emoji}
+                                                <img
+                                                    src={pack.sampleImage}
+                                                    alt={`${pack.name} sample`}
+                                                    className="w-full h-full object-contain p-1"
+                                                />
                                             </div>
-                                        ))}
-                                    </div>
+                                            <div className="grid grid-cols-4 gap-1 flex-1">
+                                                {pack.previewEmojis.slice(0, 8).map((emoji, i) => (
+                                                    <div
+                                                        key={i}
+                                                        className="aspect-square rounded-lg flex items-center justify-center text-base"
+                                                        style={{ background: `linear-gradient(135deg, ${pack.colors.primary}20, ${pack.colors.secondary}20)` }}
+                                                    >
+                                                        {emoji}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-9 gap-1 mb-4">
+                                            {pack.previewEmojis.map((emoji, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="aspect-square rounded-lg flex items-center justify-center text-lg"
+                                                    style={{ background: `linear-gradient(135deg, ${pack.colors.primary}20, ${pack.colors.secondary}20)` }}
+                                                >
+                                                    {emoji}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
 
                                     {/* CTA */}
                                     <div
