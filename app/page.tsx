@@ -50,15 +50,11 @@ export default function Home() {
                   {/* Left — Sample person photo */}
                   <div className="text-center">
                     <div className="aspect-square rounded-2xl mb-3 overflow-hidden relative border border-[#ededed]">
-                      {/* Sample avatar from DiceBear — illustrative cartoon face */}
                       <img
-                        src="https://api.dicebear.com/9.x/notionists/svg?seed=StickerDemo&backgroundColor=ffd5c8"
+                        src="/sample-photo.jpg"
                         alt="Sample person"
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-white/90 text-[#a7a7a7] text-xs px-2 py-0.5 rounded-full border border-[#ededed] whitespace-nowrap">
-                        Sample photo
-                      </div>
                     </div>
                     <span className="text-sm text-[#a7a7a7]">Your Photo</span>
                   </div>
