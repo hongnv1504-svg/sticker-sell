@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { GoogleAnalytics } from "@/lib/analytics";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "StickerMe - Turn Your Photo into Cute 3D Stickers",
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className="antialiased bg-mesh min-h-screen">
         {children}
         <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''} />
+        <Analytics />
       </body>
     </html>
   );
