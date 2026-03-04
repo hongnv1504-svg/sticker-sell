@@ -70,26 +70,29 @@ export default function Home() {
                   <div className="text-center">
                     <div className="grid grid-cols-3 gap-2 mb-3">
                       {[
-                        { file: 'laughing', name: 'Laughing' },
-                        { file: 'rolling_laugh', name: 'ROFL' },
-                        { file: 'affectionate', name: 'Loving' },
-                        { file: 'love_struck', name: 'Love-Struck' },
-                        { file: 'thinking', name: 'Thinking' },
-                        { file: 'winking', name: 'Winking' },
-                        { file: 'pleading', name: 'Pleading' },
-                        { file: 'blowing_kiss', name: 'Blowing Kiss' },
-                        { file: 'crying', name: 'Crying' },
+                        { file: 'laughing',      emoji: '😂', name: 'Laughing' },
+                        { file: 'rolling_laugh', emoji: '🤣', name: 'ROFL' },
+                        { file: 'affectionate',  emoji: '🥰', name: 'Loving' },
+                        { file: 'love_struck',   emoji: '😍', name: 'Love-Struck' },
+                        { file: 'thinking',      emoji: '🤔', name: 'Thinking' },
+                        { file: 'winking',       emoji: '😉', name: 'Winking' },
+                        { file: 'pleading',      emoji: '🥺', name: 'Pleading' },
+                        { file: 'blowing_kiss',  emoji: '😘', name: 'Blowing Kiss' },
+                        { file: 'crying',        emoji: '😢', name: 'Crying' },
                       ].map((item, i) => (
                         <div
                           key={i}
-                          className="aspect-square rounded-xl flex items-center justify-center bg-[#FA5D29]/10 border border-[#FA5D29]/25"
-                          title={item.name}
+                          className="group relative aspect-square rounded-xl overflow-hidden bg-[#FA5D29]/10 border border-[#FA5D29]/25"
                         >
                           <img
                             src={`/stickers/${item.file}.png`}
                             alt={item.name}
-                            className="w-full h-full object-contain p-1"
+                            className="w-full h-full object-contain p-1 transition-opacity duration-200 group-hover:opacity-20"
                           />
+                          <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <span className="text-2xl">{item.emoji}</span>
+                            <span className="text-[8px] text-[#555] font-medium mt-0.5">{item.name}</span>
+                          </div>
                         </div>
                       ))}
                     </div>
