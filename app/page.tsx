@@ -70,37 +70,30 @@ export default function Home() {
                   <div className="text-center">
                     <div className="grid grid-cols-3 gap-2 mb-3">
                       {[
-                        { emoji: '😂', name: 'Laughing' },
-                        { emoji: '🤣', name: 'ROFL' },
-                        { emoji: '🥰', name: 'Loving' },
-                        { emoji: '😍', name: 'Love-Struck' },
-                        { emoji: '🤔', name: 'Thinking' },
-                        { emoji: '😉', name: 'Winking' },
-                        { emoji: '🥺', name: 'Pleading' },
-                        { emoji: '😘', name: 'Blowing Kiss' },
-                        { emoji: '😢', name: 'Crying' },
+                        { file: 'laughing', name: 'Laughing' },
+                        { file: 'rolling_laugh', name: 'ROFL' },
+                        { file: 'affectionate', name: 'Loving' },
+                        { file: 'love_struck', name: 'Love-Struck' },
+                        { file: 'thinking', name: 'Thinking' },
+                        { file: 'winking', name: 'Winking' },
+                        { file: 'pleading', name: 'Pleading' },
+                        { file: 'blowing_kiss', name: 'Blowing Kiss' },
+                        { file: 'crying', name: 'Crying' },
                       ].map((item, i) => (
                         <div
                           key={i}
-                          className="group relative aspect-square rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer
-                                     transition-all duration-300
-                                     bg-[#FA5D29]/10 border border-[#FA5D29]/25
-                                     hover:bg-transparent hover:border-transparent"
-                          style={{ animationDelay: `${i * 0.08}s` }}
+                          className="aspect-square rounded-xl flex items-center justify-center bg-[#FA5D29]/10 border border-[#FA5D29]/25"
                           title={item.name}
                         >
-                          {/* Sticker emoji — scales up on hover (transparent sticker feel) */}
-                          <span className="text-3xl transition-transform duration-300 group-hover:scale-125 drop-shadow-sm">
-                            {item.emoji}
-                          </span>
-                          {/* Emotion label — visible on hover only */}
-                          <span className="absolute bottom-1 text-[9px] text-[#a7a7a7] opacity-0 group-hover:opacity-100 transition-opacity duration-200 font-medium">
-                            {item.name}
-                          </span>
+                          <img
+                            src={`/stickers/${item.file}.png`}
+                            alt={item.name}
+                            className="w-full h-full object-contain p-1"
+                          />
                         </div>
                       ))}
                     </div>
-                    <span className="text-sm text-[#a7a7a7]">9 Unique Stickers — hover to preview</span>
+                    <span className="text-sm text-[#a7a7a7]">9 Unique Stickers</span>
                   </div>
 
                 </div>
