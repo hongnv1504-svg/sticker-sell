@@ -1,4 +1,4 @@
-// VietQR - Chuẩn QR Napas, hỗ trợ tất cả ngân hàng VN + MoMo + ZaloPay
+// VietQR - Chuẩn QR Napas, hỗ trợ tất cả ngân hàng VN
 // Không cần đăng ký API, sinh URL QR động hoàn toàn miễn phí
 
 export const VIETQR_CONFIG = {
@@ -11,7 +11,7 @@ export const VIETQR_CONFIG = {
 
 /**
  * Sinh URL ảnh QR VietQR động
- * User quét bằng app ngân hàng / MoMo / ZaloPay đều được
+ * User quét bằng app ngân hàng hỗ trợ VietQR
  */
 export function generateVietQRUrl(jobId: string): string {
     const { bankCode, accountNumber, amountVND, template } = VIETQR_CONFIG;

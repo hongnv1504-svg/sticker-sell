@@ -28,7 +28,7 @@ export default function Home() {
             {/* Subheadline */}
             <p className="text-xl text-[#a7a7a7] mb-10 max-w-2xl mx-auto">
               Upload a selfie, pick a style, and get 9 custom AI stickers
-              ready for Telegram, Zalo &amp; WhatsApp. Done in 30 seconds!
+              ready for Telegram &amp; WhatsApp. Done in 30 seconds!
             </p>
 
             {/* CTA Buttons */}

@@ -304,7 +304,7 @@ export default function PaywallPage({ params }: Props) {
                                     <>
                                         {/* QR Code */}
                                         <div className="flex flex-col items-center gap-3">
-                                            <p className="text-sm font-medium text-[#555]">Scan QR with banking app, MoMo, or ZaloPay</p>
+                                            <p className="text-sm font-medium text-[#555]">Scan QR with banking app or MoMo</p>
                                             <div className="relative">
                                                 <div className="border-4 border-white shadow-xl rounded-2xl overflow-hidden">
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
