@@ -101,6 +101,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'minimalist_line',
         icon: '✏️',
         previewEmojis: ['〰️', '◯', '△', '□', '✦', '⬡'],
+        sampleImage: '/stickers/sample-minimalist-line.png',
         price: 399,
         colors: {
             primary: '#64748b',
