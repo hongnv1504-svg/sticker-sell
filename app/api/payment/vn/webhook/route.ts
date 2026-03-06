@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { VIETQR_CONFIG } from '@/lib/vietqr';
+import { after } from 'next/server';
+import { startGeneration } from '@/app/api/upload/route';
+
+export const maxDuration = 300;
 
 /**
  * Sepay Webhook Handler
@@ -136,15 +140,24 @@ export async function POST(request: NextRequest) {
 
         console.log(`[SEPAY] ✅ Order ${jobId} marked as PAID`);
 
-        // 8. Trigger AI generation immediately
-        const baseUrl = request.nextUrl.origin;
-        const generateUrl = `${baseUrl}/api/generate/${jobId}`;
-        console.log(`[SEPAY] Triggering generation for job: ${jobId}`);
-        // Fire-and-forget — don't await so webhook responds fast to Sepay
-        fetch(generateUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        }).catch(err => console.error('[SEPAY] Failed to trigger generation:', err));
+        // 8. Trigger AI generation immediately in background
+        console.log(`[SEPAY] Triggering background generation for job: ${jobId}`);
+
+        const { data: job } = await supabase
+            .from('sticker_jobs')
+            .select('source_image_url, style_key')
+            .eq('id', jobId)
+            .single();
+
+        if (job) {
+            after(async () => {
+                try {
+                    await startGeneration(jobId, job.source_image_url, job.style_key as any);
+                } catch (err) {
+                    console.error('[SEPAY] Generation failed:', err);
+                }
+            });
+        }
 
         return NextResponse.json({ success: true, message: `Payment confirmed for job ${jobId}` });
 

@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import crypto from 'crypto';
-import { startGeneration } from '../../upload/route';
+import { startGeneration } from '@/app/api/upload/route';
 import { analytics } from '@/lib/analytics';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
+
+export const maxDuration = 300;
 
 export async function POST(request: NextRequest) {
     try {
@@ -90,17 +92,26 @@ export async function POST(request: NextRequest) {
                 );
             }
 
-            // Trigger AI generation now that payment is confirmed
-            const baseUrl = request.nextUrl.origin;
-            const generateUrl = `${baseUrl}/api/generate/${jobId}`;
-            console.log(`[LS WEBHOOK] Triggering generation for job: ${jobId}`);
-            // Fire-and-forget — don't await so webhook responds fast
-            fetch(generateUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            }).catch(err => console.error('[LS WEBHOOK] Failed to trigger generation:', err));
+            // Trigger AI generation immediately in background
+            console.log(`[Webhook] Triggering background generation for job: ${jobId}`);
 
-            return NextResponse.json({ success: true });
+            const { data: jobDetails } = await supabase
+                .from('sticker_jobs')
+                .select('source_image_url, style_key')
+                .eq('id', jobId)
+                .single();
+
+            if (jobDetails) {
+                after(async () => {
+                    try {
+                        await startGeneration(jobId, jobDetails.source_image_url, jobDetails.style_key as any);
+                    } catch (err) {
+                        console.error('[Webhook] Generation failed:', err);
+                    }
+                });
+            }
+
+            return NextResponse.json({ success: true, message: 'Processing started' });
         }
 
         // Handle other events if needed

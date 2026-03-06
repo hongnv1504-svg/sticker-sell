@@ -34,10 +34,8 @@ export async function GET(
             .eq('job_id', jobId)
             .single();
 
-        // isPaid = true khi đã xác nhận thanh toán (quốc tế) hoặc đang xác minh (VN)
-        const isPaid = order?.status === 'paid'
-            || order?.status === 'pending_review'
-            || order?.status === 'pending_vn'; // VN: cho generate sau khi user confirm CK
+        // isPaid = true only when payment is confirmed fully
+        const isPaid = order?.status === 'paid' || order?.status === 'pending_review';
 
         // Filter out stickers that are still "generating" (JSON marker, not a real URL)
         const readyStickers = (jobStickers || []).filter(

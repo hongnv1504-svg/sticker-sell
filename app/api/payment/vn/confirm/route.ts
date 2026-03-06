@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { after } from 'next/server';
+import { startGeneration } from '@/app/api/upload/route';
 
 export async function POST(request: NextRequest) {
     try {
@@ -37,22 +39,19 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        // Cập nhật status sang pending_review và lưu note của user
+        // For MVP, manual confirm assumes payment is successful and triggers generation
         const { error: updateError } = await supabase
             .from('orders')
             .update({
-                status: 'pending_review',
-                // Lưu note vào metadata nếu có cột này, hoặc dùng upsert với field mới
-                // Nếu không có cột transaction_note, bỏ dòng này đi
+                status: 'paid', // Mark as paid directly for MVP
                 ...(transactionNote ? { transaction_note: transactionNote } : {}),
             })
             .eq('job_id', jobId);
 
         if (updateError) {
-            // Nếu lỗi do cột transaction_note không tồn tại, thử update chỉ status
             const { error: retryError } = await supabase
                 .from('orders')
-                .update({ status: 'pending_review' })
+                .update({ status: 'paid' })
                 .eq('job_id', jobId);
 
             if (retryError) {
@@ -61,12 +60,30 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        console.log(`[VN Payment] Job ${jobId} marked as pending_review. Note: ${transactionNote || 'N/A'}`);
+        console.log(`[VN Payment] Job ${jobId} manually confirmed. Note: ${transactionNote || 'N/A'}`);
+
+        // Trigger AI generation immediately in background
+        console.log(`[VN Payment] Triggering background generation for job: ${jobId}`);
+        const { data: job } = await supabase
+            .from('sticker_jobs')
+            .select('source_image_url, style_key')
+            .eq('id', jobId)
+            .single();
+
+        if (job) {
+            after(async () => {
+                try {
+                    await startGeneration(jobId, job.source_image_url, job.style_key as any);
+                } catch (err) {
+                    console.error('[VN Payment] Generation failed:', err);
+                }
+            });
+        }
 
         return NextResponse.json({
             success: true,
-            message: 'Đã nhận thông tin. Đang xác minh thanh toán...',
-            status: 'pending_review',
+            message: 'Payment confirmed. Generating stickers...',
+            status: 'paid',
         });
 
     } catch (error) {

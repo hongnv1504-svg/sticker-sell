@@ -78,8 +78,8 @@ export default function PaywallPage({ params }: Props) {
             const res = await fetch(`/api/job/${jobId}`);
             const data = await res.json();
 
-            // Sepay đã xác nhận → đơn đã paid → tự redirect!
-            if (data.isPaid && data.job?.status !== 'pending') {
+            // Automatically redirect upon payment confirmation
+            if (data.isPaid) {
                 stopPolling();
                 setVnStatus('paid');
                 setTimeout(() => router.push(`/generate/${jobId}`), 1200);
