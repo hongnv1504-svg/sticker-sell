@@ -19,6 +19,8 @@ export default function GeneratePage({ params }: Props) {
     const [status, setStatus] = useState<'loading' | 'processing' | 'completed' | 'failed'>('loading');
     const [error, setError] = useState<string | null>(null);
 
+    const triggeredRef = useState(false);
+
     useEffect(() => {
         let isMounted = true;
 
@@ -42,6 +44,17 @@ export default function GeneratePage({ params }: Props) {
 
                 setProgress(data.job?.progress || 0);
                 setStickers(data.stickers || []);
+
+                // If paid but job is still 'pending' (no AI triggered yet), kick off generation
+                if (data.job?.status === 'pending' && !triggeredRef[0]) {
+                    triggeredRef[1](true);
+                    console.log('[Generate] Job is paid but pending, triggering background generation...');
+                    fetch('/api/generate/background', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ jobId }),
+                    }).catch(err => console.error('[Generate] Failed to trigger background:', err));
+                }
 
                 if (data.job?.status === 'completed') {
                     setStatus('completed');
@@ -73,6 +86,7 @@ export default function GeneratePage({ params }: Props) {
             isMounted = false;
         };
     }, [jobId, router]);
+
 
     const handleRetry = () => {
         router.push('/upload');
