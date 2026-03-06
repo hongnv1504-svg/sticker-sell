@@ -71,12 +71,9 @@ export default function Home() {
                     <div className="grid grid-cols-3 gap-2 mb-3">
                       {[
                         { file: 'laughing', emoji: '😂', name: 'Laughing' },
-                        { file: 'rolling_laugh', emoji: '🤣', name: 'ROFL' },
                         { file: 'affectionate', emoji: '🥰', name: 'Loving' },
-                        { file: 'love_struck', emoji: '😍', name: 'Love-Struck' },
                         { file: 'thinking', emoji: '🤔', name: 'Thinking' },
                         { file: 'winking', emoji: '😉', name: 'Winking' },
-                        { file: 'pleading', emoji: '🥺', name: 'Pleading' },
                         { file: 'blowing_kiss', emoji: '😘', name: 'Blowing Kiss' },
                         { file: 'crying', emoji: '😢', name: 'Crying' },
                       ].map((item, i) => (
@@ -204,12 +201,9 @@ export default function Home() {
             <div className="grid grid-cols-2 md:grid-cols-6 gap-4 max-w-4xl mx-auto">
               {[
                 { emoji: '😂', name: 'Laughing' },
-                { emoji: '🤣', name: 'ROFL' },
                 { emoji: '🥰', name: 'Affectionate' },
-                { emoji: '😍', name: 'Love-Struck' },
                 { emoji: '🤔', name: 'Thinking' },
                 { emoji: '😉', name: 'Winking' },
-                { emoji: '🥺', name: 'Pleading' },
                 { emoji: '😘', name: 'Blowing Kiss' },
                 { emoji: '😢', name: 'Crying' }
               ].map((emotion, i) => (
