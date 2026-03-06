@@ -41,6 +41,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'anime_kawaii',
         icon: '🌸',
         previewEmojis: ['✨', '💖', '🎀', '💕', '🌟', '😊'],
+        sampleImage: '/stickers/sample-anime-kawaii.png',
         price: 499,
         colors: {
             primary: '#f472b6',
@@ -55,6 +56,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'chibi_gamer',
         icon: '🎮',
         previewEmojis: ['⚔️', '🛡️', '💎', '🔥', '⭐', '🎯'],
+        sampleImage: '/stickers/sample-chibi-gamer.png',
         price: 599,
         colors: {
             primary: '#22d3ee',
@@ -69,6 +71,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'watercolor_soft',
         icon: '🎨',
         previewEmojis: ['🌈', '☁️', '🦋', '🌷', '💫', '🍃'],
+        sampleImage: '/stickers/sample-watercolor-soft.png',
         price: 499,
         colors: {
             primary: '#86efac',
@@ -83,6 +86,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'pop_art',
         icon: '💥',
         previewEmojis: ['💢', '💬', '⚡', '💣', '🔊', '👊'],
+        sampleImage: '/stickers/sample-pop-art.png',
         price: 499,
         colors: {
             primary: '#f97316',

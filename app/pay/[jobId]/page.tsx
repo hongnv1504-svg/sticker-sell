@@ -224,7 +224,7 @@ export default function PaywallPage({ params }: Props) {
                             ) : (
                                 <>
                                     <div className="text-5xl font-bold mb-1" style={{ background: 'linear-gradient(135deg, #ef4444, #eab308)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                                        49.000đ
+                                        39.000đ
                                     </div>
                                     <p className="text-[#a7a7a7] text-sm">Bank Transfer · One-time payment</p>
                                 </>
