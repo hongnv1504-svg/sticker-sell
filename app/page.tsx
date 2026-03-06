@@ -68,7 +68,7 @@ export default function Home() {
 
                   {/* Right — 6 emotion sticker previews */}
                   <div className="text-center">
-                    <div className="grid grid-cols-3 gap-2 mb-3">
+                    <div className="grid grid-cols-2 gap-2 mb-3">
                       {[
                         { file: 'laughing', emoji: '😂', name: 'Laughing' },
                         { file: 'affectionate', emoji: '🥰', name: 'Loving' },
