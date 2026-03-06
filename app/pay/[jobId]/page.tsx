@@ -332,7 +332,7 @@ export default function PaywallPage({ params }: Props) {
                                         <div className="rounded-2xl border border-[#e5e5e5] bg-gray-50 p-4 space-y-2 text-sm">
                                             <div className="flex justify-between">
                                                 <span className="text-[#888]">Ngân hàng</span>
-                                                <span className="font-semibold text-[#222]">Techcombank (TCB)</span>
+                                                <span className="font-semibold text-[#222]">ACB (Ngân hàng Á Châu)</span>
                                             </div>
                                             <div className="flex justify-between">
                                                 <span className="text-[#888]">Số tài khoản</span>

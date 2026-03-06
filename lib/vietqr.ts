@@ -2,9 +2,9 @@
 // Không cần đăng ký API, sinh URL QR động hoàn toàn miễn phí
 
 export const VIETQR_CONFIG = {
-    bankCode: 'TCB',               // Techcombank
-    accountNumber: '19033210412014',
-    accountName: 'NGO VAN HONG',  // Tên chủ tài khoản Techcombank
+    bankCode: 'ACB',               // Ngân hàng ACB
+    accountNumber: '241150249',
+    accountName: 'NGO VAN HONG',  // Tên chủ tài khoản ACB
     amountVND: 49000,             // 49.000 VNĐ
     template: 'qr_only',          // Chỉ hiện QR, không có logo bank
 };
