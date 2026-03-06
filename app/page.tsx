@@ -21,14 +21,14 @@ export default function Home() {
 
             {/* Headline */}
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#222222]">
-              Turn Your Photo into<br />
-              <span className="gradient-text">Cute 3D Stickers</span>
+              Sticker Yourself.<br />
+              <span className="gradient-text">AI Does the Magic.</span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-xl text-[#a7a7a7] mb-10 max-w-2xl mx-auto">
-              Choose your style, upload a selfie, and get 9 adorable stickers
-              ready for Telegram & WhatsApp. Takes just 30 seconds!
+              Upload a selfie, pick a style, and get 9 custom AI stickers
+              ready for Telegram, Zalo &amp; WhatsApp. Done in 30 seconds!
             </p>
 
             {/* CTA Buttons */}
@@ -70,15 +70,15 @@ export default function Home() {
                   <div className="text-center">
                     <div className="grid grid-cols-3 gap-2 mb-3">
                       {[
-                        { file: 'laughing',      emoji: '😂', name: 'Laughing' },
+                        { file: 'laughing', emoji: '😂', name: 'Laughing' },
                         { file: 'rolling_laugh', emoji: '🤣', name: 'ROFL' },
-                        { file: 'affectionate',  emoji: '🥰', name: 'Loving' },
-                        { file: 'love_struck',   emoji: '😍', name: 'Love-Struck' },
-                        { file: 'thinking',      emoji: '🤔', name: 'Thinking' },
-                        { file: 'winking',       emoji: '😉', name: 'Winking' },
-                        { file: 'pleading',      emoji: '🥺', name: 'Pleading' },
-                        { file: 'blowing_kiss',  emoji: '😘', name: 'Blowing Kiss' },
-                        { file: 'crying',        emoji: '😢', name: 'Crying' },
+                        { file: 'affectionate', emoji: '🥰', name: 'Loving' },
+                        { file: 'love_struck', emoji: '😍', name: 'Love-Struck' },
+                        { file: 'thinking', emoji: '🤔', name: 'Thinking' },
+                        { file: 'winking', emoji: '😉', name: 'Winking' },
+                        { file: 'pleading', emoji: '🥺', name: 'Pleading' },
+                        { file: 'blowing_kiss', emoji: '😘', name: 'Blowing Kiss' },
+                        { file: 'crying', emoji: '😢', name: 'Crying' },
                       ].map((item, i) => (
                         <div
                           key={i}

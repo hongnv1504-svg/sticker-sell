@@ -4,12 +4,12 @@ import { GoogleAnalytics } from "@/lib/analytics";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  title: "StickerMe - Turn Your Photo into Cute 3D Stickers",
-  description: "Upload one photo. Get a 9-pack of chat stickers in Pixar-style. Perfect for Telegram & WhatsApp.",
+  title: "StickerMe - Sticker Yourself. AI Does the Magic.",
+  description: "Upload a selfie, pick a style, get 9 custom AI stickers for Telegram, Zalo & WhatsApp in 30 seconds.",
   keywords: ["stickers", "AI", "Pixar", "3D", "Telegram", "WhatsApp", "photo", "avatar"],
   openGraph: {
-    title: "StickerMe - Turn Your Photo into Cute 3D Stickers",
-    description: "Upload one photo. Get a 9-pack of chat stickers in Pixar-style.",
+    title: "StickerMe - Sticker Yourself. AI Does the Magic.",
+    description: "Upload a selfie, pick a style, get 9 custom AI stickers for Telegram, Zalo & WhatsApp in 30 seconds.",
     type: "website",
   },
 };
