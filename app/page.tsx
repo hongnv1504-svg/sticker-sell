@@ -136,7 +136,7 @@ export default function Home() {
                       {pack.icon}
                     </div>
                     <h3 className="font-semibold text-[#222222] text-sm mb-1">{pack.name}</h3>
-                    <p className="text-xs text-[#a7a7a7]">Free</p>
+                    <p className="text-xs text-[#a7a7a7]">39,000đ</p>
                   </div>
                 </Link>
               ))}
@@ -251,7 +251,7 @@ export default function Home() {
                       className="text-4xl font-bold"
                       style={{ color: pack.colors.primary }}
                     >
-                      Free
+                      39,000đ
                     </span>
                     <span className="text-[#a7a7a7] ml-1 text-sm">limited time</span>
                   </div>

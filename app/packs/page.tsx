@@ -57,7 +57,7 @@ export default function PacksPage() {
                                         </div>
                                         <div>
                                             <h3 className="text-xl font-bold text-[#222222]">{pack.name}</h3>
-                                            <p className="text-sm text-[#a7a7a7]">Free</p>
+                                            <p className="text-sm text-[#a7a7a7]">39,000đ</p>
                                         </div>
                                     </div>
 

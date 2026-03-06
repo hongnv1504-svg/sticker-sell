@@ -5,7 +5,7 @@ export const VIETQR_CONFIG = {
     bankCode: 'ACB',               // Ngân hàng ACB
     accountNumber: '241150249',
     accountName: 'NGO VAN HONG',  // Tên chủ tài khoản ACB
-    amountVND: 49000,             // 49.000 VNĐ
+    amountVND: 39000,             // 39.000 VNĐ
     template: 'qr_only',          // Chỉ hiện QR, không có logo bank
 };
 

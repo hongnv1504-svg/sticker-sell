@@ -219,7 +219,7 @@ export default function PaywallPage({ params }: Props) {
                             {paymentMethod === 'international' ? (
                                 <>
                                     <div className="text-5xl font-bold gradient-text mb-1">$4.99</div>
-                                    <p className="text-[#a7a7a7] text-sm">~125,000 VND · One-time payment</p>
+                                    <p className="text-[#a7a7a7] text-sm">One-time payment</p>
                                 </>
                             ) : (
                                 <>
