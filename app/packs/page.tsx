@@ -62,7 +62,7 @@ export default function PacksPage() {
                                     </div>
 
                                     {/* Description */}
-                                    <p className="text-[#a7a7a7] text-sm mb-4">
+                                    <p className="text-[#a7a7a7] text-sm mb-4 flex-grow">
                                         {pack.description}
                                     </p>
 
@@ -107,7 +107,7 @@ export default function PacksPage() {
 
                                     {/* CTA */}
                                     <div
-                                        className="mt-auto w-full py-3 rounded-full text-center font-medium text-white"
+                                        className="w-full py-3 rounded-full text-center font-medium text-white"
                                         style={{ background: `linear-gradient(135deg, ${pack.colors.primary}, ${pack.colors.secondary})` }}
                                     >
                                         Select This Style →
