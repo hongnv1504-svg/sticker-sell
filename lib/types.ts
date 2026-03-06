@@ -1,12 +1,9 @@
 // Sticker emotions type
 export const STICKER_EMOTIONS = [
     'laughing',
-    'rolling_laugh',
     'affectionate',
-    'love_struck',
     'thinking',
     'winking',
-    'pleading',
     'blowing_kiss',
     'crying'
 ] as const;
@@ -15,15 +12,12 @@ export type StickerEmotion = typeof STICKER_EMOTIONS[number];
 
 // Emoji mappings for each emotion
 export const EMOTION_EMOJIS: Record<StickerEmotion, string> = {
-    laughing:     '😂',
-    rolling_laugh:'🤣',
+    laughing: '😂',
     affectionate: '🥰',
-    love_struck:  '😍',
-    thinking:     '🤔',
-    winking:      '😉',
-    pleading:     '🥺',
+    thinking: '🤔',
+    winking: '😉',
     blowing_kiss: '😘',
-    crying:       '😢',
+    crying: '😢',
 };
 
 // Job status type

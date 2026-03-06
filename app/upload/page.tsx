@@ -94,7 +94,7 @@ function UploadContent() {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-[#222222]">{selectedPack.name}</h3>
-                                <p className="text-sm text-[#a7a7a7]">9 stickers</p>
+                                <p className="text-sm text-[#a7a7a7]">6 stickers</p>
                             </div>
                         </div>
                         <Link

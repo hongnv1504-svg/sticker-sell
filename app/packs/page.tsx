@@ -18,7 +18,7 @@ export default function PacksPage() {
                             Choose Your <span className="gradient-text">Sticker Style</span>
                         </h1>
                         <p className="text-[#a7a7a7] text-lg max-w-2xl mx-auto">
-                            Each pack transforms your photo into 9 unique stickers with different emotions.
+                            Each pack transforms your photo into 6 unique stickers with different emotions.
                             Pick the style that matches your vibe!
                         </p>
                     </div>
@@ -92,7 +92,7 @@ export default function PacksPage() {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-9 gap-1 mb-4">
+                                        <div className="grid grid-cols-6 gap-1 mb-4">
                                             {pack.previewEmojis.map((emoji, i) => (
                                                 <div
                                                     key={i}
@@ -119,7 +119,7 @@ export default function PacksPage() {
 
                     {/* Info */}
                     <div className="mt-12 text-center text-[#a7a7a7]">
-                        <p>All packs include 9 different expressions • Transparent PNG • Instant download</p>
+                        <p>All packs include 6 different expressions • Transparent PNG • Instant download</p>
                     </div>
                 </div>
             </main>

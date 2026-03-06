@@ -211,7 +211,7 @@ export default function PaywallPage({ params }: Props) {
                                 <span className="text-5xl">✨</span>
                             </div>
                             <h2 className="text-2xl font-bold mb-2 text-[#222222]">AI Sticker Pack</h2>
-                            <p className="text-[#a7a7a7]">9 personalized AI stickers</p>
+                            <p className="text-[#a7a7a7]">6 personalized AI stickers</p>
                         </div>
 
                         {/* Price */}

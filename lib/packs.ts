@@ -24,7 +24,7 @@ export const STICKER_PACKS: StickerPack[] = [
         style: 'Pixar-style 3D cartoon character, big eyes, chibi proportions, cute friendly',
         styleKey: 'pixar3d',
         icon: '🎬',
-        previewEmojis: ['😂', '🤣', '🥰', '😍', '🤔', '😉', '🥺', '😘', '😢'],
+        previewEmojis: ['😂', '🥰', '🤔', '😉', '😘', '😢'],
         sampleImage: '/stickers/laughing.png',
         price: 499,
         popular: true,
@@ -40,7 +40,7 @@ export const STICKER_PACKS: StickerPack[] = [
         style: 'Anime kawaii style, sparkling eyes, japanese manga, cute blush cheeks',
         styleKey: 'anime_kawaii',
         icon: '🌸',
-        previewEmojis: ['✨', '💖', '🥺', '😍', '🎀', '💕', '🌟', '😊', '🍡'],
+        previewEmojis: ['✨', '💖', '🎀', '💕', '🌟', '😊'],
         price: 499,
         colors: {
             primary: '#f472b6',
@@ -54,7 +54,7 @@ export const STICKER_PACKS: StickerPack[] = [
         style: 'Chibi game character style, RPG hero, pixel-inspired, colorful gaming aesthetic',
         styleKey: 'chibi_gamer',
         icon: '🎮',
-        previewEmojis: ['⚔️', '🛡️', '💎', '🔥', '⭐', '🎯', '🏆', '💪', '🎲'],
+        previewEmojis: ['⚔️', '🛡️', '💎', '🔥', '⭐', '🎯'],
         price: 599,
         colors: {
             primary: '#22d3ee',
@@ -68,7 +68,7 @@ export const STICKER_PACKS: StickerPack[] = [
         style: 'Soft watercolor painting style, pastel colors, dreamy aesthetic, artistic brush strokes',
         styleKey: 'watercolor_soft',
         icon: '🎨',
-        previewEmojis: ['🌈', '☁️', '🦋', '🌷', '💫', '🍃', '🌙', '💐', '🕊️'],
+        previewEmojis: ['🌈', '☁️', '🦋', '🌷', '💫', '🍃'],
         price: 499,
         colors: {
             primary: '#86efac',
@@ -82,7 +82,7 @@ export const STICKER_PACKS: StickerPack[] = [
         style: 'Pop art comic book style, bold colors, halftone dots, retro 60s aesthetic',
         styleKey: 'pop_art',
         icon: '💥',
-        previewEmojis: ['💢', '💬', '⚡', '💣', '🔊', '👊', '💯', '🎉', '🌟'],
+        previewEmojis: ['💢', '💬', '⚡', '💣', '🔊', '👊'],
         price: 499,
         colors: {
             primary: '#f97316',
@@ -96,7 +96,7 @@ export const STICKER_PACKS: StickerPack[] = [
         style: 'Minimalist line art style, single continuous line, simple elegant, modern aesthetic',
         styleKey: 'minimalist_line',
         icon: '✏️',
-        previewEmojis: ['〰️', '◯', '△', '□', '✦', '⬡', '◇', '○', '◎'],
+        previewEmojis: ['〰️', '◯', '△', '□', '✦', '⬡'],
         price: 399,
         colors: {
             primary: '#64748b',

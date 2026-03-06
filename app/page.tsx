@@ -27,7 +27,7 @@ export default function Home() {
 
             {/* Subheadline */}
             <p className="text-xl text-[#a7a7a7] mb-10 max-w-2xl mx-auto">
-              Upload a selfie, pick a style, and get 9 custom AI stickers
+              Upload a selfie, pick a style, and get 6 custom AI stickers
               ready for Telegram &amp; WhatsApp. Done in 30 seconds!
             </p>
 
@@ -66,7 +66,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Right — 9 emotion sticker previews */}
+                  {/* Right — 6 emotion sticker previews */}
                   <div className="text-center">
                     <div className="grid grid-cols-3 gap-2 mb-3">
                       {[
@@ -96,7 +96,7 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
-                    <span className="text-sm text-[#a7a7a7]">9 Unique Stickers</span>
+                    <span className="text-sm text-[#a7a7a7]">6 Unique Stickers</span>
                   </div>
 
                 </div>
@@ -176,7 +176,7 @@ export default function Home() {
                 {
                   icon: '✨',
                   title: 'Get Your Stickers',
-                  description: 'Our AI creates 9 unique expressions. Download as PNG or add directly to your messenger!'
+                  description: 'Our AI creates 6 unique expressions. Download as PNG or add directly to your messenger!'
                 }
               ].map((step, i) => (
                 <div key={i} className="glass-card p-8 text-center relative group hover:-translate-y-2 transition-transform duration-300">
@@ -193,15 +193,15 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── 9 Emotions Preview ───────────────────────────── */}
+        {/* ── 6 Emotions Preview ───────────────────────────── */}
         <section id="examples" className="py-20 px-6 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4 text-[#222222]">9 Expressive Emotions</h2>
+              <h2 className="text-4xl font-bold mb-4 text-[#222222]">6 Expressive Emotions</h2>
               <p className="text-[#a7a7a7] text-lg">Every sticker pack includes all these expressions</p>
             </div>
 
-            <div className="grid grid-cols-3 md:grid-cols-9 gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 max-w-4xl mx-auto">
               {[
                 { emoji: '😂', name: 'Laughing' },
                 { emoji: '🤣', name: 'ROFL' },
@@ -263,7 +263,7 @@ export default function Home() {
                   </div>
 
                   <ul className="text-left space-y-2 mb-6 text-sm">
-                    {['9 unique expressions', 'Transparent PNGs', 'Instant download'].map((feature, i) => (
+                    {['6 unique expressions', 'Transparent PNGs', 'Instant download'].map((feature, i) => (
                       <li key={i} className="flex items-center gap-2">
                         <span className="text-[#FA5D29] font-bold">✓</span>
                         <span className="text-[#a7a7a7]">{feature}</span>
