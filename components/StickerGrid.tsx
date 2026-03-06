@@ -36,9 +36,8 @@ export default function StickerGrid({
     const [downloading, setDownloading] = useState<string | null>(null);
 
     const emotions: StickerEmotion[] = [
-        'laughing',     'rolling_laugh', 'affectionate',
-        'love_struck',  'thinking',      'winking',
-        'pleading',     'blowing_kiss',  'crying',
+        'laughing', 'affectionate', 'thinking',
+        'winking', 'blowing_kiss', 'crying',
     ];
 
     return (
@@ -135,15 +134,12 @@ export default function StickerGrid({
 
 function getEmotionColor(emotion: StickerEmotion): string {
     const colors: Record<StickerEmotion, string> = {
-        laughing:     '#FFD93D',
-        rolling_laugh:'#FF8C42',
+        laughing: '#FFD93D',
         affectionate: '#FF9ECD',
-        love_struck:  '#FF6B6B',
-        thinking:     '#4ECDC4',
-        winking:      '#9B59B6',
-        pleading:     '#3498DB',
+        thinking: '#4ECDC4',
+        winking: '#9B59B6',
         blowing_kiss: '#E91E63',
-        crying:       '#95A5A6',
+        crying: '#95A5A6',
     };
     return colors[emotion];
 }

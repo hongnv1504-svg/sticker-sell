@@ -62,15 +62,12 @@ export class OpenAIStickerService {
 
     buildPrompt(style: StickerStyleConfig, emotion: StickerEmotion): string {
         const emotionDescriptions: Record<StickerEmotion, string> = {
-            laughing:     'head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement',
-            rolling_laugh:'leaning back dramatically, eyes squeezed shut, very wide open mouth, exaggerated laughing pose',
+            laughing: 'head slightly tilted back, tightly closed smiling eyes, wide open laughing mouth, energetic comic body movement',
             affectionate: 'soft smile, glowing eyes, slight head tilt, hands gently close to chest',
-            love_struck:  'big sparkling eyes, wide dreamy smile, forward-leaning excited posture',
-            thinking:     'slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt',
-            winking:      'one eye closed, playful smirk, confident relaxed posture',
-            pleading:     'large glossy eyes, slightly raised inner eyebrows, small pout, hands close together near chest',
+            thinking: 'slight frown, eyes looking up or sideways, hand under chin, thoughtful head tilt',
+            winking: 'one eye closed, playful smirk, confident relaxed posture',
             blowing_kiss: 'puckered lips, soft closed eyes or gentle wink, hand near mouth in kiss gesture',
-            crying:       'teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression',
+            crying: 'teary eyes, slightly downturned mouth, subtle slouched posture, emotional expression',
         };
 
         return `${style.basePrompt}

@@ -9,29 +9,23 @@ export interface GeneratedSticker {
 }
 
 const PLACEHOLDER_COLORS: Record<StickerEmotion, string> = {
-    laughing:     '#FFD93D',
-    rolling_laugh:'#FF8C42',
+    laughing: '#FFD93D',
     affectionate: '#FF9ECD',
-    love_struck:  '#FF6B6B',
-    thinking:     '#4ECDC4',
-    winking:      '#9B59B6',
-    pleading:     '#3498DB',
+    thinking: '#4ECDC4',
+    winking: '#9B59B6',
     blowing_kiss: '#E91E63',
-    crying:       '#95A5A6',
+    crying: '#95A5A6',
 };
 
 function generatePlaceholderSVG(emotion: StickerEmotion): string {
     const color = PLACEHOLDER_COLORS[emotion];
     const emoji = {
-        laughing:     '😂',
-        rolling_laugh:'🤣',
+        laughing: '😂',
         affectionate: '🥰',
-        love_struck:  '😍',
-        thinking:     '🤔',
-        winking:      '😉',
-        pleading:     '🥺',
+        thinking: '🤔',
+        winking: '😉',
         blowing_kiss: '😘',
-        crying:       '😢',
+        crying: '😢',
     }[emotion];
 
     const svg = `
