@@ -144,7 +144,6 @@ export default function ResultPage({ params }: Props) {
                                 </div>
                                 <h1 className="text-3xl font-bold mb-2 text-[#222222]">Generating Stickers...</h1>
                                 <p className="text-[#a7a7a7]">Please wait while we create your personalized pack. {progress}/6 stickers done.</p>
-                                <p className="text-xs text-purple-400 mt-2">This usually takes about 30-60 seconds.</p>
                             </>
                         )}
                     </div>

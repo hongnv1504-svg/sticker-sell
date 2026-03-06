@@ -5,11 +5,11 @@ import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "StickerMe - Sticker Yourself. AI Does the Magic.",
-  description: "Upload a selfie, pick a style, get 6 custom AI stickers for Telegram & WhatsApp in 30 seconds.",
+  description: "Upload a selfie, pick a style, get 6 custom AI stickers for Telegram & WhatsApp.",
   keywords: ["stickers", "AI", "Pixar", "3D", "Telegram", "WhatsApp", "photo", "avatar"],
   openGraph: {
     title: "StickerMe - Sticker Yourself. AI Does the Magic.",
-    description: "Upload a selfie, pick a style, get 6 custom AI stickers for Telegram & WhatsApp in 30 seconds.",
+    description: "Upload a selfie, pick a style, get 6 custom AI stickers for Telegram & WhatsApp.",
     type: "website",
   },
 };
