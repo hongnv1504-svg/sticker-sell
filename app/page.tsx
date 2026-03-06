@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { STICKER_PACKS } from '@/lib/packs';
@@ -126,17 +127,31 @@ export default function Home() {
                     </div>
                   )}
                   <div
-                    className="glass-card p-4 text-center hover:-translate-y-2 transition-all duration-300 h-full"
+                    className="glass-card p-4 text-center hover:-translate-y-2 transition-all duration-300 h-full flex flex-col"
                     style={{ borderColor: `${pack.colors.primary}40` }}
                   >
-                    <div
-                      className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center text-3xl mb-3 group-hover:scale-110 transition-transform"
-                      style={{ background: `linear-gradient(135deg, ${pack.colors.primary}25, ${pack.colors.secondary}25)` }}
-                    >
-                      {pack.icon}
+                    <div className="relative w-full aspect-square mb-3 rounded-xl overflow-hidden bg-gray-50/50 group-hover:scale-[1.03] transition-transform shadow-sm">
+                      {pack.sampleImage ? (
+                        <Image
+                          src={pack.sampleImage}
+                          alt={pack.name}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
+                        />
+                      ) : (
+                        <div
+                          className="w-full h-full flex items-center justify-center text-4xl"
+                          style={{ background: `linear-gradient(135deg, ${pack.colors.primary}25, ${pack.colors.secondary}25)` }}
+                        >
+                          {pack.icon}
+                        </div>
+                      )}
                     </div>
-                    <h3 className="font-semibold text-[#222222] text-sm mb-1">{pack.name}</h3>
-                    <p className="text-xs text-[#a7a7a7]">39,000đ</p>
+                    <div className="mt-auto">
+                      <h3 className="font-semibold text-[#222222] text-sm mb-1">{pack.name}</h3>
+                      <p className="text-xs text-[#a7a7a7]">39,000đ</p>
+                    </div>
                   </div>
                 </Link>
               ))}
