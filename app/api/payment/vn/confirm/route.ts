@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
-import { after } from 'next/server';
-import { startGeneration } from '@/app/api/upload/route';
+
 
 export async function POST(request: NextRequest) {
     try {
@@ -40,13 +39,12 @@ export async function POST(request: NextRequest) {
                 .single();
 
             if (job) {
-                after(async () => {
-                    try {
-                        await startGeneration(jobId, job.source_image_url, job.style_key as any);
-                    } catch (err) {
-                        console.error('[VN Payment] Generation failed:', err);
-                    }
-                });
+                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
+                fetch(`${appUrl}/api/generate/background`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobId }),
+                }).catch(err => console.error('[VN Payment] Background trigger failed:', err));
             }
 
             return NextResponse.json({
@@ -71,11 +69,12 @@ export async function POST(request: NextRequest) {
                     .single();
 
                 if (job) {
-                    after(async () => {
-                        try {
-                            await startGeneration(jobId, job.source_image_url, job.style_key as any);
-                        } catch (err) { }
-                    });
+                    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
+                    fetch(`${appUrl}/api/generate/background`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ jobId }),
+                    }).catch(err => console.error('[VN Payment] Background trigger failed:', err));
                 }
                 return NextResponse.json({ success: true, message: 'Test payment confirmed.', status: 'paid' });
             }

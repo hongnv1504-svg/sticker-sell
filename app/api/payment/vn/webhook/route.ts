@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
         const { data: orders, error: ordersError } = await supabase
             .from('orders')
             .select('id, job_id, status')
-            .in('status', ['pending_vn', 'pending_review'])
+            .in('status', ['pending', 'pending_vn', 'pending_review'])
             .order('created_at', { ascending: false })
             .limit(50);
 
