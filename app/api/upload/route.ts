@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse, after } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { getPackById } from '@/lib/packs';
 import { StickerStyleKey } from '@/lib/ai/sticker-styles';
@@ -91,31 +91,15 @@ export async function POST(request: NextRequest) {
             throw new Error('Failed to create job');
         }
 
-        // Use after() to trigger generation AFTER the response is sent.
-        // This keeps the Vercel function alive until the fetch is dispatched,
-        // preventing the race condition where the function terminates before
-        // the background fetch can initiate.
-        const baseUrl = request.nextUrl.origin;
-        const generateUrl = `${baseUrl}/api/generate/${jobId}`;
-        console.log(`[UPLOAD] Triggering generation at: ${generateUrl}`);
-        after(async () => {
-            try {
-                await fetch(generateUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                });
-            } catch (err) {
-                console.error('[UPLOAD] Failed to trigger generation:', err);
-            }
-        });
+        // NOTE: Generation is NOT triggered here.
+        // It will be triggered by the payment webhook:
+        //   - LemonSqueezy: /api/webhook/lemonsqueezy
+        //   - Sepay (VN): /api/payment/vn/webhook
 
         return NextResponse.json({
             success: true,
             jobId,
             sourceImageUrl: '[stored]',
-            debug: {
-                targetUrl: supabaseUrl
-            }
         });
 
     } catch (error) {

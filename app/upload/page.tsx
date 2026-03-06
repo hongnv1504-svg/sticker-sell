@@ -65,8 +65,8 @@ function UploadContent() {
             analytics.trackImageUploaded(data.jobId);
             // Note: generation will start after payment, so we don't track it here
 
-            // Paywall disabled — skip payment, go straight to generation
-            router.push(`/generate/${data.jobId}`);
+            // Redirect to paywall — user must pay before generation starts
+            router.push(`/pay/${data.jobId}`);
         } catch (err) {
             console.error('Upload error:', err);
             setError(err instanceof Error ? err.message : 'Something went wrong');
@@ -151,7 +151,7 @@ function UploadContent() {
                             </button>
 
                             <p className="mt-4 text-sm text-[#a7a7a7]">
-                                Takes about 30 seconds • Pay only if you like the result
+                                Thanh toán một lần · Stickers tạo ngay sau khi thanh toán
                             </p>
                         </div>
                     )}

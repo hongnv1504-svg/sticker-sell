@@ -90,9 +90,15 @@ export async function POST(request: NextRequest) {
                 );
             }
 
-            // Start AI generation is now handled incrementally by the Status API
-            // so we don't need to trigger a background loop here that Vercel might kill.
-            console.log(`Payment confirmed for job ${jobId}. Polling will handle generation.`);
+            // Trigger AI generation now that payment is confirmed
+            const baseUrl = request.nextUrl.origin;
+            const generateUrl = `${baseUrl}/api/generate/${jobId}`;
+            console.log(`[LS WEBHOOK] Triggering generation for job: ${jobId}`);
+            // Fire-and-forget — don't await so webhook responds fast
+            fetch(generateUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            }).catch(err => console.error('[LS WEBHOOK] Failed to trigger generation:', err));
 
             return NextResponse.json({ success: true });
         }

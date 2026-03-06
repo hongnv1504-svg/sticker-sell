@@ -135,6 +135,17 @@ export async function POST(request: NextRequest) {
         }
 
         console.log(`[SEPAY] ✅ Order ${jobId} marked as PAID`);
+
+        // 8. Trigger AI generation immediately
+        const baseUrl = request.nextUrl.origin;
+        const generateUrl = `${baseUrl}/api/generate/${jobId}`;
+        console.log(`[SEPAY] Triggering generation for job: ${jobId}`);
+        // Fire-and-forget — don't await so webhook responds fast to Sepay
+        fetch(generateUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        }).catch(err => console.error('[SEPAY] Failed to trigger generation:', err));
+
         return NextResponse.json({ success: true, message: `Payment confirmed for job ${jobId}` });
 
     } catch (error) {
