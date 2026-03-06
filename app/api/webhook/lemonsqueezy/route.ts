@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse, after } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { startGeneration } from '@/app/api/upload/route';
 import { analytics } from '@/lib/analytics';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 
@@ -102,13 +101,12 @@ export async function POST(request: NextRequest) {
                 .single();
 
             if (jobDetails) {
-                after(async () => {
-                    try {
-                        await startGeneration(jobId, jobDetails.source_image_url, jobDetails.style_key as any);
-                    } catch (err) {
-                        console.error('[Webhook] Generation failed:', err);
-                    }
-                });
+                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
+                fetch(`${appUrl}/api/generate/background`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobId }),
+                }).catch(err => console.error('[Webhook] Failed to trigger background generation:', err));
             }
 
             return NextResponse.json({ success: true, message: 'Processing started' });

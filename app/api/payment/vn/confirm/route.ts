@@ -32,59 +32,59 @@ export async function POST(request: NextRequest) {
 
         // Nếu đã paid rồi thì không cần làm gì
         if (order.status === 'paid') {
+            // Trigger AI generation in background if it wasn't triggered before
+            const { data: job } = await supabase
+                .from('sticker_jobs')
+                .select('source_image_url, style_key')
+                .eq('id', jobId)
+                .single();
+
+            if (job) {
+                after(async () => {
+                    try {
+                        await startGeneration(jobId, job.source_image_url, job.style_key as any);
+                    } catch (err) {
+                        console.error('[VN Payment] Generation failed:', err);
+                    }
+                });
+            }
+
             return NextResponse.json({
                 success: true,
-                alreadyPaid: true,
                 message: 'Đơn hàng đã được thanh toán',
+                status: 'paid',
             });
         }
 
-        // For MVP, manual confirm assumes payment is successful and triggers generation
-        const { error: updateError } = await supabase
-            .from('orders')
-            .update({
-                status: 'paid', // Mark as paid directly for MVP
-                ...(transactionNote ? { transaction_note: transactionNote } : {}),
-            })
-            .eq('job_id', jobId);
-
-        if (updateError) {
-            const { error: retryError } = await supabase
+        // Cho phép bypass để test ở môi trường localhost
+        if (process.env.NODE_ENV === 'development' && transactionNote === 'TESTPAID') {
+            const { error: updateError } = await supabase
                 .from('orders')
-                .update({ status: 'paid' })
+                .update({ status: 'paid', transaction_note: 'TEST_BYPASS' })
                 .eq('job_id', jobId);
 
-            if (retryError) {
-                console.error('Failed to update order status:', retryError);
-                throw new Error('Failed to update order');
+            if (!updateError) {
+                const { data: job } = await supabase
+                    .from('sticker_jobs')
+                    .select('source_image_url, style_key')
+                    .eq('id', jobId)
+                    .single();
+
+                if (job) {
+                    after(async () => {
+                        try {
+                            await startGeneration(jobId, job.source_image_url, job.style_key as any);
+                        } catch (err) { }
+                    });
+                }
+                return NextResponse.json({ success: true, message: 'Test payment confirmed.', status: 'paid' });
             }
         }
 
-        console.log(`[VN Payment] Job ${jobId} manually confirmed. Note: ${transactionNote || 'N/A'}`);
-
-        // Trigger AI generation immediately in background
-        console.log(`[VN Payment] Triggering background generation for job: ${jobId}`);
-        const { data: job } = await supabase
-            .from('sticker_jobs')
-            .select('source_image_url, style_key')
-            .eq('id', jobId)
-            .single();
-
-        if (job) {
-            after(async () => {
-                try {
-                    await startGeneration(jobId, job.source_image_url, job.style_key as any);
-                } catch (err) {
-                    console.error('[VN Payment] Generation failed:', err);
-                }
-            });
-        }
-
-        return NextResponse.json({
-            success: true,
-            message: 'Payment confirmed. Generating stickers...',
-            status: 'paid',
-        });
+        return NextResponse.json(
+            { success: false, error: 'Hệ thống chưa nhận được thông báo thanh toán (Webhook). Vui lòng đợi thêm hoặc liên hệ hỗ trợ.' },
+            { status: 400 }
+        );
 
     } catch (error) {
         console.error('VN Payment confirm error:', error);

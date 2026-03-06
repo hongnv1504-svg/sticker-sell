@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { VIETQR_CONFIG } from '@/lib/vietqr';
-import { after } from 'next/server';
-import { startGeneration } from '@/app/api/upload/route';
 
 export const maxDuration = 300;
 
@@ -150,13 +148,12 @@ export async function POST(request: NextRequest) {
             .single();
 
         if (job) {
-            after(async () => {
-                try {
-                    await startGeneration(jobId, job.source_image_url, job.style_key as any);
-                } catch (err) {
-                    console.error('[SEPAY] Generation failed:', err);
-                }
-            });
+            const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
+            fetch(`${appUrl}/api/generate/background`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jobId }),
+            }).catch(err => console.error('[SEPAY] Failed to trigger background generation:', err));
         }
 
         return NextResponse.json({ success: true, message: `Payment confirmed for job ${jobId}` });
