@@ -45,18 +45,18 @@ export default function Home() {
             {/* Before/After Preview */}
             <div className="relative max-w-3xl mx-auto">
               <div className="glass-card p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
 
                   {/* Left — Sample person photo */}
-                  <div className="text-center group">
-                    <div className="aspect-square rounded-2xl mb-3 overflow-hidden relative border border-[#ededed] transition-shadow duration-300 group-hover:shadow-md">
+                  <div className="text-center group h-full flex flex-col">
+                    <div className="flex-grow rounded-2xl mb-3 overflow-hidden relative border border-[#ededed] transition-shadow duration-300 group-hover:shadow-md">
                       <img
                         src="/sample-photo.jpg"
                         alt="Sample person"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
-                    <span className="text-sm text-[#a7a7a7]">Your Photo</span>
+                    <span className="text-sm text-[#a7a7a7] mt-auto">Your Photo</span>
                   </div>
 
                   {/* Arrow */}
@@ -67,7 +67,7 @@ export default function Home() {
                   </div>
 
                   {/* Right — 6 emotion sticker previews */}
-                  <div className="text-center">
+                  <div className="text-center h-full flex flex-col">
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       {[
                         { file: 'laughing', emoji: '😂', name: 'Laughing' },
@@ -93,7 +93,7 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
-                    <span className="text-sm text-[#a7a7a7]">6 Unique Stickers</span>
+                    <span className="text-sm text-[#a7a7a7] mt-auto">6 Unique Stickers</span>
                   </div>
 
                 </div>
