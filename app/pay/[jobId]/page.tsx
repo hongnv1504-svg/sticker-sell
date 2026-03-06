@@ -24,7 +24,33 @@ interface VNPaymentInfo {
 export default function PaywallPage({ params }: Props) {
     const { jobId } = use(params);
     const router = useRouter();
+    // null = đang detect, true = VN, false = quốc tế
+    const [isVN, setIsVN] = useState<boolean | null>(null);
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('international');
+
+    // Auto-detect user location on mount
+    useEffect(() => {
+        const detectCountry = async () => {
+            try {
+                const res = await fetch('/api/geo');
+                const data = await res.json();
+                const vn = data.country === 'VN';
+
+                // Fallback: timezone detect nếu Vercel geo không available (localhost)
+                const timezoneVN = Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Ho_Chi_Minh';
+                const finalVN = data.country ? vn : timezoneVN;
+
+                setIsVN(finalVN);
+                setPaymentMethod(finalVN ? 'vietnam' : 'international');
+            } catch {
+                // Fallback timezone
+                const timezoneVN = Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Ho_Chi_Minh';
+                setIsVN(timezoneVN);
+                setPaymentMethod(timezoneVN ? 'vietnam' : 'international');
+            }
+        };
+        detectCountry();
+    }, []);
 
     // International (LemonSqueezy)
     const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -165,30 +191,20 @@ export default function PaywallPage({ params }: Props) {
                         </p>
                     </div>
 
-                    {/* Payment Method Tabs */}
-                    <div className="flex rounded-2xl overflow-hidden border border-[#e5e5e5] mb-6">
-                        <button
-                            onClick={() => { setPaymentMethod('international'); setError(null); }}
-                            className={`flex-1 py-3 px-4 font-semibold text-sm transition-all ${paymentMethod === 'international'
-                                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                                    : 'bg-white text-[#888] hover:bg-gray-50'
-                                }`}
-                        >
-                            🌍 Quốc tế · $4.99
-                        </button>
-                        <button
-                            onClick={() => { setPaymentMethod('vietnam'); setError(null); }}
-                            className={`flex-1 py-3 px-4 font-semibold text-sm transition-all ${paymentMethod === 'vietnam'
-                                    ? 'bg-gradient-to-r from-red-500 to-yellow-400 text-white'
-                                    : 'bg-white text-[#888] hover:bg-gray-50'
-                                }`}
-                        >
-                            🇻🇳 Việt Nam · 49.000đ
-                        </button>
-                    </div>
+                    {/* Geo detecting — hiện spinner nhỏ trong khi wait */}
+                    {isVN === null && (
+                        <div className="flex justify-center mb-6">
+                            <span className="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                        </div>
+                    )}
 
-                    {/* Payment Card */}
-                    <div className="glass-card p-8">
+                    {/* Tabs chỉ hiện khi isVN === null (chưa detect xong) để không flash */}
+                    {/* Sau khi detect xong → ẩn tabs, chỉ show đúng 1 phương thức */}
+
+
+                    {/* Payment Card — chỉ hiện sau khi detect xong để tránh flash */}
+                    {isVN !== null && <div className="glass-card p-8">
+
                         {/* Product info */}
                         <div className="text-center mb-8">
                             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 mb-4">
@@ -386,7 +402,7 @@ export default function PaywallPage({ params }: Props) {
                                 </div>
                             </div>
                         )}
-                    </div>
+                    </div>}
                 </div>
             </main>
         </div>
