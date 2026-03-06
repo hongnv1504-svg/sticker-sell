@@ -4,7 +4,7 @@
 export const VIETQR_CONFIG = {
     bankCode: 'TCB',               // Techcombank
     accountNumber: '19033210412014',
-    accountName: 'NGUYEN VAN A',  // Tên chủ tài khoản (hiển thị trên QR)
+    accountName: 'NGO VAN HONG',  // Tên chủ tài khoản Techcombank
     amountVND: 49000,             // 49.000 VNĐ
     template: 'qr_only',          // Chỉ hiện QR, không có logo bank
 };
