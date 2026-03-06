@@ -128,7 +128,7 @@ export default function PaywallPage({ params }: Props) {
             setVnPaymentInfo(data);
             setVnStatus('qr_shown');
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Có lỗi xảy ra');
+            setError(err instanceof Error ? err.message : 'Something went wrong');
         } finally {
             setIsLoadingQR(false);
         }
@@ -149,10 +149,10 @@ export default function PaywallPage({ params }: Props) {
                 body: JSON.stringify({ jobId, transactionNote }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Xác nhận thất bại');
+            if (!res.ok) throw new Error(data.error || 'Confirmation failed');
             setVnStatus('confirmed');
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Có lỗi xảy ra');
+            setError(err instanceof Error ? err.message : 'Something went wrong');
             setIsConfirming(false);
         }
     };
@@ -184,10 +184,10 @@ export default function PaywallPage({ params }: Props) {
                     {/* Title */}
                     <div className="text-center mb-8">
                         <h1 className="text-4xl font-bold mb-4 text-[#222222]">
-                            Tạo AI Stickers của bạn 🎨
+                            Create Your AI Stickers 🎨
                         </h1>
                         <p className="text-[#a7a7a7] text-lg">
-                            Thanh toán để tạo bộ sticker cá nhân hóa
+                            Pay to generate your personalized sticker pack
                         </p>
                     </div>
 
@@ -211,7 +211,7 @@ export default function PaywallPage({ params }: Props) {
                                 <span className="text-5xl">✨</span>
                             </div>
                             <h2 className="text-2xl font-bold mb-2 text-[#222222]">AI Sticker Pack</h2>
-                            <p className="text-[#a7a7a7]">9 stickers AI cá nhân hóa</p>
+                            <p className="text-[#a7a7a7]">9 personalized AI stickers</p>
                         </div>
 
                         {/* Price */}
@@ -219,14 +219,14 @@ export default function PaywallPage({ params }: Props) {
                             {paymentMethod === 'international' ? (
                                 <>
                                     <div className="text-5xl font-bold gradient-text mb-1">$4.99</div>
-                                    <p className="text-[#a7a7a7] text-sm">~125.000 VND · Một lần duy nhất</p>
+                                    <p className="text-[#a7a7a7] text-sm">~125,000 VND · One-time payment</p>
                                 </>
                             ) : (
                                 <>
                                     <div className="text-5xl font-bold mb-1" style={{ background: 'linear-gradient(135deg, #ef4444, #eab308)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                                         49.000đ
                                     </div>
-                                    <p className="text-[#a7a7a7] text-sm">Chuyển khoản ngân hàng · Một lần duy nhất</p>
+                                    <p className="text-[#a7a7a7] text-sm">Bank Transfer · One-time payment</p>
                                 </>
                             )}
                         </div>
@@ -234,11 +234,11 @@ export default function PaywallPage({ params }: Props) {
                         {/* Features */}
                         <ul className="space-y-3 mb-8">
                             {[
-                                'File PNG độ phân giải cao',
-                                'Nền trong suốt',
-                                'Dùng được cho Telegram & Zalo',
-                                'Tải về dạng ZIP',
-                                'Tạo ngay sau khi thanh toán',
+                                'High-resolution PNG files',
+                                'Transparent background',
+                                'Works on Telegram & WhatsApp',
+                                'Download as ZIP',
+                                'Generated immediately after payment',
                             ].map((feature, i) => (
                                 <li key={i} className="flex items-center gap-3 text-[#555555]">
                                     <span className="text-green-400">✓</span>
@@ -265,15 +265,15 @@ export default function PaywallPage({ params }: Props) {
                                     {isCheckingOut ? (
                                         <>
                                             <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                            Đang xử lý...
+                                            Processing...
                                         </>
                                     ) : (
                                         <>Pay &amp; Generate Stickers <span>🚀</span></>
                                     )}
                                 </button>
                                 <div className="mt-6 flex items-center justify-center gap-4 text-sm text-[#a7a7a7]">
-                                    <span>🔒 Bảo mật</span>
-                                    <span>⚡ Tức thì</span>
+                                    <span>🔒 Secure</span>
+                                    <span>⚡ Instant</span>
                                     <span>🍋 Lemon Squeezy</span>
                                 </div>
                             </>
@@ -293,8 +293,8 @@ export default function PaywallPage({ params }: Props) {
                                 {vnStatus === 'paid' && (
                                     <div className="flex flex-col items-center gap-4 py-6 text-center">
                                         <span className="text-5xl animate-bounce">✅</span>
-                                        <h3 className="text-xl font-bold text-green-600">Thanh toán thành công!</h3>
-                                        <p className="text-[#888] text-sm">Đang chuyển sang tạo sticker...</p>
+                                        <h3 className="text-xl font-bold text-green-600">Payment Successful!</h3>
+                                        <p className="text-[#888] text-sm">Redirecting to generate stickers...</p>
                                         <span className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
                                     </div>
                                 )}
@@ -304,7 +304,7 @@ export default function PaywallPage({ params }: Props) {
                                     <>
                                         {/* QR Code */}
                                         <div className="flex flex-col items-center gap-3">
-                                            <p className="text-sm font-medium text-[#555]">Quét QR bằng app ngân hàng, MoMo, ZaloPay</p>
+                                            <p className="text-sm font-medium text-[#555]">Scan QR with banking app, MoMo, or ZaloPay</p>
                                             <div className="relative">
                                                 <div className="border-4 border-white shadow-xl rounded-2xl overflow-hidden">
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -319,35 +319,35 @@ export default function PaywallPage({ params }: Props) {
                                                 {/* Badge tự động */}
                                                 <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                                                     <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                                                    Tự động
+                                                    Auto
                                                 </div>
                                             </div>
                                             <p className="text-xs text-green-600 font-medium flex items-center gap-1">
                                                 <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                                                Đang chờ thanh toán... (tự động xác nhận)
+                                                Waiting for payment... (auto-confirms)
                                             </p>
                                         </div>
 
                                         {/* Bank info */}
                                         <div className="rounded-2xl border border-[#e5e5e5] bg-gray-50 p-4 space-y-2 text-sm">
                                             <div className="flex justify-between">
-                                                <span className="text-[#888]">Ngân hàng</span>
+                                                <span className="text-[#888]">Bank</span>
                                                 <span className="font-semibold text-[#222]">ACB (Ngân hàng Á Châu)</span>
                                             </div>
                                             <div className="flex justify-between">
-                                                <span className="text-[#888]">Số tài khoản</span>
+                                                <span className="text-[#888]">Account Number</span>
                                                 <span className="font-mono font-semibold text-[#222]">{vnPaymentInfo.accountNumber}</span>
                                             </div>
                                             <div className="flex justify-between">
-                                                <span className="text-[#888]">Số tiền</span>
+                                                <span className="text-[#888]">Amount</span>
                                                 <span className="font-semibold text-red-500">{vnPaymentInfo.amountFormatted}</span>
                                             </div>
                                             <div className="flex justify-between items-center gap-2">
-                                                <span className="text-[#888] shrink-0">Nội dung CK</span>
+                                                <span className="text-[#888] shrink-0">Transfer Note</span>
                                                 <button
                                                     onClick={() => navigator.clipboard.writeText(vnPaymentInfo.transferContent)}
                                                     className="font-mono font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg hover:bg-purple-100 transition-colors cursor-copy"
-                                                    title="Nhấn để copy"
+                                                    title="Click to copy"
                                                 >
                                                     {vnPaymentInfo.transferContent}
                                                 </button>
@@ -358,14 +358,14 @@ export default function PaywallPage({ params }: Props) {
                                         {vnStatus === 'qr_shown' && (
                                             <details className="text-sm">
                                                 <summary className="cursor-pointer text-[#888] hover:text-[#555] text-center">
-                                                    Đã chuyển khoản nhưng chưa tự động? Xác nhận thủ công
+                                                    Already paid but not auto-confirmed? Manual confirm
                                                 </summary>
                                                 <div className="mt-3 space-y-3">
                                                     <input
                                                         type="text"
                                                         value={transactionNote}
                                                         onChange={e => setTransactionNote(e.target.value)}
-                                                        placeholder={`Nhập nội dung: ${vnPaymentInfo.transferContent}`}
+                                                        placeholder={`Enter note: ${vnPaymentInfo.transferContent}`}
                                                         className="w-full px-4 py-3 rounded-xl border border-[#e5e5e5] text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100"
                                                     />
                                                     <button
@@ -377,9 +377,9 @@ export default function PaywallPage({ params }: Props) {
                                                         {isConfirming ? (
                                                             <>
                                                                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                                                Đang xác nhận...
+                                                                Confirming...
                                                             </>
-                                                        ) : 'Xác nhận thủ công ✅'}
+                                                        ) : 'Manual Confirm ✅'}
                                                     </button>
                                                 </div>
                                             </details>
@@ -389,15 +389,15 @@ export default function PaywallPage({ params }: Props) {
                                         {vnStatus === 'confirmed' && (
                                             <div className="flex flex-col items-center gap-2 py-2 text-center">
                                                 <span className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-                                                <p className="text-sm text-[#888]">Đang xác minh... sẽ tự động chuyển sang tạo sticker</p>
+                                                <p className="text-sm text-[#888]">Verifying... will redirect to generation</p>
                                             </div>
                                         )}
                                     </>
                                 )}
 
                                 <div className="flex items-center justify-center gap-4 text-sm text-[#a7a7a7] pt-2">
-                                    <span>🔒 Bảo mật</span>
-                                    <span>⚡ Tự động xác nhận</span>
+                                    <span>🔒 Secure</span>
+                                    <span>⚡ Auto-confirm</span>
                                     <span>🇻🇳 VietQR Napas</span>
                                 </div>
                             </div>

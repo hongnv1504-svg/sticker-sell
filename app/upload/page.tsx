@@ -151,7 +151,7 @@ function UploadContent() {
                             </button>
 
                             <p className="mt-4 text-sm text-[#a7a7a7]">
-                                Thanh toán một lần · Stickers tạo ngay sau khi thanh toán
+                                One-time payment · Stickers generated immediately after payment
                             </p>
                         </div>
                     )}
