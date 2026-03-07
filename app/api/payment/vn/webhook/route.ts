@@ -32,12 +32,23 @@ export const maxDuration = 300;
 export async function POST(request: NextRequest) {
     try {
         // 1. Xác minh secret từ Sepay
-        const apiKey = request.headers.get('apikey') || request.headers.get('authorization');
+        // Sepay gửi: Authorization: Apikey <secret> HOẶC apikey: <secret>
+        const authHeader = request.headers.get('authorization') || request.headers.get('Authorization');
+        const apiKeyHeader = request.headers.get('apikey');
         const webhookSecret = process.env.SEPAY_WEBHOOK_SECRET;
+        const merchantId = process.env.SEPAY_MERCHANT_ID;
+
+        // Parse Authorization header: "Apikey spsk_live_xxx" → "spsk_live_xxx"
+        let apiKey = apiKeyHeader;
+        if (!apiKey && authHeader) {
+            const match = authHeader.match(/^Apikey\s+(.+)$/i);
+            if (match) apiKey = match[1];
+        }
+
+        console.log(`[SEPAY] Auth check — header apikey: ${apiKeyHeader?.substring(0, 10)}... | Authorization: ${authHeader?.substring(0, 20)}...`);
 
         if (webhookSecret && apiKey !== webhookSecret) {
-            console.error('[SEPAY] ❌ Invalid API key. Received:', apiKey?.substring(0, 10) + '...');
-            console.error('[SEPAY] Expected:', webhookSecret?.substring(0, 10) + '...');
+            console.error('[SEPAY] Invalid API key received:', apiKey?.substring(0, 10) + '...');
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
