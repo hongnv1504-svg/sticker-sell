@@ -46,11 +46,11 @@ export default function Home() {
             {/* Before/After Preview */}
             <div className="relative max-w-3xl mx-auto">
               <div className="glass-card p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                <div className="grid grid-cols-2 gap-4 md:gap-8 items-stretch">
 
                   {/* Left — Sample person photo */}
                   <div className="text-center group h-full flex flex-col">
-                    <div className="flex-grow rounded-2xl mb-3 overflow-hidden relative border border-[#ededed] transition-shadow duration-300 group-hover:shadow-md">
+                    <div className="flex-grow rounded-2xl mb-3 overflow-hidden relative border border-[#ededed] transition-shadow duration-300 group-hover:shadow-md min-h-[140px]">
                       <img
                         src="/sample-photo.jpg"
                         alt="Sample person"
