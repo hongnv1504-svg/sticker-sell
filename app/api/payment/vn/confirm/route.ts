@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { startGeneration } from '@/app/api/upload/route';
 
+export const maxDuration = 300;
 
 export async function POST(request: NextRequest) {
     try {
@@ -29,22 +31,24 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Nếu đã paid rồi thì không cần làm gì
+        // Nếu đã paid rồi → trigger generation nếu chưa chạy
         if (order.status === 'paid') {
-            // Trigger AI generation in background if it wasn't triggered before
             const { data: job } = await supabase
                 .from('sticker_jobs')
-                .select('source_image_url, style_key')
+                .select('source_image_url, style_key, status')
                 .eq('id', jobId)
                 .single();
 
-            if (job) {
-                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
-                fetch(`${appUrl}/api/generate/background`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ jobId }),
-                }).catch(err => console.error('[VN Payment] Background trigger failed:', err));
+            if (job && job.status === 'pending') {
+                console.log(`[VN Confirm] Job ${jobId} is paid but pending, triggering generation via after()`);
+                after(async () => {
+                    try {
+                        await startGeneration(jobId, job.source_image_url, job.style_key as any);
+                        console.log(`[VN Confirm/after] ✅ Generation completed for ${jobId}`);
+                    } catch (err) {
+                        console.error(`[VN Confirm/after] ❌ Generation failed for ${jobId}:`, err);
+                    }
+                });
             }
 
             return NextResponse.json({
@@ -69,12 +73,13 @@ export async function POST(request: NextRequest) {
                     .single();
 
                 if (job) {
-                    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
-                    fetch(`${appUrl}/api/generate/background`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ jobId }),
-                    }).catch(err => console.error('[VN Payment] Background trigger failed:', err));
+                    after(async () => {
+                        try {
+                            await startGeneration(jobId, job.source_image_url, job.style_key as any);
+                        } catch (err) {
+                            console.error(`[VN Confirm/after] Generation failed:`, err);
+                        }
+                    });
                 }
                 return NextResponse.json({ success: true, message: 'Test payment confirmed.', status: 'paid' });
             }

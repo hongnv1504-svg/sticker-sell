@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import crypto from 'crypto';
 import { analytics } from '@/lib/analytics';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { startGeneration } from '@/app/api/upload/route';
 
 export const maxDuration = 300;
 
@@ -91,22 +92,19 @@ export async function POST(request: NextRequest) {
                 );
             }
 
-            // Trigger AI generation immediately in background
+            // Trigger AI generation using after() - runs after response is sent
             console.log(`[Webhook] Triggering background generation for job: ${jobId}`);
 
-            const { data: jobDetails } = await supabase
-                .from('sticker_jobs')
-                .select('source_image_url, style_key')
-                .eq('id', jobId)
-                .single();
-
-            if (jobDetails) {
-                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
-                fetch(`${appUrl}/api/generate/background`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ jobId }),
-                }).catch(err => console.error('[Webhook] Failed to trigger background generation:', err));
+            if (job.status === 'pending') {
+                after(async () => {
+                    try {
+                        console.log(`[Webhook/after] Starting generation for ${jobId}...`);
+                        await startGeneration(jobId, job.source_image_url, job.style_key as any);
+                        console.log(`[Webhook/after] ✅ Generation completed for ${jobId}`);
+                    } catch (err) {
+                        console.error(`[Webhook/after] ❌ Generation failed for ${jobId}:`, err);
+                    }
+                });
             }
 
             return NextResponse.json({ success: true, message: 'Processing started' });

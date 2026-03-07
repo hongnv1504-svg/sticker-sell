@@ -24,6 +24,25 @@ export default function GeneratePage({ params }: Props) {
     useEffect(() => {
         let isMounted = true;
 
+        const triggerGeneration = async () => {
+            try {
+                console.log('[Generate] Triggering background generation...');
+                const res = await fetch('/api/generate/background', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobId }),
+                });
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    console.error('[Generate] Background trigger failed:', res.status, errData);
+                } else {
+                    console.log('[Generate] Background generation triggered successfully');
+                }
+            } catch (err) {
+                console.error('[Generate] Failed to trigger background:', err);
+            }
+        };
+
         const pollStatus = async () => {
             try {
                 const response = await fetch(`/api/job/${jobId}`);
@@ -48,12 +67,7 @@ export default function GeneratePage({ params }: Props) {
                 // If paid but job is still 'pending' (no AI triggered yet), kick off generation
                 if (data.job?.status === 'pending' && !triggeredRef[0]) {
                     triggeredRef[1](true);
-                    console.log('[Generate] Job is paid but pending, triggering background generation...');
-                    fetch('/api/generate/background', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ jobId }),
-                    }).catch(err => console.error('[Generate] Failed to trigger background:', err));
+                    triggerGeneration();
                 }
 
                 if (data.job?.status === 'completed') {
