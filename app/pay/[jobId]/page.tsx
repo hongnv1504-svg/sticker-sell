@@ -323,22 +323,34 @@ export default function PaywallPage({ params }: Props) {
                                         {isMobile ? (
                                             /* ===== MOBILE LAYOUT ===== */
                                             <div className="space-y-4">
-                                                {/* CTA chính: Mở app ngân hàng */}
-                                                <a
-                                                    href={generateVietQRDeepLink(jobId)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-white font-bold text-lg shadow-lg active:scale-95 transition-transform"
-                                                    style={{ background: 'linear-gradient(135deg, #1a73e8, #0d47a1)' }}
-                                                >
-                                                    🏦 Mở app ngân hàng
-                                                </a>
-                                                <p className="text-center text-xs text-[#888]">
-                                                    Chọn app → số tiền & nội dung đã được điền sẵn
-                                                </p>
+                                                {/* QR nổi bật + hướng dẫn screenshot */}
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <div className="relative">
+                                                        <div className="border-4 border-white shadow-xl rounded-2xl overflow-hidden">
+                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                            <img
+                                                                src={vnPaymentInfo.qrUrl}
+                                                                alt="VietQR Code"
+                                                                width={200}
+                                                                height={200}
+                                                                className="block"
+                                                            />
+                                                        </div>
+                                                        <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                                                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                                                            Auto
+                                                        </div>
+                                                    </div>
+                                                    <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-2 text-center">
+                                                        <p className="text-xs text-blue-700 font-medium">
+                                                            📸 Chụp màn hình → Mở app ngân hàng → Quét QR từ thư viện ảnh
+                                                        </p>
+                                                    </div>
+                                                </div>
 
                                                 {/* Bank info + copy buttons */}
                                                 <div className="rounded-2xl border border-[#e5e5e5] bg-gray-50 p-4 space-y-3 text-sm">
+                                                    <p className="text-xs font-semibold text-[#555] mb-1">Hoặc nhập thủ công:</p>
                                                     <div className="flex justify-between items-center">
                                                         <span className="text-[#888]">Ngân hàng</span>
                                                         <span className="font-semibold text-[#222]">ACB (Á Châu)</span>
@@ -374,16 +386,8 @@ export default function PaywallPage({ params }: Props) {
                                                         </button>
                                                     </div>
                                                 </div>
-
-                                                {/* QR thu nhỏ, backup */}
-                                                <details className="text-center">
-                                                    <summary className="cursor-pointer text-xs text-[#aaa] select-none">Hoặc quét QR code thủ công</summary>
-                                                    <div className="mt-3 flex justify-center">
-                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                        <img src={vnPaymentInfo.qrUrl} alt="QR" width={160} height={160} className="rounded-xl shadow" />
-                                                    </div>
-                                                </details>
                                             </div>
+
                                         ) : (
                                             /* ===== DESKTOP LAYOUT ===== */
                                             <>
