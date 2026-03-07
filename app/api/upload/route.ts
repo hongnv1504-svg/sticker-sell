@@ -122,37 +122,33 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
         .eq('id', jobId);
 
     try {
-        // Import the generateStickers function
-        const { generateStickers } = await import('@/lib/ai/generate-stickers');
+        const { generateSingleSticker } = await import('@/lib/ai/generate-stickers');
+        const { STICKER_EMOTIONS } = await import('@/lib/types');
 
-        // Generate all stickers using the AI service with the selected style
-        const generatedStickers = await generateStickers(
-            sourceImageUrl,
-            styleKey,
-            async (completed, total) => {
-                // Update progress
-                await supabase
-                    .from('sticker_jobs')
-                    .update({ progress: completed })
-                    .eq('id', jobId);
-            }
-        );
+        // Generate and save each sticker immediately as it completes
+        for (let i = 0; i < STICKER_EMOTIONS.length; i++) {
+            const emotion = STICKER_EMOTIONS[i];
+            console.log(`[Generation] Generating sticker ${i + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
 
-        // Store the generated stickers
-        const stickerInserts = generatedStickers.map(sticker => ({
-            job_id: jobId,
-            emotion: sticker.emotion,
-            image_url: sticker.imageUrl,
-            thumbnail_url: sticker.thumbnailUrl
-        }));
+            const sticker = await generateSingleSticker(sourceImageUrl, styleKey, emotion);
 
-        const { error: stickerError } = await supabase
-            .from('generated_stickers')
-            .insert(stickerInserts);
+            // Save immediately so frontend can show it right away
+            await supabase
+                .from('generated_stickers')
+                .insert({
+                    job_id: jobId,
+                    emotion: sticker.emotion,
+                    image_url: sticker.imageUrl,
+                    thumbnail_url: sticker.thumbnailUrl,
+                });
 
-        if (stickerError) {
-            console.error('Failed to store stickers in Supabase:', stickerError);
-            throw stickerError;
+            // Update progress count
+            await supabase
+                .from('sticker_jobs')
+                .update({ progress: i + 1 })
+                .eq('id', jobId);
+
+            console.log(`[Generation] ✅ Saved sticker ${i + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
         }
 
         // Mark as completed
@@ -169,6 +165,7 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
             .eq('id', jobId);
     }
 }
+
 
 // Generate a placeholder SVG sticker
 function generatePlaceholderSticker(emotion: string): string {
