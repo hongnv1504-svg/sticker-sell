@@ -3,6 +3,7 @@
 
 export const VIETQR_CONFIG = {
     bankCode: 'ACB',               // Ngân hàng ACB
+    bankBIN: '970416',             // BIN code của ACB
     accountNumber: '241150249',
     accountName: 'NGO VAN HONG',  // Tên chủ tài khoản ACB
     amountVND: 39000,             // 39.000 VNĐ
@@ -24,6 +25,27 @@ export function generateVietQRUrl(jobId: string): string {
     });
 
     return `https://img.vietqr.io/image/${bankCode}-${accountNumber}-${template}.jpg?${params.toString()}`;
+}
+
+/**
+ * Sinh VietQR Universal Deep Link — khi bấm trên điện thoại sẽ mở app ngân hàng
+ * Hỗ trợ: MB Bank, VCB, Techcombank, BIDV, VPBank, ACB, TPBank, và hầu hết ngân hàng VN
+ */
+export function generateVietQRDeepLink(jobId: string): string {
+    const { bankBIN, accountNumber, accountName, amountVND } = VIETQR_CONFIG;
+    const transferContent = getTransferContent(jobId);
+
+    const params = new URLSearchParams({
+        accountNo: accountNumber,
+        accountName: accountName,
+        acqId: bankBIN,
+        amount: String(amountVND),
+        addInfo: transferContent,
+        format: 'text',
+        template: 'compact',
+    });
+
+    return `https://dl.vietqr.io/pay?${params.toString()}`;
 }
 
 /**

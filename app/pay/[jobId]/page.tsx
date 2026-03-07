@@ -3,6 +3,7 @@
 import { useEffect, useState, use, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
+import { generateVietQRDeepLink } from '@/lib/vietqr';
 
 interface Props {
     params: Promise<{ jobId: string }>;
@@ -62,6 +63,8 @@ export default function PaywallPage({ params }: Props) {
     const [transactionNote, setTransactionNote] = useState('');
     const [isConfirming, setIsConfirming] = useState(false);
     const [vnStatus, setVnStatus] = useState<VNStatus>('idle');
+    const [isMobile, setIsMobile] = useState(false);
+    const [copied, setCopied] = useState<string | null>(null);
 
     // Auto-polling để phát hiện Sepay webhook
     const pollingRef = useRef<NodeJS.Timeout | null>(null);
@@ -105,6 +108,21 @@ export default function PaywallPage({ params }: Props) {
 
     // Cleanup khi unmount
     useEffect(() => () => stopPolling(), [stopPolling]);
+
+    // Detect mobile
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
+
+    // Copy helper with feedback
+    const copyToClipboard = (text: string, key: string) => {
+        navigator.clipboard.writeText(text);
+        setCopied(key);
+        setTimeout(() => setCopied(null), 1500);
+    };
 
     // Load QR khi chọn tab VN
     useEffect(() => {
@@ -302,60 +320,126 @@ export default function PaywallPage({ params }: Props) {
                                 {/* QR hiện & chờ */}
                                 {vnPaymentInfo && (vnStatus === 'qr_shown' || vnStatus === 'confirmed') && (
                                     <>
-                                        {/* QR Code */}
-                                        <div className="flex flex-col items-center gap-3">
-                                            <p className="text-sm font-medium text-[#555]">Scan QR with banking app or MoMo</p>
-                                            <div className="relative">
-                                                <div className="border-4 border-white shadow-xl rounded-2xl overflow-hidden">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img
-                                                        src={vnPaymentInfo.qrUrl}
-                                                        alt="VietQR Code"
-                                                        width={220}
-                                                        height={220}
-                                                        className="block"
-                                                    />
-                                                </div>
-                                                {/* Badge tự động */}
-                                                <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
-                                                    <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                                                    Auto
-                                                </div>
-                                            </div>
-                                            <p className="text-xs text-green-600 font-medium flex items-center gap-1">
-                                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                                                Waiting for payment... (auto-confirms)
-                                            </p>
-                                        </div>
-
-                                        {/* Bank info */}
-                                        <div className="rounded-2xl border border-[#e5e5e5] bg-gray-50 p-4 space-y-2 text-sm">
-                                            <div className="flex justify-between">
-                                                <span className="text-[#888]">Bank</span>
-                                                <span className="font-semibold text-[#222]">ACB (Ngân hàng Á Châu)</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span className="text-[#888]">Account Number</span>
-                                                <span className="font-mono font-semibold text-[#222]">{vnPaymentInfo.accountNumber}</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span className="text-[#888]">Amount</span>
-                                                <span className="font-semibold text-red-500">{vnPaymentInfo.amountFormatted}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center gap-2">
-                                                <span className="text-[#888] shrink-0">Transfer Note</span>
-                                                <button
-                                                    onClick={() => navigator.clipboard.writeText(vnPaymentInfo.transferContent)}
-                                                    className="font-mono font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg hover:bg-purple-100 transition-colors cursor-copy"
-                                                    title="Click to copy"
+                                        {isMobile ? (
+                                            /* ===== MOBILE LAYOUT ===== */
+                                            <div className="space-y-4">
+                                                {/* CTA chính: Mở app ngân hàng */}
+                                                <a
+                                                    href={generateVietQRDeepLink(jobId)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-white font-bold text-lg shadow-lg active:scale-95 transition-transform"
+                                                    style={{ background: 'linear-gradient(135deg, #1a73e8, #0d47a1)' }}
                                                 >
-                                                    {vnPaymentInfo.transferContent}
-                                                </button>
+                                                    🏦 Mở app ngân hàng
+                                                </a>
+                                                <p className="text-center text-xs text-[#888]">
+                                                    Chọn app → số tiền & nội dung đã được điền sẵn
+                                                </p>
+
+                                                {/* Bank info + copy buttons */}
+                                                <div className="rounded-2xl border border-[#e5e5e5] bg-gray-50 p-4 space-y-3 text-sm">
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[#888]">Ngân hàng</span>
+                                                        <span className="font-semibold text-[#222]">ACB (Á Châu)</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[#888]">Số tài khoản</span>
+                                                        <button
+                                                            onClick={() => copyToClipboard(vnPaymentInfo.accountNumber, 'acc')}
+                                                            className="font-mono font-bold text-[#222] bg-gray-100 px-2 py-1 rounded-lg flex items-center gap-1 active:bg-gray-200"
+                                                        >
+                                                            {vnPaymentInfo.accountNumber}
+                                                            <span className="text-xs">{copied === 'acc' ? '✅' : '📋'}</span>
+                                                        </button>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[#888]">Số tiền</span>
+                                                        <button
+                                                            onClick={() => copyToClipboard(String(vnPaymentInfo.amount), 'amount')}
+                                                            className="font-semibold text-red-500 bg-red-50 px-2 py-1 rounded-lg flex items-center gap-1 active:bg-red-100"
+                                                        >
+                                                            {vnPaymentInfo.amountFormatted}
+                                                            <span className="text-xs">{copied === 'amount' ? '✅' : '📋'}</span>
+                                                        </button>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[#888] shrink-0">Nội dung CK</span>
+                                                        <button
+                                                            onClick={() => copyToClipboard(vnPaymentInfo.transferContent, 'note')}
+                                                            className="font-mono font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-lg flex items-center gap-1 active:bg-purple-100"
+                                                        >
+                                                            {vnPaymentInfo.transferContent}
+                                                            <span className="text-xs">{copied === 'note' ? '✅' : '📋'}</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                {/* QR thu nhỏ, backup */}
+                                                <details className="text-center">
+                                                    <summary className="cursor-pointer text-xs text-[#aaa] select-none">Hoặc quét QR code thủ công</summary>
+                                                    <div className="mt-3 flex justify-center">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img src={vnPaymentInfo.qrUrl} alt="QR" width={160} height={160} className="rounded-xl shadow" />
+                                                    </div>
+                                                </details>
                                             </div>
-                                        </div>
+                                        ) : (
+                                            /* ===== DESKTOP LAYOUT ===== */
+                                            <>
+                                                {/* QR Code */}
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <p className="text-sm font-medium text-[#555]">Scan QR with banking app or MoMo</p>
+                                                    <div className="relative">
+                                                        <div className="border-4 border-white shadow-xl rounded-2xl overflow-hidden">
+                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                            <img
+                                                                src={vnPaymentInfo.qrUrl}
+                                                                alt="VietQR Code"
+                                                                width={220}
+                                                                height={220}
+                                                                className="block"
+                                                            />
+                                                        </div>
+                                                        <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                                                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                                                            Auto
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                                                        Waiting for payment... (auto-confirms)
+                                                    </p>
+                                                </div>
 
-
-
+                                                {/* Bank info */}
+                                                <div className="rounded-2xl border border-[#e5e5e5] bg-gray-50 p-4 space-y-2 text-sm">
+                                                    <div className="flex justify-between">
+                                                        <span className="text-[#888]">Bank</span>
+                                                        <span className="font-semibold text-[#222]">ACB (Ngân hàng Á Châu)</span>
+                                                    </div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-[#888]">Account Number</span>
+                                                        <span className="font-mono font-semibold text-[#222]">{vnPaymentInfo.accountNumber}</span>
+                                                    </div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-[#888]">Amount</span>
+                                                        <span className="font-semibold text-red-500">{vnPaymentInfo.amountFormatted}</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center gap-2">
+                                                        <span className="text-[#888] shrink-0">Transfer Note</span>
+                                                        <button
+                                                            onClick={() => copyToClipboard(vnPaymentInfo.transferContent, 'note')}
+                                                            className="font-mono font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg hover:bg-purple-100 transition-colors cursor-copy flex items-center gap-1"
+                                                            title="Click to copy"
+                                                        >
+                                                            {vnPaymentInfo.transferContent}
+                                                            <span className="text-xs">{copied === 'note' ? '✅' : '📋'}</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                     </>
                                 )}
 
