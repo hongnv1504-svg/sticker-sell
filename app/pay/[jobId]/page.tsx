@@ -354,44 +354,8 @@ export default function PaywallPage({ params }: Props) {
                                             </div>
                                         </div>
 
-                                        {/* Fallback thủ công */}
-                                        {vnStatus === 'qr_shown' && (
-                                            <details className="text-sm">
-                                                <summary className="cursor-pointer text-[#888] hover:text-[#555] text-center">
-                                                    Already paid but not auto-confirmed? Manual confirm
-                                                </summary>
-                                                <div className="mt-3 space-y-3">
-                                                    <input
-                                                        type="text"
-                                                        value={transactionNote}
-                                                        onChange={e => setTransactionNote(e.target.value)}
-                                                        placeholder={`Enter note: ${vnPaymentInfo.transferContent}`}
-                                                        className="w-full px-4 py-3 rounded-xl border border-[#e5e5e5] text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100"
-                                                    />
-                                                    <button
-                                                        onClick={handleVNConfirm}
-                                                        disabled={isConfirming}
-                                                        className="w-full py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2"
-                                                        style={{ background: 'linear-gradient(135deg, #ef4444, #eab308)' }}
-                                                    >
-                                                        {isConfirming ? (
-                                                            <>
-                                                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                                                Confirming...
-                                                            </>
-                                                        ) : 'Manual Confirm ✅'}
-                                                    </button>
-                                                </div>
-                                            </details>
-                                        )}
 
-                                        {/* Đã confirm thủ công → đang chờ */}
-                                        {vnStatus === 'confirmed' && (
-                                            <div className="flex flex-col items-center gap-2 py-2 text-center">
-                                                <span className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-                                                <p className="text-sm text-[#888]">Verifying... will redirect to generation</p>
-                                            </div>
-                                        )}
+
                                     </>
                                 )}
 
