@@ -1,12 +1,11 @@
-import { NextRequest, NextResponse, after } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
-import { startGeneration } from '@/app/api/upload/route';
 
-export const maxDuration = 300;
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
     try {
-        const { jobId, transactionNote } = await request.json();
+        const { jobId } = await request.json();
 
         if (!jobId) {
             return NextResponse.json(
@@ -17,7 +16,7 @@ export async function POST(request: NextRequest) {
 
         const supabase = getSupabaseAdmin();
 
-        // Kiểm tra order tồn tại
+        // Kiểm tra order tồn tại và đã được thanh toán chưa
         const { data: order, error: orderError } = await supabase
             .from('orders')
             .select('*')
@@ -31,7 +30,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Nếu đã paid rồi → trigger generation nếu chưa chạy
+        // Nếu đã paid → trigger generation nếu chưa chạy
         if (order.status === 'paid') {
             const { data: job } = await supabase
                 .from('sticker_jobs')
@@ -40,15 +39,13 @@ export async function POST(request: NextRequest) {
                 .single();
 
             if (job && job.status === 'pending') {
-                console.log(`[VN Confirm] Job ${jobId} is paid but pending, triggering generation via after()`);
-                after(async () => {
-                    try {
-                        await startGeneration(jobId, job.source_image_url, job.style_key as any);
-                        console.log(`[VN Confirm/after] ✅ Generation completed for ${jobId}`);
-                    } catch (err) {
-                        console.error(`[VN Confirm/after] ❌ Generation failed for ${jobId}:`, err);
-                    }
-                });
+                console.log(`[VN Confirm] Job ${jobId} is paid but pending, triggering generation`);
+                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
+                fetch(`${appUrl}/api/generate/background`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobId }),
+                }).catch(err => console.error('[VN Confirm] Background gen error:', err));
             }
 
             return NextResponse.json({
@@ -58,35 +55,9 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        // Cho phép bypass để test ở môi trường localhost
-        if (process.env.NODE_ENV === 'development' && transactionNote === 'TESTPAID') {
-            const { error: updateError } = await supabase
-                .from('orders')
-                .update({ status: 'paid', transaction_note: 'TEST_BYPASS' })
-                .eq('job_id', jobId);
-
-            if (!updateError) {
-                const { data: job } = await supabase
-                    .from('sticker_jobs')
-                    .select('source_image_url, style_key')
-                    .eq('id', jobId)
-                    .single();
-
-                if (job) {
-                    after(async () => {
-                        try {
-                            await startGeneration(jobId, job.source_image_url, job.style_key as any);
-                        } catch (err) {
-                            console.error(`[VN Confirm/after] Generation failed:`, err);
-                        }
-                    });
-                }
-                return NextResponse.json({ success: true, message: 'Test payment confirmed.', status: 'paid' });
-            }
-        }
-
+        // Chưa có xác nhận thanh toán từ Sepay
         return NextResponse.json(
-            { success: false, error: 'Hệ thống chưa nhận được thông báo thanh toán (Webhook). Vui lòng đợi thêm hoặc liên hệ hỗ trợ.' },
+            { success: false, error: 'Hệ thống chưa nhận được thông báo thanh toán. Vui lòng đợi thêm hoặc liên hệ hỗ trợ.' },
             { status: 400 }
         );
 
