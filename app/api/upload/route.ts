@@ -127,31 +127,37 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
         const { generateSingleSticker } = await import('@/lib/ai/generate-stickers');
         const { STICKER_EMOTIONS } = await import('@/lib/types');
 
-        // Generate all stickers concurrently
-        await Promise.all(STICKER_EMOTIONS.map(async (emotion, index) => {
-            console.log(`[Generation] Generating sticker ${index + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
+        // Process in batches of 2 to avoid OpenAI rate limits (instead of all 6 concurrently)
+        const CONCURRENCY_LIMIT = 2;
+        for (let i = 0; i < STICKER_EMOTIONS.length; i += CONCURRENCY_LIMIT) {
+            const batch = STICKER_EMOTIONS.slice(i, i + CONCURRENCY_LIMIT);
 
-            try {
-                const sticker = await generateSingleSticker(sourceImageUrl, styleKey, emotion);
+            await Promise.all(batch.map(async (emotion) => {
+                const globalIndex = STICKER_EMOTIONS.indexOf(emotion);
+                console.log(`[Generation] Generating sticker ${globalIndex + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
 
-                // Save immediately so frontend can show it right away
-                await supabase
-                    .from('generated_stickers')
-                    .insert({
-                        job_id: jobId,
-                        emotion: sticker.emotion,
-                        image_url: sticker.imageUrl,
-                        thumbnail_url: sticker.thumbnailUrl,
-                    });
+                try {
+                    const sticker = await generateSingleSticker(sourceImageUrl, styleKey, emotion);
 
-                // Update progress count (not perfect since they finish out of order, but it works as a counter)
-                await supabase.rpc('increment_job_progress', { row_id: jobId });
+                    // Save immediately so frontend can show it right away
+                    await supabase
+                        .from('generated_stickers')
+                        .insert({
+                            job_id: jobId,
+                            emotion: sticker.emotion,
+                            image_url: sticker.imageUrl,
+                            thumbnail_url: sticker.thumbnailUrl,
+                        });
 
-                console.log(`[Generation] ✅ Saved sticker ${index + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
-            } catch (err) {
-                console.error(`[Generation] ❌ Failed sticker ${emotion}`, err);
-            }
-        }));
+                    // Update progress count
+                    await supabase.rpc('increment_job_progress', { row_id: jobId });
+
+                    console.log(`[Generation] ✅ Saved sticker ${globalIndex + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
+                } catch (err) {
+                    console.error(`[Generation] ❌ Failed sticker ${emotion}`, err);
+                }
+            }));
+        }
 
         // Mark as completed
         await supabase
