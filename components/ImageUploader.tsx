@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '@/lib/image-utils';
+import { UploadCloud, User, Lightbulb, Camera } from 'lucide-react';
 
 interface ImageUploaderProps {
     onImageSelect: (file: File, preview: string) => void;
@@ -162,8 +163,8 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
                 <input {...getInputProps()} />
 
                 <div className="flex flex-col items-center gap-6">
-                    <div className="w-24 h-24 rounded-full bg-[#FA5D29]/10 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-300">
-                        📸
+                    <div className="w-24 h-24 rounded-full bg-[#FA5D29]/10 flex items-center justify-center text-[#FA5D29] group-hover:scale-110 transition-transform duration-300">
+                        <UploadCloud size={48} strokeWidth={1.5} />
                     </div>
 
                     <div>
@@ -189,15 +190,15 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
 
             <div className="mt-8 grid grid-cols-3 gap-4 text-center text-sm text-[#a7a7a7]">
                 <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[#ededed] bg-[#f8f8f8]">
-                    <span className="text-2xl">👤</span>
+                    <User size={24} className="text-[#FA5D29]" />
                     <span>One face clearly visible</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[#ededed] bg-[#f8f8f8]">
-                    <span className="text-2xl">💡</span>
+                    <Lightbulb size={24} className="text-[#FA5D29]" />
                     <span>Good natural lighting</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[#ededed] bg-[#f8f8f8]">
-                    <span className="text-2xl">📷</span>
+                    <Camera size={24} className="text-[#FA5D29]" />
                     <span>High quality selfie</span>
                 </div>
             </div>

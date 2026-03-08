@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickerGrid from '@/components/StickerGrid';
+import { PartyPopper, Loader2, Sparkles, Download, Send, CheckCircle2, Package, Lock, BookOpen } from 'lucide-react';
 import { Sticker } from '@/lib/types';
 import { analytics } from '@/lib/analytics';
 
@@ -135,8 +136,8 @@ export default function ResultPage({ params }: Props) {
                     <div className="glass-card p-6 mb-8 text-center bg-gradient-to-r from-purple-900/30 to-pink-900/30">
                         {status === 'completed' ? (
                             <>
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
-                                    <span className="text-4xl">🎉</span>
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4 text-green-600">
+                                    <PartyPopper size={32} />
                                 </div>
                                 <h1 className="text-3xl font-bold mb-2 text-[#222222]">Your Stickers Are Ready!</h1>
                                 <p className="text-[#a7a7a7]">Thank you for your purchase. Enjoy your personalized stickers!</p>
@@ -155,7 +156,7 @@ export default function ResultPage({ params }: Props) {
                     {/* Stickers Grid */}
                     <div className="glass-card p-6 mb-8">
                         <h3 className="font-semibold text-[#222222] mb-4 flex items-center gap-2">
-                            <span>✨</span> Your Sticker Pack
+                            <Sparkles className="text-yellow-500" size={20} /> Your Sticker Pack
                         </h3>
                         <StickerGrid
                             stickers={stickers}
@@ -168,7 +169,7 @@ export default function ResultPage({ params }: Props) {
                     {/* Download Section */}
                     <div className="glass-card p-6 mb-8">
                         <h3 className="font-semibold text-[#222222] mb-2 flex items-center gap-2">
-                            <span>📥</span> Download Sticker Pack
+                            <Download className="text-blue-500" size={20} /> Download Sticker Pack
                         </h3>
                         <p className="text-[#a7a7a7] text-sm mb-6">
                             We&apos;ll bundle your stickers into a ZIP file for you to download directly.
@@ -188,7 +189,7 @@ export default function ResultPage({ params }: Props) {
                                     rel="noopener noreferrer"
                                     className="btn w-full flex items-center justify-center gap-2 bg-[#0088cc] hover:bg-[#0077b3] text-white border-transparent"
                                 >
-                                    <span className="text-xl">✈️</span>
+                                    <Send size={20} />
                                     Add to Telegram
                                 </a>
                             </div>
@@ -198,7 +199,7 @@ export default function ResultPage({ params }: Props) {
                             /* ── Post-download state: clean success UI ── */
                             <div className="space-y-4">
                                 <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center gap-3">
-                                    <span className="text-2xl">✅</span>
+                                    <CheckCircle2 className="text-green-500" size={24} />
                                     <div>
                                         <p className="text-green-600 font-semibold">Download started!</p>
                                         <p className="text-green-700/60 text-sm">
@@ -216,20 +217,20 @@ export default function ResultPage({ params }: Props) {
                                 >
                                     {isDownloading ? (
                                         <>
-                                            <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            <Loader2 className="w-5 h-5 animate-spin" />
                                             Bundling Pack...
                                         </>
                                     ) : (
                                         <>
-                                            <span>📦</span>
+                                            <Package size={20} />
                                             Download Again
                                         </>
                                     )}
                                 </button>
 
                                 <div className="text-center">
-                                    <p className="text-xs text-[#a7a7a7] bg-[#f0f0f0] py-2 px-4 rounded-lg inline-block">
-                                        🔒 Ảnh của bạn sẽ được lưu trữ trong 48 giờ, sau đó sẽ tự động xóa để bảo mật.
+                                    <p className="text-xs text-[#a7a7a7] bg-[#f0f0f0] flex items-center justify-center gap-2 py-2 px-4 rounded-lg inline-flex">
+                                        <Lock size={14} /> Ảnh của bạn sẽ được lưu trữ trong 48 giờ, sau đó sẽ tự động xóa để bảo mật.
                                     </p>
                                 </div>
                             </div>

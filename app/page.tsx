@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { STICKER_PACKS } from '@/lib/packs';
+import { Sparkles, Palette, Camera, Wand2 } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -17,7 +18,8 @@ export default function Home() {
 
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FA5D29]/10 border border-[#FA5D29]/20 mb-8">
-              <span className="text-sm text-[#FA5D29] font-medium">✨ AI-Powered Stickers</span>
+              <Sparkles className="text-[#FA5D29]" size={16} />
+              <span className="text-sm text-[#FA5D29] font-medium">AI-Powered Stickers</span>
             </div>
 
             {/* Headline */}
@@ -60,10 +62,10 @@ export default function Home() {
                     <span className="text-sm text-[#a7a7a7] mt-auto">Your Photo</span>
                   </div>
 
-                  {/* Arrow */}
+                  {/* Arrow / Decoration */}
                   <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-                    <div className="w-14 h-14 rounded-full bg-[#FA5D29] flex items-center justify-center text-xl shadow-md">
-                      ✨
+                    <div className="w-14 h-14 rounded-full bg-[#FA5D29] flex items-center justify-center text-white shadow-md">
+                      <Sparkles size={24} />
                     </div>
                   </div>
 
@@ -176,17 +178,17 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
-                  icon: '🎨',
+                  icon: <Palette size={48} className="text-[#FA5D29]" />,
                   title: 'Pick Your Style',
                   description: 'Choose from 6 artistic styles: Pixar 3D, Anime, Chibi, Watercolor, Pop Art, or Minimalist.'
                 },
                 {
-                  icon: '📸',
+                  icon: <Camera size={48} className="text-blue-500" />,
                   title: 'Upload Your Photo',
                   description: 'Choose a clear selfie with good lighting. Works best with one face clearly visible.'
                 },
                 {
-                  icon: '✨',
+                  icon: <Wand2 size={48} className="text-purple-500" />,
                   title: 'Get Your Stickers',
                   description: 'Our AI creates 6 unique expressions. Download as PNG or add directly to your messenger!'
                 }
@@ -196,7 +198,7 @@ export default function Home() {
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#FA5D29] flex items-center justify-center text-sm font-bold text-white shadow-sm">
                     {i + 1}
                   </div>
-                  <div className="text-5xl mb-6 mt-2 group-hover:scale-110 transition-transform">{step.icon}</div>
+                  <div className="mb-6 mt-2 flex justify-center group-hover:scale-110 transition-transform">{step.icon}</div>
                   <h3 className="text-xl font-semibold mb-3 text-[#222222]">{step.title}</h3>
                   <p className="text-[#a7a7a7] text-sm leading-relaxed">{step.description}</p>
                 </div>
