@@ -242,6 +242,13 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
                             `https://t.me/addstickers/${packName}`
                         );
                         console.log(`[Telegram] Successfully sent pack to user.`);
+
+                        // Save the pack URL to the job
+                        const packUrl = `https://t.me/addstickers/${packName}`;
+                        await supabase
+                            .from('sticker_jobs')
+                            .update({ telegram_pack_url: packUrl })
+                            .eq('id', jobId);
                     }
                 } catch (tgError) {
                     console.error('[Telegram] Failed to create sticker pack:', tgError);

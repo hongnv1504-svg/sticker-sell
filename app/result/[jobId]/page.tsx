@@ -21,6 +21,7 @@ export default function ResultPage({ params }: Props) {
     const [isPaid, setIsPaid] = useState(false);
     const [email, setEmail] = useState('');
     const [isEmailSent, setIsEmailSent] = useState(false);
+    const [telegramPackUrl, setTelegramPackUrl] = useState<string | null>(null);
 
     const [status, setStatus] = useState<string>('pending');
     const [progress, setProgress] = useState(0);
@@ -42,6 +43,9 @@ export default function ResultPage({ params }: Props) {
                 setIsPaid(data.isPaid);
                 setStatus(data.job?.status || 'pending');
                 setProgress(data.job?.progress || 0);
+                if (data.job?.telegramPackUrl) {
+                    setTelegramPackUrl(data.job.telegramPackUrl);
+                }
 
                 // If not paid, redirect to paywall
                 if (!data.isPaid) {
@@ -173,6 +177,20 @@ export default function ResultPage({ params }: Props) {
                         {error && (
                             <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
                                 {error}
+                            </div>
+                        )}
+
+                        {telegramPackUrl && (
+                            <div className="mb-6">
+                                <a
+                                    href={telegramPackUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn w-full flex items-center justify-center gap-2 bg-[#0088cc] hover:bg-[#0077b3] text-white border-transparent"
+                                >
+                                    <span className="text-xl">✈️</span>
+                                    Add to Telegram
+                                </a>
                             </div>
                         )}
 

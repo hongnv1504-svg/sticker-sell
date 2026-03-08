@@ -57,6 +57,7 @@ export async function GET(
                 status: job.status,
                 progress: liveProgress,
                 createdAt: job.created_at,
+                telegramPackUrl: job.telegram_pack_url,
             },
             stickers: readyStickers.map((s: any) => ({
                 id: s.id,
