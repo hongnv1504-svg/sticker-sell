@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
         const file = formData.get('file') as File | null;
         const packId = formData.get('packId') as string | null;
+        const telegramToken = formData.get('telegram_token') as string | null;
 
         if (!file) {
             return NextResponse.json(
@@ -83,7 +84,8 @@ export async function POST(request: NextRequest) {
                 status: 'pending',
                 progress: 0,
                 source_image_url: sourceImageUrl,
-                style_key: pack.styleKey
+                style_key: pack.styleKey,
+                ...(telegramToken ? { telegram_token: telegramToken } : {})
             });
 
         if (jobError) {
@@ -156,6 +158,99 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
             .from('sticker_jobs')
             .update({ status: 'completed' })
             .eq('id', jobId);
+
+        // --- Telegram Integration: Create Sticker Pack ---
+        const { data: jobData } = await supabase
+            .from('sticker_jobs')
+            .select('telegram_token')
+            .eq('id', jobId)
+            .single();
+
+        if (jobData?.telegram_token) {
+            console.log(`[Telegram] Job has token, finding session for token: ${jobData.telegram_token}`);
+            const { data: session } = await supabase
+                .from('telegram_sessions')
+                .select('telegram_user_id, chat_id')
+                .eq('token', jobData.telegram_token)
+                .single();
+
+            if (session) {
+                console.log(`[Telegram] Found session for user ${session.telegram_user_id}, pushing stickers...`);
+                try {
+                    const { buildPackName, createNewStickerSet, addStickerToSet, uploadStickerFile, sendMessage } = await import('@/lib/telegram');
+
+                    const { data: generatedStickers } = await supabase
+                        .from('generated_stickers')
+                        .select('emotion, image_url')
+                        .eq('job_id', jobId);
+
+                    if (generatedStickers && generatedStickers.length > 0) {
+                        const EMOTIONS_TO_EMOJI: Record<string, string> = {
+                            laughing: '😂',
+                            affectionate: '🥰',
+                            thinking: '🤔',
+                            winking: '😉',
+                            blowing_kiss: '😘',
+                            crying: '😢',
+                        };
+
+                        const packName = buildPackName(jobId);
+
+                        // Process the first sticker to create the pack
+                        console.log(`[Telegram] Creating pack ${packName}`);
+                        const firstSticker = generatedStickers[0];
+
+                        // We need to fetch the image buffer from the data URL
+                        const fetchBuffer = async (url: string) => {
+                            if (url.startsWith('data:')) {
+                                return Buffer.from(url.split(',')[1], 'base64');
+                            }
+                            const res = await fetch(url);
+                            return Buffer.from(await res.arrayBuffer());
+                        };
+
+                        const firstBuffer = await fetchBuffer(firstSticker.image_url);
+                        const firstFileId = await uploadStickerFile(session.telegram_user_id, firstBuffer);
+
+                        await createNewStickerSet({
+                            telegramUserId: session.telegram_user_id,
+                            shortName: jobId.replace(/-/g, '').substring(0, 12).toLowerCase(),
+                            title: 'My AI Stickers',
+                            stickerFileId: firstFileId,
+                            emoji: EMOTIONS_TO_EMOJI[firstSticker.emotion] || '😊'
+                        });
+
+                        // Add the rest
+                        for (let i = 1; i < generatedStickers.length; i++) {
+                            const sticker = generatedStickers[i];
+                            console.log(`[Telegram] Adding sticker ${i + 1}/${generatedStickers.length}`);
+                            const buffer = await fetchBuffer(sticker.image_url);
+                            const fileId = await uploadStickerFile(session.telegram_user_id, buffer);
+                            await addStickerToSet({
+                                telegramUserId: session.telegram_user_id,
+                                packName,
+                                stickerFileId: fileId,
+                                emoji: EMOTIONS_TO_EMOJI[sticker.emotion] || '😊'
+                            });
+                        }
+
+                        // Send success message
+                        await sendMessage(
+                            session.chat_id,
+                            `🎉 <b>Hoàn tất!</b> Sticker của bạn đã sẵn sàng.\n\n` +
+                            `👉 Click vào đây để thêm vào Telegram:\n` +
+                            `https://t.me/addstickers/${packName}`
+                        );
+                        console.log(`[Telegram] Successfully sent pack to user.`);
+                    }
+                } catch (tgError) {
+                    console.error('[Telegram] Failed to create sticker pack:', tgError);
+                    // We don't fail the whole job if telegram fails
+                }
+            } else {
+                console.log(`[Telegram] No session found for token: ${jobData.telegram_token}`);
+            }
+        }
 
     } catch (error) {
         console.error('Generation error:', error);

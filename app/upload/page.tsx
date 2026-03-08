@@ -13,6 +13,7 @@ function UploadContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const packId = searchParams.get('pack');
+    const telegramToken = searchParams.get('tg');
 
     const [selectedPack, setSelectedPack] = useState<StickerPack>(getDefaultPack());
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -48,6 +49,9 @@ function UploadContent() {
             const formData = new FormData();
             formData.append('file', selectedFile);
             formData.append('packId', selectedPack.id);
+            if (telegramToken) {
+                formData.append('telegram_token', telegramToken);
+            }
 
             // Upload image
             const response = await fetch('/api/upload', {
