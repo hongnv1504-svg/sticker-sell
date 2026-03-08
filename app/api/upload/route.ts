@@ -127,31 +127,31 @@ export async function startGeneration(jobId: string, sourceImageUrl: string, sty
         const { generateSingleSticker } = await import('@/lib/ai/generate-stickers');
         const { STICKER_EMOTIONS } = await import('@/lib/types');
 
-        // Generate and save each sticker immediately as it completes
-        for (let i = 0; i < STICKER_EMOTIONS.length; i++) {
-            const emotion = STICKER_EMOTIONS[i];
-            console.log(`[Generation] Generating sticker ${i + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
+        // Generate all stickers concurrently
+        await Promise.all(STICKER_EMOTIONS.map(async (emotion, index) => {
+            console.log(`[Generation] Generating sticker ${index + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
 
-            const sticker = await generateSingleSticker(sourceImageUrl, styleKey, emotion);
+            try {
+                const sticker = await generateSingleSticker(sourceImageUrl, styleKey, emotion);
 
-            // Save immediately so frontend can show it right away
-            await supabase
-                .from('generated_stickers')
-                .insert({
-                    job_id: jobId,
-                    emotion: sticker.emotion,
-                    image_url: sticker.imageUrl,
-                    thumbnail_url: sticker.thumbnailUrl,
-                });
+                // Save immediately so frontend can show it right away
+                await supabase
+                    .from('generated_stickers')
+                    .insert({
+                        job_id: jobId,
+                        emotion: sticker.emotion,
+                        image_url: sticker.imageUrl,
+                        thumbnail_url: sticker.thumbnailUrl,
+                    });
 
-            // Update progress count
-            await supabase
-                .from('sticker_jobs')
-                .update({ progress: i + 1 })
-                .eq('id', jobId);
+                // Update progress count (not perfect since they finish out of order, but it works as a counter)
+                await supabase.rpc('increment_job_progress', { row_id: jobId });
 
-            console.log(`[Generation] ✅ Saved sticker ${i + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
-        }
+                console.log(`[Generation] ✅ Saved sticker ${index + 1}/${STICKER_EMOTIONS.length}: ${emotion}`);
+            } catch (err) {
+                console.error(`[Generation] ❌ Failed sticker ${emotion}`, err);
+            }
+        }));
 
         // Mark as completed
         await supabase
