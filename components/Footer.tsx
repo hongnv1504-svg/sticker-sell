@@ -4,7 +4,7 @@ export default function Footer() {
     return (
         <footer className="border-t border-[#ededed] mt-20 bg-[#f8f8f8]">
             <div className="max-w-6xl mx-auto px-6 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
                     {/* Brand */}
                     <div className="col-span-1 md:col-span-2">
                         <Link href="/" className="flex items-center gap-2 mb-4">
@@ -52,6 +52,22 @@ export default function Footer() {
                                 <Link href="/terms" className="text-[#a7a7a7] hover:text-[#FA5D29] transition-colors text-sm">
                                     Terms of Service
                                 </Link>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-[#222222] mb-4 text-sm">Contact Us</h4>
+                        <ul className="space-y-2">
+                            <li>
+                                <span className="text-[#a7a7a7] text-sm flex items-center gap-2">
+                                    <span>👤</span> NGO VAN HONG
+                                </span>
+                            </li>
+                            <li>
+                                <a href="mailto:hong.nv1504@gmail.com" className="text-[#a7a7a7] hover:text-[#FA5D29] transition-colors text-sm flex items-center gap-2">
+                                    <span>✉️</span> hong.nv1504@gmail.com
+                                </a>
                             </li>
                         </ul>
                     </div>
