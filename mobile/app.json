@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "StickerMe",
+    "slug": "stickerme",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "stickerme",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#06060A"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "StickerMe needs access to your photos to create stickers.",
+          "cameraPermission": "StickerMe needs your camera to take a selfie for sticker creation."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow StickerMe to save your stickers to Photos.",
+          "savePhotosPermission": "Allow StickerMe to save stickers to your photo library."
+        }
+      ],
+      "expo-sharing"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.stickerme",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "071bd980-d16d-4530-a9f8-a1d25ad2feae"
+      }
+    }
+  }
+}
