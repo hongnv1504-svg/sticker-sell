@@ -152,9 +152,8 @@ const styles = StyleSheet.create({
   backText: { fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.textMuted },
   hero: { alignItems: 'center', paddingVertical: SPACING.lg },
   heroPhotoWrap: {
-    width: 160, height: 200, borderRadius: RADIUS.xl,
+    width: 120, height: 120, borderRadius: RADIUS.xl,
     overflow: 'hidden', marginBottom: 16,
-    // subtle shadow
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.35,
