@@ -1,20 +1,33 @@
 export const API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'https://stickermeapp.ink';
 
 export const COLORS = {
-  bg: '#06060A',
-  surface: '#111114',
-  card: '#1A1A1F',
-  elevated: '#222228',
-  border: '#2A2A32',
-  text: '#FFFFFF',
-  textSecondary: '#999999',
-  textMuted: '#555555',
-  primary: '#845EF7',
-  pink: '#FF6B9D',
-  success: '#34C759',
+  // Backgrounds — deep dark purple-black
+  bg: '#16131E',       // near-black, purple undertone
+  surface: '#1F1C2B',  // section backgrounds
+  card: '#2B2739',     // cards, list items
+  elevated: '#363348', // modals, bottom sheets
+
+  // Borders
+  border: '#3E3A52',   // subtle dividers
+
+  // Text
+  text: '#F2F8EF',          // Moon Mint — warm near-white
+  textSecondary: '#B8BBD5', // Soft Lavender — labels, hints
+  textMuted: '#8A8799',     // placeholders, disabled
+
+  // Accent / CTA — Warm Peach (pastel, not neon)
+  primary: '#F9C5B1',  // Warm Peach — CTA buttons
+  pink: '#E8B4C8',     // Soft Pink — tags, gradients
+
+  // System
+  success: '#30D158',
   error: '#FF453A',
-  warning: '#FFB432',
+  warning: '#FFB430',
   info: '#0A84FF',
+
+  // Overlays (for image backgrounds)
+  overlay: 'rgba(0,0,0,0.55)',
+  overlayDark: 'rgba(0,0,0,0.72)',
 };
 
 export const FONTS = {
@@ -43,117 +56,139 @@ export const SPACING = {
   screen: 18,
 };
 
+const CDN = 'https://stickermeapp.ink/stickers';
+
 export interface StickerStyle {
   id: string;           // backend packId
   name: string;
   emoji: string;
-  color: string;
+  accent: string;       // per-style pastel accent color
   gradient: [string, string];
   desc: string;
   tag?: string;
-  expressions: Array<{ name: string; emoji: string }>;
+  referenceImage: string; // real human photo — shown as hero on preview screen
+  sampleImage: string;    // cartoon sticker preview (used in onboarding/home grid)
+  expressions: Array<{ name: string; emoji: string; imageUrl: string }>;
 }
 
 export const STYLES: StickerStyle[] = [
   {
-    id: 'pixar-3d',
+    id: '3d-cartoon',
     name: '3D Cartoon',
     emoji: '🎬',
-    color: '#FF6B9D',
-    gradient: ['#FF6B9D', '#c44569'],
+    accent: '#F9C5B1',                        // Warm Peach — ấm, cute, friendly
+    gradient: ['#F9C5B1', '#F0A898'],
     desc: 'Adorable 3D characters with big expressive eyes',
     tag: 'Most Popular',
+    referenceImage: `${CDN}/3d-cartoon/reference.jpg`,
+    sampleImage: `${CDN}/3d-cartoon/laughing.png`,
     expressions: [
-      { name: 'Happy', emoji: '😆' },
-      { name: 'Love', emoji: '🥰' },
-      { name: 'Angry', emoji: '😤' },
-      { name: 'Shocked', emoji: '😲' },
-      { name: 'Cool', emoji: '😎' },
-      { name: 'Sad', emoji: '🥺' },
+      { name: 'Happy',   emoji: '😆', imageUrl: `${CDN}/3d-cartoon/laughing.png` },
+      { name: 'Love',    emoji: '🥰', imageUrl: `${CDN}/3d-cartoon/affectionate.png` },
+      { name: 'Thinking',emoji: '🤔', imageUrl: `${CDN}/3d-cartoon/thinking.png` },
+      { name: 'Winking', emoji: '😉', imageUrl: `${CDN}/3d-cartoon/winking.png` },
+      { name: 'Kiss',    emoji: '😘', imageUrl: `${CDN}/3d-cartoon/blowing_kiss.png` },
+      { name: 'Sad',     emoji: '🥺', imageUrl: `${CDN}/3d-cartoon/crying.png` },
     ],
   },
   {
     id: 'anime-kawaii',
     name: 'Anime Kawaii',
     emoji: '🌸',
-    color: '#845EF7',
-    gradient: ['#845EF7', '#5f3dc4'],
+    accent: '#B8BBD5',                        // Soft Lavender — dreamy, Japanese vibes
+    gradient: ['#B8BBD5', '#9B9DBF'],
     desc: 'Japanese anime style with sparkly eyes',
+    referenceImage: `${CDN}/anime-kawaii/reference.jpg`,
+    sampleImage: `${CDN}/anime-kawaii/laughing.png`,
     expressions: [
-      { name: 'Happy', emoji: '✨' },
-      { name: 'Love', emoji: '💖' },
-      { name: 'Cute', emoji: '🎀' },
-      { name: 'Blush', emoji: '😻' },
-      { name: 'Star', emoji: '⭐' },
-      { name: 'Smile', emoji: '😊' },
+      { name: 'Happy',   emoji: '✨', imageUrl: `${CDN}/anime-kawaii/laughing.png` },
+      { name: 'Love',    emoji: '💖', imageUrl: `${CDN}/anime-kawaii/affectionate.png` },
+      { name: 'Thinking',emoji: '🎀', imageUrl: `${CDN}/anime-kawaii/thinking.png` },
+      { name: 'Winking', emoji: '😊', imageUrl: `${CDN}/anime-kawaii/winking.png` },
+      { name: 'Kiss',    emoji: '😘', imageUrl: `${CDN}/anime-kawaii/blowing_kiss.png` },
+      { name: 'Sad',     emoji: '😢', imageUrl: `${CDN}/anime-kawaii/crying.png` },
     ],
   },
   {
     id: 'chibi-game',
     name: 'Chibi Gamer',
     emoji: '🎮',
-    color: '#20C997',
-    gradient: ['#20C997', '#0ca678'],
+    accent: '#C8E6C0',                        // Mint Green — gaming nhưng pastel
+    gradient: ['#C8E6C0', '#A8CFA0'],
     desc: 'Gaming-inspired chibi with RPG vibes',
+    referenceImage: `${CDN}/chibi-game/reference.jpg`,
+    sampleImage: `${CDN}/chibi-game/laughing.png`,
     expressions: [
-      { name: 'Attack', emoji: '⚔️' },
-      { name: 'Shield', emoji: '🛡️' },
-      { name: 'Win', emoji: '🏆' },
-      { name: 'Fire', emoji: '🔥' },
-      { name: 'Gem', emoji: '💎' },
-      { name: 'Target', emoji: '🎯' },
+      { name: 'Happy',   emoji: '🏆', imageUrl: `${CDN}/chibi-game/laughing.png` },
+      { name: 'Love',    emoji: '💎', imageUrl: `${CDN}/chibi-game/affectionate.png` },
+      { name: 'Thinking',emoji: '🤔', imageUrl: `${CDN}/chibi-game/thinking.png` },
+      { name: 'Winking', emoji: '😉', imageUrl: `${CDN}/chibi-game/winking.png` },
+      { name: 'Kiss',    emoji: '😘', imageUrl: `${CDN}/chibi-game/blowing_kiss.png` },
+      { name: 'Sad',     emoji: '🥺', imageUrl: `${CDN}/chibi-game/crying.png` },
     ],
   },
   {
     id: 'watercolor-soft',
     name: 'Watercolor',
     emoji: '🎨',
-    color: '#F06595',
-    gradient: ['#F06595', '#d6336c'],
+    accent: '#E8B4C8',                        // Soft Pink — romantic, dreamy
+    gradient: ['#E8B4C8', '#D09AB0'],
     desc: 'Gentle watercolor with dreamy pastel vibes',
+    referenceImage: `${CDN}/watercolor-soft/reference.jpg`,
+    sampleImage: `${CDN}/watercolor-soft/laughing.png`,
     expressions: [
-      { name: 'Rainbow', emoji: '🌈' },
-      { name: 'Cloud', emoji: '☁️' },
-      { name: 'Leaf', emoji: '🌿' },
-      { name: 'Butterfly', emoji: '🦋' },
-      { name: 'Flower', emoji: '💐' },
-      { name: 'Nature', emoji: '🍃' },
+      { name: 'Happy',   emoji: '🌸', imageUrl: `${CDN}/watercolor-soft/laughing.png` },
+      { name: 'Love',    emoji: '💐', imageUrl: `${CDN}/watercolor-soft/affectionate.png` },
+      { name: 'Thinking',emoji: '🌿', imageUrl: `${CDN}/watercolor-soft/thinking.png` },
+      { name: 'Winking', emoji: '🦋', imageUrl: `${CDN}/watercolor-soft/winking.png` },
+      { name: 'Kiss',    emoji: '😘', imageUrl: `${CDN}/watercolor-soft/blowing_kiss.png` },
+      { name: 'Sad',     emoji: '🌧️', imageUrl: `${CDN}/watercolor-soft/crying.png` },
     ],
   },
   {
     id: 'pop-art',
     name: 'Pop Art',
     emoji: '💥',
-    color: '#FD7E14',
-    gradient: ['#FD7E14', '#e8590c'],
+    accent: '#F5D5A0',                        // Soft Yellow — energetic nhưng mềm
+    gradient: ['#F5D5A0', '#E0BE80'],
     desc: 'Bold comic book style with halftone dots',
+    referenceImage: `${CDN}/pop-art/reference.jpg`,
+    sampleImage: `${CDN}/pop-art/laughing.png`,
     expressions: [
-      { name: 'Pow', emoji: '💢' },
-      { name: 'Zap', emoji: '⚡' },
-      { name: 'Chat', emoji: '💬' },
-      { name: 'Bang', emoji: '🎆' },
-      { name: 'Punch', emoji: '👊' },
-      { name: 'Star', emoji: '🌟' },
+      { name: 'Happy',   emoji: '😄', imageUrl: `${CDN}/pop-art/laughing.png` },
+      { name: 'Love',    emoji: '💕', imageUrl: `${CDN}/pop-art/affectionate.png` },
+      { name: 'Thinking',emoji: '💭', imageUrl: `${CDN}/pop-art/thinking.png` },
+      { name: 'Winking', emoji: '😜', imageUrl: `${CDN}/pop-art/winking.png` },
+      { name: 'Kiss',    emoji: '💋', imageUrl: `${CDN}/pop-art/blowing_kiss.png` },
+      { name: 'Sad',     emoji: '😭', imageUrl: `${CDN}/pop-art/crying.png` },
     ],
   },
   {
     id: 'minimalist-line',
     name: 'Minimal Line',
     emoji: '✏️',
-    color: '#868E96',
-    gradient: ['#868E96', '#495057'],
+    accent: '#D0CDD4',                        // Cool Gray — neutral, elegant
+    gradient: ['#D0CDD4', '#B0ADB4'],
     desc: 'Clean single-line art with elegant simplicity',
     tag: 'New',
+    referenceImage: `${CDN}/minimalist-line/reference.jpg`,
+    sampleImage: `${CDN}/minimalist-line/laughing.png`,
     expressions: [
-      { name: 'Wave', emoji: '〰️' },
-      { name: 'Circle', emoji: '○' },
-      { name: 'Triangle', emoji: '△' },
-      { name: 'Square', emoji: '□' },
-      { name: 'Star', emoji: '✦' },
-      { name: 'Ring', emoji: '◎' },
+      { name: 'Happy',   emoji: '😊', imageUrl: `${CDN}/minimalist-line/laughing.png` },
+      { name: 'Love',    emoji: '🤍', imageUrl: `${CDN}/minimalist-line/affectionate.png` },
+      { name: 'Thinking',emoji: '💭', imageUrl: `${CDN}/minimalist-line/thinking.png` },
+      { name: 'Winking', emoji: '😉', imageUrl: `${CDN}/minimalist-line/winking.png` },
+      { name: 'Kiss',    emoji: '🫦', imageUrl: `${CDN}/minimalist-line/blowing_kiss.png` },
+      { name: 'Sad',     emoji: '😔', imageUrl: `${CDN}/minimalist-line/crying.png` },
     ],
   },
 ];
+
+// One laughing image per style — used in onboarding burst & chat preview
+export const SAMPLE_EXPRESSIONS = STYLES.map(s => ({
+  name: s.name,
+  imageUrl: s.sampleImage,
+}));
 
 export const RC_PACKAGES = [
   {

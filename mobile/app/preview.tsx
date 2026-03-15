@@ -1,16 +1,20 @@
 import { useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, Animated,
+  ScrollView, Animated, Image,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next';
+import { styleKey } from '../lib/i18n';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 
 export default function PreviewScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { styleId } = useLocalSearchParams<{ styleId: string }>();
   const style = STYLES.find(s => s.id === styleId) ?? STYLES[0];
 
@@ -19,8 +23,8 @@ export default function PreviewScreen() {
 
   useEffect(() => {
     Animated.parallel([
-      Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true }),
-      Animated.timing(fadeAnim, { toValue: 1, duration: 350, useNativeDriver: true }),
+      Animated.spring(scaleAnim, { toValue: 1, tension: 120, friction: 8, useNativeDriver: true }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
     ]).start();
   }, []);
 
@@ -34,29 +38,35 @@ export default function PreviewScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Back */}
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={styles.backText}>← Back</Text>
+          <Text style={styles.backText}>{t('common.back')}</Text>
         </TouchableOpacity>
 
         <Animated.View style={{ opacity: fadeAnim }}>
-          {/* Style Hero */}
+          {/* Style Hero — real reference photo */}
           <View style={styles.hero}>
-            <Animated.View style={[styles.heroIcon, { backgroundColor: style.color + '18', transform: [{ scale: scaleAnim }] }]}>
-              <Text style={styles.heroEmoji}>{style.emoji}</Text>
+            <Animated.View style={[styles.heroPhotoWrap, { transform: [{ scale: scaleAnim }] }]}>
+              <Image
+                source={{ uri: style.referenceImage }}
+                style={styles.heroPhoto}
+                resizeMode="cover"
+              />
+              {/* accent ring */}
+              <View style={[styles.heroRing, { borderColor: style.accent }]} />
             </Animated.View>
-            <Text style={styles.heroName}>{style.name}</Text>
-            <Text style={styles.heroDesc}>{style.desc}</Text>
+            <Text style={styles.heroName}>{t(`styles.${styleKey(style.id)}.name`)}</Text>
+            <Text style={styles.heroDesc}>{t(`styles.${styleKey(style.id)}.desc`)}</Text>
           </View>
 
           {/* Expressions label */}
-          <Text style={styles.sectionLabel}>6 EXPRESSIONS YOU'LL GET</Text>
+          <Text style={styles.sectionLabel}>{t('preview.expressionsLabel')}</Text>
 
-          {/* Expression Grid */}
+          {/* Expression Grid — per-style images */}
           <View style={styles.grid}>
             {style.expressions.map((expr, i) => (
               <ExpressionTile
                 key={i}
                 expr={expr}
-                color={style.color}
+                color={style.accent}
                 index={i}
               />
             ))}
@@ -64,10 +74,17 @@ export default function PreviewScreen() {
 
           {/* What you get */}
           <View style={styles.infoCard}>
-            <Text style={styles.infoRow}>✨  6 unique stickers in {style.name} style</Text>
-            <Text style={styles.infoRow}>📱  Optimized for iMessage & WhatsApp</Text>
-            <Text style={styles.infoRow}>⚡  Ready in under 30 seconds</Text>
-            <Text style={styles.infoRow}>💾  Save to Photos or share directly</Text>
+            {([
+              ['star-outline',          t('preview.infoStickers', { name: t(`styles.${styleKey(style.id)}.name`) })],
+              ['phone-portrait-outline', t('preview.infoOptimized')],
+              ['flash-outline',         t('preview.infoFast')],
+              ['download-outline',      t('preview.infoDownload')],
+            ] as const).map(([icon, text], i) => (
+              <View key={i} style={styles.infoRow}>
+                <Ionicons name={icon} size={15} color={style.accent} style={styles.infoIcon} />
+                <Text style={styles.infoText}>{text}</Text>
+              </View>
+            ))}
           </View>
         </Animated.View>
       </ScrollView>
@@ -80,7 +97,7 @@ export default function PreviewScreen() {
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             style={styles.ctaButton}
           >
-            <Text style={styles.ctaText}>Get This Style →</Text>
+            <Text style={styles.ctaText}>{t('preview.cta')}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -93,7 +110,7 @@ function ExpressionTile({
   color,
   index,
 }: {
-  expr: { name: string; emoji: string };
+  expr: { name: string; imageUrl: string };
   color: string;
   index: number;
 }) {
@@ -103,6 +120,8 @@ function ExpressionTile({
     Animated.spring(scaleAnim, {
       toValue: 1,
       delay: index * 80,
+      tension: 130,
+      friction: 7,
       useNativeDriver: true,
     }).start();
   }, []);
@@ -110,7 +129,11 @@ function ExpressionTile({
   return (
     <Animated.View style={[styles.tile, { transform: [{ scale: scaleAnim }] }]}>
       <View style={[styles.tileInner, { backgroundColor: color + '10', borderColor: color + '18' }]}>
-        <Text style={styles.tileEmoji}>{expr.emoji}</Text>
+        <Image
+          source={{ uri: expr.imageUrl }}
+          style={styles.tileImage}
+          resizeMode="cover"
+        />
         <Text style={styles.tileName}>{expr.name}</Text>
       </View>
     </Animated.View>
@@ -128,11 +151,22 @@ const styles = StyleSheet.create({
   },
   backText: { fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.textMuted },
   hero: { alignItems: 'center', paddingVertical: SPACING.lg },
-  heroIcon: {
-    width: 80, height: 80, borderRadius: 24,
-    alignItems: 'center', justifyContent: 'center', marginBottom: 14,
+  heroPhotoWrap: {
+    width: 160, height: 200, borderRadius: RADIUS.xl,
+    overflow: 'hidden', marginBottom: 16,
+    // subtle shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
+    elevation: 10,
   },
-  heroEmoji: { fontSize: 42 },
+  heroPhoto: { width: '100%', height: '100%' },
+  heroRing: {
+    position: 'absolute', inset: 0,
+    borderRadius: RADIUS.xl, borderWidth: 2,
+    opacity: 0.5,
+  },
   heroName: {
     fontSize: 26, fontFamily: FONTS.extraBold, color: COLORS.text,
     letterSpacing: -0.5, marginBottom: 6,
@@ -152,9 +186,10 @@ const styles = StyleSheet.create({
   tile: { width: '30%' },
   tileInner: {
     borderRadius: RADIUS.md, borderWidth: 1,
-    paddingVertical: SPACING.md, alignItems: 'center',
+    paddingVertical: SPACING.sm, alignItems: 'center',
+    overflow: 'hidden',
   },
-  tileEmoji: { fontSize: 32, marginBottom: SPACING.xs },
+  tileImage: { width: 64, height: 64, borderRadius: 10, marginBottom: SPACING.xs },
   tileName: {
     fontSize: 11, fontFamily: FONTS.semiBold, color: COLORS.textSecondary,
   },
@@ -165,6 +200,11 @@ const styles = StyleSheet.create({
     gap: SPACING.sm,
   },
   infoRow: {
+    flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
+  },
+  infoIcon: { width: 20 },
+  infoText: {
+    flex: 1,
     fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary, lineHeight: 20,
   },
   ctaContainer: {
@@ -177,5 +217,5 @@ const styles = StyleSheet.create({
     height: 56, borderRadius: RADIUS.md,
     alignItems: 'center', justifyContent: 'center',
   },
-  ctaText: { fontSize: 17, fontFamily: FONTS.bold, color: '#fff' },
+  ctaText: { fontSize: 17, fontFamily: FONTS.bold, color: COLORS.text },
 });
