@@ -8,7 +8,7 @@ export const STICKER_EMOTIONS = [
     'crying'
 ] as const;
 
-export type StickerEmotion = typeof STICKER_EMOTIONS[number];
+export type StickerEmotion = 'laughing' | 'affectionate' | 'thinking' | 'winking' | 'blowing_kiss' | 'crying';
 
 // Emoji mappings for each emotion
 export const EMOTION_EMOJIS: Record<StickerEmotion, string> = {

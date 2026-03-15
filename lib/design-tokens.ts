@@ -182,7 +182,6 @@ export const emotionColors = {
 
 // ─── TYPE EXPORTS ─────────────────────────────────────────────
 export type PaletteKey    = keyof typeof palette;
-export type ColorToken    = typeof colors;
 export type GradientToken = keyof typeof gradients;
 export type ShadowToken   = keyof typeof shadows;
 export type RadiusToken   = keyof typeof radius;

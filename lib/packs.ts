@@ -18,10 +18,10 @@ export interface StickerPack {
 
 export const STICKER_PACKS: StickerPack[] = [
     {
-        id: 'pixar-3d',
-        name: 'Pixar 3D',
-        description: 'Adorable Pixar-style 3D characters with big expressive eyes',
-        style: 'Pixar-style 3D cartoon character, big eyes, chibi proportions, cute friendly',
+        id: '3d-cartoon',
+        name: '3D Cartoon',
+        description: 'Adorable 3D cartoon characters with big expressive eyes',
+        style: '3D cartoon character, big eyes, chibi proportions, cute friendly',
         styleKey: 'pixar3d',
         icon: '🎬',
         previewEmojis: ['😂', '🥰', '🤔', '😉', '😘', '😢'],
