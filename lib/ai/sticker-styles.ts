@@ -26,6 +26,14 @@ RENDERING ENGINE & QUALITY:
 - Smooth subsurface scattering on skin for friendly cartoon finish
 - High-resolution output suitable for Telegram and WhatsApp sticker packs
 
+FRAMING & COMPOSITION (CRITICAL — HIGHEST PRIORITY):
+- The full head and hair must be COMPLETELY visible with at least 10% white space above the top of the head
+- NEVER crop or cut off the head, hair, or any part of the face — this is an absolute rule
+- NEVER crop the left or right sides of the character
+- Character must be horizontally centered with equal white space on both sides
+- If the full body cannot fit in the frame, crop ONLY from the waist/legs downward
+- Face and head visibility is the ABSOLUTE TOP PRIORITY — always fully visible, always centered
+
 IDENTITY PRESERVATION (CRITICAL):
 - Use uploaded image as main reference for face shape, bone structure, and key identity features
 - Maintain strong facial likeness and recognizable traits
@@ -92,6 +100,14 @@ RENDERING ENGINE & QUALITY:
 - Clean anime linework with smooth cel shading
 - Soft diffused lighting with gentle highlights
 - High-resolution output suitable for Telegram and WhatsApp sticker packs
+
+FRAMING & COMPOSITION (CRITICAL — HIGHEST PRIORITY):
+- The full head and hair must be COMPLETELY visible with at least 10% white space above the top of the head
+- NEVER crop or cut off the head, hair, or any part of the face — this is an absolute rule
+- NEVER crop the left or right sides of the character
+- Character must be horizontally centered with equal white space on both sides
+- If the full body cannot fit in the frame, crop ONLY from the waist/legs downward
+- Face and head visibility is the ABSOLUTE TOP PRIORITY — always fully visible, always centered
 
 IDENTITY PRESERVATION (CRITICAL):
 - Use uploaded image as identity reference
@@ -160,6 +176,14 @@ RENDERING ENGINE & QUALITY:
 - Soft studio lighting with slight game-like rim light
 - High-resolution output suitable for Telegram and WhatsApp sticker packs
 
+FRAMING & COMPOSITION (CRITICAL — HIGHEST PRIORITY):
+- The full head and hair must be COMPLETELY visible with at least 10% white space above the top of the head
+- NEVER crop or cut off the head, hair, or any part of the face — this is an absolute rule
+- NEVER crop the left or right sides of the character
+- Character must be horizontally centered with equal white space on both sides
+- If the full body cannot fit in the frame, crop ONLY from the waist/legs downward
+- Face and head visibility is the ABSOLUTE TOP PRIORITY — always fully visible, always centered
+
 IDENTITY PRESERVATION (CRITICAL):
 - Use uploaded image as reference
 - Exaggerate head size and simplify facial features into chibi proportions while keeping likeness
@@ -226,6 +250,14 @@ RENDERING ENGINE & QUALITY:
 - Light watercolor texture with subtle pigment variation
 - Soft even lighting with watercolor-style flat illumination
 - High-resolution output suitable for Telegram and WhatsApp sticker packs
+
+FRAMING & COMPOSITION (CRITICAL — HIGHEST PRIORITY):
+- The full head and hair must be COMPLETELY visible with at least 10% white space above the top of the head
+- NEVER crop or cut off the head, hair, or any part of the face — this is an absolute rule
+- NEVER crop the left or right sides of the character
+- Character must be horizontally centered with equal white space on both sides
+- If the full body cannot fit in the frame, crop ONLY from the waist/legs downward
+- Face and head visibility is the ABSOLUTE TOP PRIORITY — always fully visible, always centered
 
 IDENTITY PRESERVATION (CRITICAL):
 - Use uploaded image as reference
@@ -294,6 +326,14 @@ RENDERING ENGINE & QUALITY:
 - Flat graphic lighting with high contrast
 - High-resolution output suitable for Telegram and WhatsApp sticker packs
 
+FRAMING & COMPOSITION (CRITICAL — HIGHEST PRIORITY):
+- The full head and hair must be COMPLETELY visible with at least 10% white space above the top of the head
+- NEVER crop or cut off the head, hair, or any part of the face — this is an absolute rule
+- NEVER crop the left or right sides of the character
+- Character must be horizontally centered with equal white space on both sides
+- If the full body cannot fit in the frame, crop ONLY from the waist/legs downward
+- Face and head visibility is the ABSOLUTE TOP PRIORITY — always fully visible, always centered
+
 IDENTITY PRESERVATION (CRITICAL):
 - Use uploaded image as reference
 - Simplify facial shapes into bold pop-art forms while keeping likeness
@@ -360,6 +400,14 @@ RENDERING ENGINE & QUALITY:
 - No texture, no shading, clean vector-style outlines only
 - Flat neutral lighting with no shadows
 - High-resolution output suitable for Telegram and WhatsApp sticker packs
+
+FRAMING & COMPOSITION (CRITICAL — HIGHEST PRIORITY):
+- The full head and hair must be COMPLETELY visible with at least 10% white space above the top of the head
+- NEVER crop or cut off the head, hair, or any part of the face — this is an absolute rule
+- NEVER crop the left or right sides of the character
+- Character must be horizontally centered with equal white space on both sides
+- If the full body cannot fit in the frame, crop ONLY from the waist/legs downward
+- Face and head visibility is the ABSOLUTE TOP PRIORITY — always fully visible, always centered
 
 IDENTITY PRESERVATION (CRITICAL):
 - Use uploaded image as reference
