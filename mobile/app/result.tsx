@@ -6,20 +6,24 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
+import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 import { getJobStatus, JobStatus } from '../lib/api';
 
 export default function ResultScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { jobId, styleId } = useLocalSearchParams<{ jobId: string; styleId: string }>();
   const style = STYLES.find(s => s.id === styleId) ?? STYLES[0];
 
   const [stickers, setStickers] = useState<JobStatus['stickers']>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [savingAll, setSavingAll] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -28,12 +32,23 @@ export default function ResultScreen() {
     loadStickers();
   }, []);
 
-  async function loadStickers() {
+  async function loadStickers(attempt = 1) {
+    setLoadError(false);
+    setLoading(true);
     try {
-      const status = await getJobStatus(jobId!);
-      setStickers(status.stickers);
+      // Retry up to 3 times — handles transient network errors and DB timing races
+      for (let i = 0; i < attempt; i++) {
+        const status = await getJobStatus(jobId!);
+        if (status.stickers.length > 0 || status.status === 'failed') {
+          setStickers(status.stickers);
+          return;
+        }
+        // Job completed but stickers not visible yet — wait and retry
+        if (i < attempt - 1) await new Promise(r => setTimeout(r, 2000));
+        else setStickers(status.stickers);
+      }
     } catch {
-      Alert.alert('Error', 'Failed to load your stickers. Please try again.');
+      setLoadError(true);
     } finally {
       setLoading(false);
       Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }).start();
@@ -44,7 +59,7 @@ export default function ResultScreen() {
   async function saveAll() {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission required', 'Please allow Photos access in Settings to save stickers.');
+      Alert.alert(t('result.permissionTitle'), t('result.permissionMsg'));
       return;
     }
 
@@ -55,11 +70,11 @@ export default function ResultScreen() {
       for (const sticker of stickers) {
         await MediaLibrary.saveToLibraryAsync(sticker.imageUrl);
       }
-      Alert.alert('Saved!', `${stickers.length} stickers saved to your Photos.`, [
-        { text: 'OK', onPress: () => router.push(`/success?jobId=${jobId}&styleId=${style.id}`) },
+      Alert.alert(t('result.savedTitle'), t('result.savedMsg', { count: stickers.length }), [
+        { text: t('common.ok'), onPress: () => router.push(`/success?jobId=${jobId}&styleId=${style.id}`) },
       ]);
     } catch {
-      Alert.alert('Save failed', 'Some stickers could not be saved. Please try again.');
+      Alert.alert(t('result.saveErrorTitle'), t('result.saveErrorMsg'));
     } finally {
       setSavingAll(false);
     }
@@ -69,7 +84,7 @@ export default function ResultScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const available = await Sharing.isAvailableAsync();
     if (!available) {
-      Alert.alert('Sharing not available', 'Sharing is not available on this device.');
+      Alert.alert(t('result.shareUnavailableTitle'), t('result.shareUnavailableMsg'));
       return;
     }
     await Sharing.shareAsync(url, { mimeType: 'image/png' });
@@ -80,13 +95,29 @@ export default function ResultScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.successEmoji}>🎉</Text>
-          <Text style={styles.title}>Your stickers are ready!</Text>
-          <Text style={styles.subtitle}>Tap any sticker to share it directly</Text>
+          <Ionicons name="sparkles" size={52} color={style.accent} style={{ marginBottom: SPACING.sm }} />
+          <Text style={styles.title}>{t('result.title')}</Text>
+          <Text style={styles.subtitle}>{t('result.subtitle')}</Text>
         </View>
 
         {loading ? (
-          <ActivityIndicator color={COLORS.primary} style={{ marginVertical: SPACING.xl }} />
+          <ActivityIndicator color={style.accent} style={{ marginVertical: SPACING.xl }} />
+        ) : loadError ? (
+          <Animated.View style={[styles.errorCard, { opacity: fadeAnim }]}>
+            <Text style={styles.errorTitle}>{t('common.error')}</Text>
+            <Text style={styles.errorMsg}>{t('result.loadErrorMsg')}</Text>
+            <TouchableOpacity style={[styles.retryBtn, { backgroundColor: style.accent }]} onPress={() => loadStickers(3)}>
+              <Text style={styles.retryText}>Retry</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        ) : stickers.length === 0 ? (
+          <Animated.View style={[styles.errorCard, { opacity: fadeAnim }]}>
+            <Text style={styles.errorTitle}>{t('result.emptyTitle', 'No stickers found')}</Text>
+            <Text style={styles.errorMsg}>{t('result.emptyMsg', 'Generation may have failed. Please try again.')}</Text>
+            <TouchableOpacity style={[styles.retryBtn, { backgroundColor: style.accent }]} onPress={() => loadStickers(3)}>
+              <Text style={styles.retryText}>Retry</Text>
+            </TouchableOpacity>
+          </Animated.View>
         ) : (
           <Animated.View style={{ opacity: fadeAnim }}>
             {/* Sticker Grid 3×2 */}
@@ -103,12 +134,12 @@ export default function ResultScreen() {
 
             {/* Style info */}
             <View style={styles.styleRow}>
-              <View style={[styles.styleIcon, { backgroundColor: style.color + '20' }]}>
-                <Text style={styles.styleEmoji}>{style.emoji}</Text>
+              <View style={[styles.styleIcon, { backgroundColor: style.accent + '20' }]}>
+                <Image source={{ uri: style.sampleImage }} style={styles.styleImage} resizeMode="cover" />
               </View>
               <View>
                 <Text style={styles.styleName}>{style.name}</Text>
-                <Text style={styles.styleCount}>{stickers.length} stickers generated</Text>
+                <Text style={styles.styleCount}>{t('result.stickersGenerated', { count: stickers.length })}</Text>
               </View>
             </View>
           </Animated.View>
@@ -121,7 +152,7 @@ export default function ResultScreen() {
           style={styles.tryAnotherBtn}
           onPress={() => router.push('/home')}
         >
-          <Text style={styles.tryAnotherText}>Try another style</Text>
+          <Text style={[styles.tryAnotherText, { color: style.accent }]}>{t('result.tryAnother')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -135,9 +166,12 @@ export default function ResultScreen() {
             style={styles.saveButton}
           >
             {savingAll ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={COLORS.text} />
             ) : (
-              <Text style={styles.saveButtonText}>💾  Save All to Photos</Text>
+              <View style={styles.saveButtonRow}>
+                <Ionicons name="download-outline" size={18} color={COLORS.text} />
+                <Text style={styles.saveButtonText}>{'  '}{t('result.saveAll')}</Text>
+              </View>
             )}
           </LinearGradient>
         </TouchableOpacity>
@@ -162,7 +196,7 @@ function StickerTile({
       toValue: 1,
       delay: index * 100,
       useNativeDriver: true,
-      tension: 60,
+      tension: 120,
       friction: 7,
     }).start();
   }, []);
@@ -182,9 +216,6 @@ function StickerTile({
         <View style={styles.tileLabel}>
           <Text style={styles.tileLabelText}>{sticker.emotion}</Text>
         </View>
-        <View style={styles.shareHint}>
-          <Text style={styles.shareHintText}>↗</Text>
-        </View>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -201,7 +232,6 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.lg,
     paddingBottom: SPACING.lg,
   },
-  successEmoji: { fontSize: 52, marginBottom: SPACING.sm },
   title: {
     fontSize: 26, fontFamily: FONTS.extraBold, color: COLORS.text,
     letterSpacing: -0.5, marginBottom: 6,
@@ -231,23 +261,15 @@ const styles = StyleSheet.create({
   tileLabel: {
     position: 'absolute',
     bottom: 0, left: 0, right: 0,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: COLORS.overlayDark,
     paddingVertical: 4,
     alignItems: 'center',
   },
   tileLabelText: {
-    fontSize: 10, fontFamily: FONTS.semiBold, color: '#fff',
+    fontSize: 10, fontFamily: FONTS.semiBold, color: COLORS.text,
     textTransform: 'capitalize',
   },
-  shareHint: {
-    position: 'absolute',
-    top: 6, right: 6,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    width: 22, height: 22,
-    borderRadius: 11,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  shareHintText: { fontSize: 11, color: '#fff', fontFamily: FONTS.bold },
+  saveButtonRow: { flexDirection: 'row', alignItems: 'center' },
 
   styleRow: {
     flexDirection: 'row',
@@ -262,7 +284,7 @@ const styles = StyleSheet.create({
     width: 44, height: 44, borderRadius: 12,
     alignItems: 'center', justifyContent: 'center',
   },
-  styleEmoji: { fontSize: 22 },
+  styleImage: { width: 32, height: 32, borderRadius: 8 },
   styleName: { fontSize: 15, fontFamily: FONTS.bold, color: COLORS.text, marginBottom: 2 },
   styleCount: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textSecondary },
 
@@ -282,5 +304,26 @@ const styles = StyleSheet.create({
     height: 56, borderRadius: RADIUS.md,
     alignItems: 'center', justifyContent: 'center',
   },
-  saveButtonText: { fontSize: 17, fontFamily: FONTS.bold, color: '#fff' },
+  saveButtonText: { fontSize: 17, fontFamily: FONTS.bold, color: COLORS.text },
+
+  errorCard: {
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    padding: SPACING.lg,
+    alignItems: 'center',
+    gap: SPACING.sm,
+    marginVertical: SPACING.lg,
+  },
+  errorTitle: { fontSize: 18, fontFamily: FONTS.bold, color: COLORS.text },
+  errorMsg: {
+    fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary,
+    textAlign: 'center', lineHeight: 20,
+  },
+  retryBtn: {
+    marginTop: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.sm,
+    borderRadius: RADIUS.full,
+  },
+  retryText: { fontSize: 14, fontFamily: FONTS.bold, color: COLORS.bg },
 });
