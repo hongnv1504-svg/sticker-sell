@@ -1,18 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, Animated, ActivityIndicator, Alert,
+  ScrollView, Animated, ActivityIndicator, Alert, Image,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import type { PurchasesPackage } from 'react-native-purchases';
+import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES, RC_PACKAGES } from '../lib/constants';
 import { getOfferings, purchasePackage, restorePurchases } from '../lib/revenuecat';
+import { styleKey } from '../lib/i18n';
 
 export default function PricingScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { styleId } = useLocalSearchParams<{ styleId: string }>();
   const style = STYLES.find(s => s.id === styleId) ?? STYLES[0];
 
@@ -27,8 +31,8 @@ export default function PricingScreen() {
   useEffect(() => {
     loadOfferings();
     Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
-      Animated.timing(slideAnim, { toValue: 0, duration: 400, useNativeDriver: true }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+      Animated.spring(slideAnim, { toValue: 0, tension: 120, friction: 8, useNativeDriver: true }),
     ]).start();
   }, []);
 
@@ -51,12 +55,16 @@ export default function PricingScreen() {
       const pkg = packages.find(p => p.product.identifier === selected);
       if (pkg) {
         await purchasePackage(pkg);
+      } else if (packages.length > 0) {
+        // Packages loaded but selected ID not found — shouldn't happen
+        throw new Error('Selected package unavailable. Please restart the app.');
       }
+      // packages.length === 0 → dev / RC unavailable → allow through for testing
       // Purchase succeeded → navigate to upload
       router.push(`/upload?styleId=${style.id}`);
     } catch (err: any) {
       if (!err.userCancelled) {
-        Alert.alert('Purchase failed', err.message ?? 'Please try again.');
+        Alert.alert(t('pricing.purchaseErrorTitle'), err.message ?? 'Please try again.');
       }
     } finally {
       setPurchasing(false);
@@ -67,14 +75,14 @@ export default function PricingScreen() {
     setPurchasing(true);
     try {
       const info = await restorePurchases();
-      const hasCredits = Object.keys(info.entitlements.active).length > 0;
+      const hasCredits = Object.keys(info?.entitlements?.active ?? {}).length > 0;
       if (hasCredits) {
         router.push(`/upload?styleId=${style.id}`);
       } else {
-        Alert.alert('No purchases found', 'No previous purchases were found for this Apple ID.');
+        Alert.alert(t('pricing.noRestoreTitle'), t('pricing.noRestoreMsg'));
       }
     } catch {
-      Alert.alert('Restore failed', 'Could not restore purchases. Please try again.');
+      Alert.alert(t('pricing.restoreErrorTitle'), t('pricing.restoreErrorMsg'));
     } finally {
       setPurchasing(false);
     }
@@ -87,22 +95,23 @@ export default function PricingScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Back */}
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={styles.backText}>← Back</Text>
+          <Text style={styles.backText}>{t('common.back')}</Text>
         </TouchableOpacity>
 
         <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
           {/* Header */}
           <View style={styles.header}>
-            <View style={[styles.styleChip, { backgroundColor: style.color + '20' }]}>
-              <Text style={styles.styleChipText}>{style.emoji} {style.name}</Text>
+            <View style={[styles.styleChip, { backgroundColor: style.accent + '20' }]}>
+              <Image source={{ uri: style.sampleImage }} style={styles.styleChipImage} resizeMode="cover" />
+              <Text style={styles.styleChipText}>{t(`styles.${styleKey(style.id)}.name`)}</Text>
             </View>
-            <Text style={styles.title}>Choose your pack</Text>
-            <Text style={styles.subtitle}>One-time purchase • No subscription • Yours forever</Text>
+            <Text style={styles.title}>{t('pricing.title')}</Text>
+            <Text style={styles.subtitle}>{t('pricing.subtitle')}</Text>
           </View>
 
           {/* Package Cards */}
           {loading ? (
-            <ActivityIndicator color={COLORS.primary} style={{ marginVertical: SPACING.xl }} />
+            <ActivityIndicator color={style.accent} style={{ marginVertical: SPACING.xl }} />
           ) : (
             <View style={styles.packages}>
               {RC_PACKAGES.map((pkg, i) => {
@@ -116,6 +125,7 @@ export default function PricingScreen() {
                     pkg={pkg}
                     displayPrice={displayPrice}
                     isSelected={isSelected}
+                    accentColor={style.accent}
                     index={i}
                     onSelect={() => {
                       Haptics.selectionAsync();
@@ -129,32 +139,38 @@ export default function PricingScreen() {
 
           {/* What you get */}
           <View style={styles.perks}>
-            {[
-              { icon: '🎨', text: `${selectedRC.credits * 6} unique stickers in ${style.name} style` },
-              { icon: '⚡', text: 'Generated in under 30 seconds' },
-              { icon: '💾', text: 'Save to Photos or share directly' },
-              { icon: '📱', text: 'Optimized for iMessage & WhatsApp' },
-            ].map((p, i) => (
+            {([
+              ['color-palette-outline', t('pricing.featureStickers', { count: selectedRC.credits * 6, name: t(`styles.${styleKey(style.id)}.name`) })],
+              ['flash-outline',         t('pricing.featureFast')],
+              ['download-outline',      t('pricing.featureDownload')],
+              ['phone-portrait-outline', t('pricing.featureOptimized')],
+            ] as const).map(([icon, text], i) => (
               <View key={i} style={styles.perkRow}>
-                <Text style={styles.perkIcon}>{p.icon}</Text>
-                <Text style={styles.perkText}>{p.text}</Text>
+                <Ionicons name={icon} size={16} color={style.accent} style={styles.perkIcon} />
+                <Text style={styles.perkText}>{text}</Text>
               </View>
             ))}
           </View>
 
           {/* Trust */}
           <View style={styles.trust}>
-            <Text style={styles.trustText}>🔒  Secure payment via Apple Pay</Text>
-            <Text style={styles.trustText}>🔄  30-day money-back guarantee</Text>
+            <View style={styles.trustRow}>
+              <Ionicons name="lock-closed-outline" size={13} color={COLORS.textMuted} />
+              <Text style={styles.trustText}>{t('pricing.securePay')}</Text>
+            </View>
+            <View style={styles.trustRow}>
+              <Ionicons name="refresh-outline" size={13} color={COLORS.textMuted} />
+              <Text style={styles.trustText}>{t('pricing.moneyBack')}</Text>
+            </View>
           </View>
 
           {/* Restore */}
           <TouchableOpacity onPress={handleRestore} style={styles.restoreBtn} disabled={purchasing}>
-            <Text style={styles.restoreText}>Restore previous purchases</Text>
+            <Text style={[styles.restoreText, { color: style.accent }]}>{t('pricing.restore')}</Text>
           </TouchableOpacity>
 
           <Text style={styles.legal}>
-            Payment will be charged to your Apple ID account. This is a one-time purchase, not a subscription.
+            {t('pricing.legal')}
           </Text>
         </Animated.View>
       </ScrollView>
@@ -168,10 +184,10 @@ export default function PricingScreen() {
             style={styles.ctaButton}
           >
             {purchasing ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={COLORS.text} />
             ) : (
               <Text style={styles.ctaText}>
-                Get {selectedRC.credits === 1 ? '1 Pack' : `${selectedRC.credits} Packs`} — {selectedRC.price}
+                {selectedRC.credits === 1 ? t('pricing.ctaPack', { price: selectedRC.price }) : t('pricing.ctaPacks', { count: selectedRC.credits, price: selectedRC.price })}
               </Text>
             )}
           </LinearGradient>
@@ -185,21 +201,26 @@ function PackageCard({
   pkg,
   displayPrice,
   isSelected,
+  accentColor,
   index,
   onSelect,
 }: {
   pkg: typeof RC_PACKAGES[0];
   displayPrice: string;
   isSelected: boolean;
+  accentColor: string;
   index: number;
   onSelect: () => void;
 }) {
+  const { t } = useTranslation();
   const scaleAnim = useRef(new Animated.Value(0.92)).current;
 
   useEffect(() => {
     Animated.spring(scaleAnim, {
       toValue: 1,
       delay: index * 80,
+      tension: 130,
+      friction: 7,
       useNativeDriver: true,
     }).start();
   }, []);
@@ -211,41 +232,40 @@ function PackageCard({
         activeOpacity={0.85}
         style={[
           styles.card,
-          isSelected && styles.cardSelected,
-          pkg.isPopular && styles.cardPopular,
+          isSelected && [styles.cardSelected, { borderColor: accentColor, backgroundColor: accentColor + '0D' }],
+          pkg.isPopular && [styles.cardPopular, { borderColor: accentColor }],
         ]}
       >
         {pkg.isPopular && (
-          <LinearGradient
-            colors={['#FF6B9D', '#845EF7']}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={styles.popularBadge}
-          >
-            <Text style={styles.popularBadgeText}>MOST POPULAR</Text>
-          </LinearGradient>
+          <View style={[styles.popularBadge, { backgroundColor: accentColor }]}>
+            <Ionicons name="star" size={10} color={COLORS.bg} />
+            <Text style={[styles.popularBadgeText, { color: COLORS.bg }]}>{' '}{t('pricing.mostPopular')}</Text>
+          </View>
         )}
 
         {pkg.isAnchor && (
           <View style={styles.anchorBadge}>
-            <Text style={styles.anchorBadgeText}>BEST VALUE</Text>
+            <Text style={styles.anchorBadgeText}>{t('pricing.bestValue')}</Text>
           </View>
         )}
 
         <View style={styles.cardContent}>
           <View style={styles.cardLeft}>
             {/* Radio */}
-            <View style={[styles.radio, isSelected && styles.radioSelected]}>
-              {isSelected && <View style={styles.radioDot} />}
+            <View style={[styles.radio, isSelected && [styles.radioSelected, { borderColor: accentColor }]]}>
+              {isSelected && <View style={[styles.radioDot, { backgroundColor: accentColor }]} />}
             </View>
 
             <View style={styles.cardInfo}>
               <Text style={[styles.cardTitle, isSelected && styles.cardTitleSelected]}>
-                {pkg.title}
+                {t(`pricing.${pkg.credits === 6 ? 'allStyles' : pkg.credits === 3 ? 'threeStyles' : 'oneStyle'}`)}
               </Text>
-              <Text style={styles.cardDesc}>{pkg.desc}</Text>
+              <Text style={styles.cardDesc}>
+                {t(`pricing.${pkg.credits === 6 ? 'allStylesDesc' : pkg.credits === 3 ? 'threeStylesDesc' : 'oneStyleDesc'}`)}
+              </Text>
               {pkg.save && (
                 <View style={styles.saveBadge}>
-                  <Text style={styles.saveBadgeText}>{pkg.save}</Text>
+                  <Text style={styles.saveBadgeText}>{t('pricing.save22')}</Text>
                 </View>
               )}
             </View>
@@ -273,11 +293,15 @@ const styles = StyleSheet.create({
 
   header: { alignItems: 'center', paddingVertical: SPACING.lg },
   styleChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: SPACING.md,
     paddingVertical: 6,
     borderRadius: RADIUS.full,
     marginBottom: SPACING.md,
+    gap: 6,
   },
+  styleChipImage: { width: 18, height: 18, borderRadius: 4 },
   styleChipText: { fontSize: 13, fontFamily: FONTS.semiBold, color: COLORS.text },
   title: {
     fontSize: 28, fontFamily: FONTS.extraBold, color: COLORS.text,
@@ -306,12 +330,14 @@ const styles = StyleSheet.create({
   },
 
   popularBadge: {
+    flexDirection: 'row',
     paddingHorizontal: SPACING.md,
     paddingVertical: 5,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   popularBadgeText: {
-    fontSize: 10, fontFamily: FONTS.bold, color: '#fff', letterSpacing: 1.2,
+    fontSize: 10, fontFamily: FONTS.bold, color: COLORS.text, letterSpacing: 1.2,
   },
   anchorBadge: {
     backgroundColor: COLORS.elevated,
@@ -374,7 +400,8 @@ const styles = StyleSheet.create({
   perkText: { fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary, flex: 1 },
 
   trust: { gap: SPACING.xs, marginBottom: SPACING.lg },
-  trustText: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textMuted, textAlign: 'center' },
+  trustRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
+  trustText: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textMuted },
 
   restoreBtn: { alignItems: 'center', paddingVertical: SPACING.sm },
   restoreText: { fontSize: 13, fontFamily: FONTS.semiBold, color: COLORS.primary },
@@ -394,5 +421,5 @@ const styles = StyleSheet.create({
     height: 56, borderRadius: RADIUS.md,
     alignItems: 'center', justifyContent: 'center',
   },
-  ctaText: { fontSize: 17, fontFamily: FONTS.bold, color: '#fff' },
+  ctaText: { fontSize: 17, fontFamily: FONTS.bold, color: COLORS.text },
 });

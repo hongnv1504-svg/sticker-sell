@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   Animated, Alert, Image, ActivityIndicator,
@@ -8,10 +8,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 
 export default function UploadScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { styleId } = useLocalSearchParams<{ styleId: string }>();
   const style = STYLES.find(s => s.id === styleId) ?? STYLES[0];
 
@@ -19,6 +22,15 @@ export default function UploadScreen() {
   const [uploading, setUploading] = useState(false);
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim  = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(16)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+      Animated.spring(slideAnim, { toValue: 0, tension: 120, friction: 8, useNativeDriver: true }),
+    ]).start();
+  }, []);
 
   function animateTap() {
     Animated.sequence([
@@ -31,17 +43,26 @@ export default function UploadScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Camera access required', 'Please allow camera access in Settings to take a selfie.');
+      Alert.alert(t('upload.cameraTitle'), t('upload.cameraMsg'));
       return;
     }
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.85,
-    });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.85,
+      });
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
+    } catch (e: any) {
+      // Camera not available (e.g. iOS Simulator) — fall back to photo library
+      Alert.alert(
+        t('upload.cameraUnavailableTitle'),
+        t('upload.cameraUnavailableMsg'),
+        [{ text: t('upload.chooseFromLibrary'), onPress: pickFromLibrary }, { text: t('common.cancel'), style: 'cancel' }],
+      );
     }
   }
 
@@ -49,7 +70,7 @@ export default function UploadScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Photos access required', 'Please allow Photos access in Settings to choose a photo.');
+      Alert.alert(t('upload.photosTitle'), t('upload.photosMsg'));
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -81,14 +102,14 @@ export default function UploadScreen() {
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       {/* Back */}
       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-        <Text style={styles.backText}>← Back</Text>
+        <Text style={styles.backText}>{t('common.back')}</Text>
       </TouchableOpacity>
 
-      <View style={styles.content}>
+      <Animated.View style={[styles.content, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Your selfie</Text>
-          <Text style={styles.subtitle}>Use a clear, well-lit photo of your face</Text>
+          <Text style={styles.title}>{t('upload.title')}</Text>
+          <Text style={styles.subtitle}>{t('upload.subtitle')}</Text>
         </View>
 
         {/* Photo area */}
@@ -97,7 +118,7 @@ export default function UploadScreen() {
             <TouchableOpacity onPress={pickFromCamera} activeOpacity={0.9}>
               <Image source={{ uri: image }} style={styles.photoPreview} />
               <View style={styles.changeOverlay}>
-                <Text style={styles.changeText}>Tap to change</Text>
+                <Text style={styles.changeText}>{t('upload.tapToChange')}</Text>
               </View>
             </TouchableOpacity>
           ) : (
@@ -107,11 +128,11 @@ export default function UploadScreen() {
               activeOpacity={0.8}
             >
               <LinearGradient
-                colors={['#1A1A1F', '#111114']}
+                colors={[COLORS.surface, COLORS.card]}
                 style={styles.placeholderInner}
               >
-                <Text style={styles.cameraEmoji}>📸</Text>
-                <Text style={styles.cameraHint}>Take a selfie</Text>
+                <Ionicons name="camera" size={52} color={COLORS.textMuted} />
+                <Text style={styles.cameraHint}>{t('upload.takePhoto')}</Text>
               </LinearGradient>
             </TouchableOpacity>
           )}
@@ -120,26 +141,27 @@ export default function UploadScreen() {
         {/* Or pick from library */}
         {!image && (
           <TouchableOpacity style={styles.libraryBtn} onPress={pickFromLibrary}>
-            <Text style={styles.libraryText}>🖼️  Choose from Photos</Text>
+            <Ionicons name="images-outline" size={18} color={COLORS.textSecondary} />
+            <Text style={styles.libraryText}>{t('upload.chooseLibrary')}</Text>
           </TouchableOpacity>
         )}
 
         {/* Tips */}
         <View style={styles.tips}>
-          <Text style={styles.tipsLabel}>TIPS FOR BEST RESULTS</Text>
-          {[
-            ['😊', 'Face forward, neutral expression'],
-            ['💡', 'Good lighting, avoid shadows'],
-            ['🚫', 'No sunglasses or hats'],
-            ['📐', 'Face fills most of the frame'],
-          ].map(([emoji, text], i) => (
+          <Text style={styles.tipsLabel}>{t('upload.tipsLabel')}</Text>
+          {([
+            ['happy-outline',        t('upload.tip1')],
+            ['sunny-outline',        t('upload.tip2')],
+            ['glasses-outline',      t('upload.tip3')],
+            ['scan-outline',         t('upload.tip4')],
+          ] as const).map(([icon, text], i) => (
             <View key={i} style={styles.tipRow}>
-              <Text style={styles.tipEmoji}>{emoji}</Text>
+              <Ionicons name={icon} size={16} color={style.accent} style={styles.tipIcon} />
               <Text style={styles.tipText}>{text}</Text>
             </View>
           ))}
         </View>
-      </View>
+      </Animated.View>
 
       {/* CTA */}
       <View style={styles.ctaContainer}>
@@ -148,7 +170,7 @@ export default function UploadScreen() {
             style={styles.retakeBtn}
             onPress={pickFromLibrary}
           >
-            <Text style={styles.retakeText}>Choose different photo</Text>
+            <Text style={[styles.retakeText, { color: style.accent }]}>{t('upload.chooseDifferent')}</Text>
           </TouchableOpacity>
         )}
 
@@ -163,10 +185,10 @@ export default function UploadScreen() {
             style={styles.ctaButton}
           >
             {uploading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={COLORS.text} />
             ) : (
               <Text style={[styles.ctaText, !image && styles.ctaTextDisabled]}>
-                {image ? 'Create My Stickers →' : 'Take or Choose a Photo'}
+                {image ? t('upload.ctaReady') : t('upload.ctaEmpty')}
               </Text>
             )}
           </LinearGradient>
@@ -223,7 +245,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: SPACING.sm,
   },
-  cameraEmoji: { fontSize: 52 },
   cameraHint: {
     fontSize: 15, fontFamily: FONTS.semiBold, color: COLORS.textMuted,
   },
@@ -234,15 +255,18 @@ const styles = StyleSheet.create({
   changeOverlay: {
     position: 'absolute',
     bottom: 0, left: 0, right: 0,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: COLORS.overlay,
     paddingVertical: SPACING.sm,
     alignItems: 'center',
     borderBottomLeftRadius: RADIUS.xl,
     borderBottomRightRadius: RADIUS.xl,
   },
-  changeText: { fontSize: 13, fontFamily: FONTS.semiBold, color: '#fff' },
+  changeText: { fontSize: 13, fontFamily: FONTS.semiBold, color: COLORS.text },
 
   libraryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.lg,
     borderRadius: RADIUS.full,
@@ -266,8 +290,8 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5, marginBottom: 2,
   },
   tipRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
-  tipEmoji: { fontSize: 14, width: 22 },
-  tipText: { fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary },
+  tipIcon: { width: 22 },
+  tipText: { fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary, flex: 1 },
 
   ctaContainer: {
     paddingHorizontal: SPACING.screen,
@@ -287,6 +311,6 @@ const styles = StyleSheet.create({
     height: 56, borderRadius: RADIUS.md,
     alignItems: 'center', justifyContent: 'center',
   },
-  ctaText: { fontSize: 17, fontFamily: FONTS.bold, color: '#fff' },
+  ctaText: { fontSize: 17, fontFamily: FONTS.bold, color: COLORS.text },
   ctaTextDisabled: { color: COLORS.textMuted },
 });

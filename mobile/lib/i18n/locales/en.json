@@ -1,0 +1,162 @@
+{
+  "common": {
+    "back": "← Back",
+    "skip": "Skip",
+    "cancel": "Cancel",
+    "ok": "OK",
+    "error": "Error"
+  },
+  "onboarding": {
+    "screen1Title": "Your face.",
+    "screen1Highlight": "6 stickers.",
+    "screen1Desc": "Turn your selfie into AI sticker pack\nin 10 seconds",
+    "screen2Title": "6 styles.",
+    "screen2Highlight": "One you.",
+    "screen2Desc": "Pick any style that feels like you",
+    "screen3Title": "Use everywhere.",
+    "screen3Highlight": "Share with everyone.",
+    "screen3Desc": "Telegram, WhatsApp, iMessage, Discord\nYour stickers, everywhere",
+    "chatReceived": "Check out my new sticker!",
+    "chatReply": "Omg so cute, where'd you make it??",
+    "skip": "Skip",
+    "continue": "Continue",
+    "getStarted": "Create sticker now →"
+  },
+  "home": {
+    "title": "Choose Style",
+    "subtitle": "Pick a style, upload selfie, get 6 stickers",
+    "mostPopular": "Most Popular",
+    "new": "New"
+  },
+  "styles": {
+    "3dCartoon": {
+      "name": "3D Cartoon",
+      "desc": "Adorable 3D characters with big expressive eyes"
+    },
+    "animeKawaii": {
+      "name": "Anime Kawaii",
+      "desc": "Japanese anime style with sparkly eyes"
+    },
+    "chibiGamer": {
+      "name": "Chibi Gamer",
+      "desc": "Gaming-inspired chibi with RPG vibes"
+    },
+    "watercolor": {
+      "name": "Watercolor",
+      "desc": "Gentle watercolor with dreamy pastel vibes"
+    },
+    "popArt": {
+      "name": "Pop Art",
+      "desc": "Bold comic book style with halftone dots"
+    },
+    "minimalLine": {
+      "name": "Minimal Line",
+      "desc": "Clean single-line art with elegant simplicity"
+    }
+  },
+  "preview": {
+    "expressionsLabel": "6 EXPRESSIONS YOU'LL GET",
+    "cta": "Get This Style →",
+    "infoStickers": "6 unique stickers in {{name}} style",
+    "infoOptimized": "Optimized for iMessage & WhatsApp",
+    "infoFast": "Ready in under 30 seconds",
+    "infoDownload": "Save to Photos or share directly"
+  },
+  "upload": {
+    "title": "Your selfie",
+    "subtitle": "Use a clear, well-lit photo of your face",
+    "takePhoto": "Take a selfie",
+    "tapToChange": "Tap to change",
+    "chooseLibrary": "Choose from Photos",
+    "chooseDifferent": "Choose different photo",
+    "ctaReady": "Create My Stickers →",
+    "ctaEmpty": "Take or Choose a Photo",
+    "tipsLabel": "TIPS FOR BEST RESULTS",
+    "tip1": "Face forward, neutral expression",
+    "tip2": "Good lighting, avoid shadows",
+    "tip3": "No sunglasses or hats",
+    "tip4": "Face fills most of the frame",
+    "cameraTitle": "Camera access required",
+    "cameraMsg": "Please allow camera access in Settings to take a selfie.",
+    "cameraUnavailableTitle": "Camera unavailable",
+    "cameraUnavailableMsg": "Camera is not available on this device. Please choose a photo from your library instead.",
+    "chooseFromLibrary": "Choose from Library",
+    "photosTitle": "Photos access required",
+    "photosMsg": "Please allow Photos access in Settings to choose a photo."
+  },
+  "processing": {
+    "title": "Creating your stickers…",
+    "subtitle": "This usually takes 20–30 seconds",
+    "step0": "Uploading your photo",
+    "step1": "Analyzing your face",
+    "step2": "Creating 6 stickers",
+    "step3": "Finalizing artwork",
+    "errorTitle": "Oops!",
+    "errorNoImage": "No image selected. Please go back and choose a photo.",
+    "errorFailed": "Sticker generation failed. Please try again.",
+    "errorTimeout": "Generation timed out. Please try again.",
+    "errorAction": "← Go back and try again"
+  },
+  "result": {
+    "title": "Your stickers are ready!",
+    "subtitle": "Tap any sticker to share it directly",
+    "stickersGenerated": "{{count}} stickers generated",
+    "tryAnother": "Try another style",
+    "saveAll": "Save All to Photos",
+    "savedTitle": "Saved!",
+    "savedMsg": "{{count}} stickers saved to your Photos.",
+    "saveErrorTitle": "Save failed",
+    "saveErrorMsg": "Some stickers could not be saved. Please try again.",
+    "shareUnavailableTitle": "Sharing not available",
+    "shareUnavailableMsg": "Sharing is not available on this device.",
+    "permissionTitle": "Permission required",
+    "permissionMsg": "Please allow Photos access in Settings to save stickers.",
+    "loadErrorMsg": "Failed to load your stickers. Please try again."
+  },
+  "pricing": {
+    "title": "Choose your pack",
+    "subtitle": "One-time purchase • No subscription • Yours forever",
+    "mostPopular": "MOST POPULAR",
+    "bestValue": "BEST VALUE",
+    "save22": "SAVE 22%",
+    "featureStickers": "{{count}} unique stickers in {{name}} style",
+    "featureFast": "Generated in under 30 seconds",
+    "featureDownload": "Save to Photos or share directly",
+    "featureOptimized": "Optimized for iMessage & WhatsApp",
+    "securePay": "Secure payment via Apple Pay",
+    "moneyBack": "30-day money-back guarantee",
+    "restore": "Restore previous purchases",
+    "legal": "Payment will be charged to your Apple ID account. This is a one-time purchase, not a subscription.",
+    "ctaPack": "Get 1 Pack — {{price}}",
+    "ctaPacks": "Get {{count}} Packs — {{price}}",
+    "purchaseErrorTitle": "Purchase failed",
+    "noRestoreTitle": "No purchases found",
+    "noRestoreMsg": "No previous purchases were found for this Apple ID.",
+    "restoreErrorTitle": "Restore failed",
+    "restoreErrorMsg": "Could not restore purchases. Please try again.",
+    "allStyles": "All 6 Styles",
+    "allStylesDesc": "36 stickers • Every style",
+    "threeStyles": "3 Style Packs",
+    "threeStylesDesc": "18 stickers • Pick any 3",
+    "oneStyle": "1 Style Pack",
+    "oneStyleDesc": "6 stickers • This style"
+  },
+  "success": {
+    "title": "Stickers saved!",
+    "subtitle": "Your {{style}} stickers are in your Photos.\nReady to send on any app!",
+    "shareVia": "WORKS WITH",
+    "shareBtn": "Share Stickers",
+    "moreStyles": "MORE STYLES",
+    "browseAll": "Browse all 6 styles →",
+    "makeMore": "Make More Stickers",
+    "tgCardTitle": "Create Telegram Pack",
+    "tgCardSub": "512×512 PNG · 4 steps · free",
+    "modalTitle": "Create Telegram Pack",
+    "modalSub": "512×512 PNG — already Telegram-ready!",
+    "modalStep0": "@Stickers bot will open",
+    "modalStep1": "Type /newpack → set a name",
+    "modalStep2": "Send your sticker images from Photos",
+    "modalStep3": "Type /publish — pack is live!",
+    "modalOpenBot": "Open @Stickers Bot"
+  }
+}

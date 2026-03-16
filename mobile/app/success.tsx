@@ -1,28 +1,42 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  Animated, ScrollView,
+  Animated, ScrollView, Image, Linking, Modal,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 import { getJobStatus, JobStatus } from '../lib/api';
+import { styleKey } from '../lib/i18n';
+
+// Apps shown as static "works with" indicators (not buttons)
+const COMPATIBLE_APPS = [
+  { name: 'iMessage',  icon: 'chatbubble-ellipses-outline', color: '#34C759' },
+  { name: 'WhatsApp',  icon: 'logo-whatsapp',               color: '#25D366' },
+  { name: 'Telegram',  icon: 'paper-plane-outline',          color: '#229ED9' },
+  { name: 'Instagram', icon: 'logo-instagram',               color: '#E1306C' },
+] as const;
 
 export default function SuccessScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { jobId, styleId } = useLocalSearchParams<{ jobId: string; styleId: string }>();
   const style = STYLES.find(s => s.id === styleId) ?? STYLES[0];
 
   const [stickers, setStickers] = useState<JobStatus['stickers']>([]);
+  const [sharing, setSharing] = useState(false);
+  const [tgModal, setTgModal] = useState(false);
 
-  const checkAnim = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.5)).current;
+  const checkAnim  = useRef(new Animated.Value(0)).current;
+  const fadeAnim   = useRef(new Animated.Value(0)).current;
+  const scaleAnim  = useRef(new Animated.Value(0.5)).current;
 
-  // Other styles to upsell (exclude current)
   const otherStyles = STYLES.filter(s => s.id !== style.id).slice(0, 3);
 
   useEffect(() => {
@@ -31,8 +45,8 @@ export default function SuccessScreen() {
     Animated.sequence([
       Animated.delay(100),
       Animated.parallel([
-        Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true }),
-        Animated.timing(checkAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.spring(scaleAnim, { toValue: 1, tension: 120, friction: 8, useNativeDriver: true }),
+        Animated.timing(checkAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
       ]),
       Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
     ]).start();
@@ -42,29 +56,51 @@ export default function SuccessScreen() {
     }
   }, []);
 
-  async function shareToApp(appName: string) {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const available = await Sharing.isAvailableAsync();
-    if (!available || stickers.length === 0) return;
+  // Download a sticker URL to the local cache dir and return the local path
+  async function downloadToCache(url: string, filename: string): Promise<string> {
+    const localPath = `${FileSystem.cacheDirectory}${filename}`;
+    const { uri } = await FileSystem.downloadAsync(url, localPath);
+    return uri;
+  }
 
-    // Share first sticker as example
-    await Sharing.shareAsync(stickers[0].imageUrl, {
-      dialogTitle: `Share your ${style.name} sticker on ${appName}`,
-      mimeType: 'image/png',
-    });
+  // Share first sticker using local file path (native iOS share sheet)
+  async function handleShare() {
+    if (stickers.length === 0) return;
+    const available = await Sharing.isAvailableAsync();
+    if (!available) return;
+
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setSharing(true);
+    try {
+      const localPath = await downloadToCache(
+        stickers[0].imageUrl,
+        `sticker_${stickers[0].emotion}.png`,
+      );
+      await Sharing.shareAsync(localPath, { mimeType: 'image/png' });
+    } catch {
+      // User cancelled or sharing failed — silent
+    } finally {
+      setSharing(false);
+    }
+  }
+
+  async function openTgBot() {
+    setTgModal(false);
+    const tgDeep = 'tg://resolve?domain=Stickers';
+    const tgWeb  = 'https://t.me/Stickers';
+    const canOpen = await Linking.canOpenURL(tgDeep);
+    Linking.openURL(canOpen ? tgDeep : tgWeb);
   }
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+
         {/* Success checkmark */}
         <View style={styles.checkContainer}>
-          <Animated.View style={[
-            styles.checkCircle,
-            { transform: [{ scale: scaleAnim }] }
-          ]}>
+          <Animated.View style={[styles.checkCircle, { transform: [{ scale: scaleAnim }] }]}>
             <LinearGradient
-              colors={['#34C759', '#30d158']}
+              colors={[COLORS.success, COLORS.success + 'CC']}
               style={styles.checkGradient}
             >
               <Animated.Text style={[styles.checkMark, { opacity: checkAnim }]}>✓</Animated.Text>
@@ -73,38 +109,62 @@ export default function SuccessScreen() {
         </View>
 
         <Animated.View style={{ opacity: fadeAnim }}>
-          <Text style={styles.title}>Stickers saved!</Text>
+          <Text style={styles.title}>{t('success.title')}</Text>
           <Text style={styles.subtitle}>
-            Your {style.name} stickers are in your Photos.{'\n'}
-            Ready to send on any app!
+            {t('success.subtitle', { style: t(`styles.${styleKey(style.id)}.name`) })}
           </Text>
 
-          {/* Share buttons */}
+          {/* Share section */}
           <View style={styles.shareSection}>
-            <Text style={styles.sectionLabel}>SHARE VIA</Text>
-            <View style={styles.shareRow}>
-              {[
-                { name: 'iMessage', emoji: '💬', color: '#34C759' },
-                { name: 'WhatsApp', emoji: '📱', color: '#25D366' },
-                { name: 'Telegram', emoji: '✈️', color: '#229ED9' },
-                { name: 'Instagram', emoji: '📸', color: '#E1306C' },
-              ].map(app => (
-                <TouchableOpacity
+            {/* Static "works with" app indicators — not buttons */}
+            <Text style={styles.sectionLabel}>{t('success.shareVia')}</Text>
+            <View style={styles.appIndicatorRow}>
+              {COMPATIBLE_APPS.map(app => (
+                <View
                   key={app.name}
-                  style={[styles.shareApp, { backgroundColor: app.color + '18', borderColor: app.color + '30' }]}
-                  onPress={() => shareToApp(app.name)}
-                  activeOpacity={0.8}
+                  style={[styles.appIndicator, { backgroundColor: app.color + '18', borderColor: app.color + '30' }]}
                 >
-                  <Text style={styles.shareAppEmoji}>{app.emoji}</Text>
-                  <Text style={styles.shareAppName}>{app.name}</Text>
-                </TouchableOpacity>
+                  <Ionicons name={app.icon} size={22} color={app.color} />
+                  <Text style={styles.appIndicatorName}>{app.name}</Text>
+                </View>
               ))}
             </View>
+
+            {/* Single Share button */}
+            <TouchableOpacity
+              onPress={handleShare}
+              disabled={sharing || stickers.length === 0}
+              activeOpacity={0.85}
+              style={styles.shareBtn}
+            >
+              <Ionicons
+                name={sharing ? 'hourglass-outline' : 'share-outline'}
+                size={18}
+                color={COLORS.text}
+              />
+              <Text style={styles.shareBtnText}>{t('success.shareBtn')}</Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Upsell — try other styles */}
+          {/* Create Telegram Pack — separate feature */}
+          <TouchableOpacity
+            style={styles.tgCard}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setTgModal(true); }}
+            activeOpacity={0.85}
+          >
+            <View style={styles.tgIconWrap}>
+              <Ionicons name="paper-plane" size={22} color="#229ED9" />
+            </View>
+            <View style={styles.tgText}>
+              <Text style={styles.tgTitle}>{t('success.tgCardTitle')}</Text>
+              <Text style={styles.tgSub}>{t('success.tgCardSub')}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={COLORS.textMuted} />
+          </TouchableOpacity>
+
+          {/* More styles upsell */}
           <View style={styles.upsellSection}>
-            <Text style={styles.sectionLabel}>MORE STYLES</Text>
+            <Text style={styles.sectionLabel}>{t('success.moreStyles')}</Text>
             <View style={styles.upsellRow}>
               {otherStyles.map(s => (
                 <TouchableOpacity
@@ -117,43 +177,67 @@ export default function SuccessScreen() {
                   activeOpacity={0.8}
                 >
                   <LinearGradient
-                    colors={[s.color + '25', s.color + '08']}
+                    colors={[s.accent + '25', s.accent + '08']}
                     style={styles.upsellCardInner}
                   >
-                    <Text style={styles.upsellEmoji}>{s.emoji}</Text>
-                    <Text style={styles.upsellName}>{s.name}</Text>
+                    <Image source={{ uri: s.sampleImage }} style={styles.upsellImage} resizeMode="cover" />
+                    <Text style={styles.upsellName}>{t(`styles.${styleKey(s.id)}.name`)}</Text>
                     {s.tag && (
-                      <View style={[styles.upsellTag, { backgroundColor: s.color + '30' }]}>
-                        <Text style={[styles.upsellTagText, { color: s.color }]}>{s.tag}</Text>
+                      <View style={[styles.upsellTag, { backgroundColor: s.accent + '30' }]}>
+                        <Text style={[styles.upsellTagText, { color: s.accent }]}>
+                          {s.tag === 'Most Popular' ? t('home.mostPopular') : t('home.new')}
+                        </Text>
                       </View>
                     )}
                   </LinearGradient>
                 </TouchableOpacity>
               ))}
             </View>
-
-            <TouchableOpacity
-              style={styles.browseAllBtn}
-              onPress={() => router.push('/home')}
-            >
-              <Text style={styles.browseAllText}>Browse all 6 styles →</Text>
+            <TouchableOpacity style={styles.browseAllBtn} onPress={() => router.push('/home')}>
+              <Text style={styles.browseAllText}>{t('success.browseAll')}</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>
       </ScrollView>
 
-      {/* Done CTA */}
+      {/* Telegram Pack Modal */}
+      <Modal visible={tgModal} transparent animationType="slide" onRequestClose={() => setTgModal(false)}>
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setTgModal(false)}>
+          <View style={styles.modalSheet}>
+            <View style={styles.modalHandle} />
+            <Text style={styles.modalTitle}>{t('success.modalTitle')}</Text>
+            <Text style={styles.modalSub}>{t('success.modalSub')}</Text>
+            {([
+              { icon: 'paper-plane-outline',   text: t('success.modalStep0') },
+              { icon: 'chatbubble-outline',     text: t('success.modalStep1') },
+              { icon: 'images-outline',         text: t('success.modalStep2') },
+              { icon: 'checkmark-done-outline', text: t('success.modalStep3') },
+            ] as const).map((step, i) => (
+              <View key={i} style={styles.modalStep}>
+                <View style={styles.modalStepNum}>
+                  <Text style={styles.modalStepNumText}>{i + 1}</Text>
+                </View>
+                <Ionicons name={step.icon} size={18} color={COLORS.textSecondary} />
+                <Text style={styles.modalStepText}>{step.text}</Text>
+              </View>
+            ))}
+            <TouchableOpacity style={styles.modalCta} onPress={openTgBot} activeOpacity={0.85}>
+              <Ionicons name="paper-plane" size={16} color={COLORS.bg} />
+              <Text style={styles.modalCtaText}>{t('success.modalOpenBot')}</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* Make More Stickers CTA */}
       <View style={styles.ctaContainer}>
-        <TouchableOpacity
-          onPress={() => router.push('/home')}
-          activeOpacity={0.85}
-        >
+        <TouchableOpacity onPress={() => router.push('/home')} activeOpacity={0.85}>
           <LinearGradient
             colors={style.gradient}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             style={styles.ctaButton}
           >
-            <Text style={styles.ctaText}>Make More Stickers</Text>
+            <Text style={styles.ctaText}>{t('success.makeMore')}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -162,23 +246,13 @@ export default function SuccessScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.bg },
+  safe:   { flex: 1, backgroundColor: COLORS.bg },
   scroll: { paddingHorizontal: SPACING.screen, paddingBottom: SPACING.xl },
 
-  checkContainer: {
-    alignItems: 'center',
-    paddingTop: SPACING.xl,
-    paddingBottom: SPACING.lg,
-  },
-  checkCircle: {
-    width: 88, height: 88,
-    borderRadius: 44,
-    overflow: 'hidden',
-  },
-  checkGradient: {
-    flex: 1, alignItems: 'center', justifyContent: 'center',
-  },
-  checkMark: { fontSize: 42, color: '#fff' },
+  checkContainer: { alignItems: 'center', paddingTop: SPACING.xl, paddingBottom: SPACING.lg },
+  checkCircle:    { width: 88, height: 88, borderRadius: 44, overflow: 'hidden' },
+  checkGradient:  { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  checkMark:      { fontSize: 42, color: COLORS.text },
 
   title: {
     fontSize: 28, fontFamily: FONTS.extraBold, color: COLORS.text,
@@ -194,29 +268,66 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5, marginBottom: SPACING.sm,
   },
 
+  // Share section
   shareSection: { marginBottom: SPACING.xl },
-  shareRow: {
+
+  appIndicatorRow: {
     flexDirection: 'row',
     gap: SPACING.sm,
     justifyContent: 'space-between',
+    marginBottom: SPACING.md,
   },
-  shareApp: {
+  appIndicator: {
     flex: 1, alignItems: 'center',
-    paddingVertical: SPACING.md,
+    paddingVertical: SPACING.sm,
     borderRadius: RADIUS.md,
     borderWidth: 1,
     gap: 4,
   },
-  shareAppEmoji: { fontSize: 22 },
-  shareAppName: { fontSize: 10, fontFamily: FONTS.semiBold, color: COLORS.textSecondary },
-
-  upsellSection: { marginBottom: SPACING.lg },
-  upsellRow: {
-    flexDirection: 'row',
-    gap: SPACING.sm,
-    marginBottom: SPACING.md,
+  appIndicatorName: {
+    fontSize: 9, fontFamily: FONTS.semiBold, color: COLORS.textMuted,
   },
-  upsellCard: { flex: 1 },
+
+  shareBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.sm,
+    backgroundColor: COLORS.elevated,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    height: 50,
+  },
+  shareBtnText: {
+    fontSize: 15, fontFamily: FONTS.bold, color: COLORS.text,
+  },
+
+  // Telegram card
+  tgCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: '#229ED930',
+    padding: SPACING.md,
+    marginBottom: SPACING.xl,
+    gap: SPACING.md,
+  },
+  tgIconWrap: {
+    width: 40, height: 40, borderRadius: RADIUS.sm,
+    backgroundColor: '#229ED918',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  tgText:  { flex: 1 },
+  tgTitle: { fontSize: 14, fontFamily: FONTS.bold, color: COLORS.text },
+  tgSub:   { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textMuted, marginTop: 2 },
+
+  // More styles
+  upsellSection: { marginBottom: SPACING.lg },
+  upsellRow:     { flexDirection: 'row', gap: SPACING.sm, marginBottom: SPACING.md },
+  upsellCard:    { flex: 1 },
   upsellCardInner: {
     borderRadius: RADIUS.md,
     paddingVertical: SPACING.md,
@@ -225,31 +336,51 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
   },
-  upsellEmoji: { fontSize: 28 },
-  upsellName: { fontSize: 11, fontFamily: FONTS.bold, color: COLORS.text, textAlign: 'center' },
-  upsellTag: {
-    borderRadius: RADIUS.full,
-    paddingHorizontal: 6, paddingVertical: 2,
-  },
+  upsellImage: { width: 48, height: 48, borderRadius: RADIUS.sm },
+  upsellName:  { fontSize: 11, fontFamily: FONTS.bold, color: COLORS.text, textAlign: 'center' },
+  upsellTag:   { borderRadius: RADIUS.full, paddingHorizontal: 6, paddingVertical: 2 },
   upsellTagText: { fontSize: 9, fontFamily: FONTS.bold },
 
-  browseAllBtn: {
-    alignItems: 'center',
-    paddingVertical: SPACING.sm,
-  },
-  browseAllText: {
-    fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.primary,
-  },
+  browseAllBtn:  { alignItems: 'center', paddingVertical: SPACING.sm },
+  browseAllText: { fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.primary },
 
+  // CTA
   ctaContainer: {
     paddingHorizontal: SPACING.screen,
     paddingBottom: SPACING.lg,
     paddingTop: SPACING.sm,
     backgroundColor: COLORS.bg,
   },
-  ctaButton: {
-    height: 56, borderRadius: RADIUS.md,
-    alignItems: 'center', justifyContent: 'center',
+  ctaButton: { height: 56, borderRadius: RADIUS.md, alignItems: 'center', justifyContent: 'center' },
+  ctaText:   { fontSize: 17, fontFamily: FONTS.bold, color: COLORS.text },
+
+  // Telegram Modal
+  modalOverlay: { flex: 1, backgroundColor: COLORS.overlayDark, justifyContent: 'flex-end' },
+  modalSheet: {
+    backgroundColor: COLORS.surface,
+    borderTopLeftRadius: RADIUS.xl,
+    borderTopRightRadius: RADIUS.xl,
+    padding: SPACING.lg,
+    paddingBottom: SPACING.xl,
+    gap: SPACING.md,
   },
-  ctaText: { fontSize: 17, fontFamily: FONTS.bold, color: '#fff' },
+  modalHandle: {
+    width: 36, height: 4,
+    backgroundColor: COLORS.border,
+    borderRadius: RADIUS.full,
+    alignSelf: 'center',
+    marginBottom: SPACING.sm,
+  },
+  modalTitle:       { fontSize: 18, fontFamily: FONTS.extraBold, color: COLORS.text },
+  modalSub:         { fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary, marginTop: -SPACING.sm },
+  modalStep:        { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
+  modalStepNum:     { width: 24, height: 24, borderRadius: 12, backgroundColor: '#229ED920', alignItems: 'center', justifyContent: 'center' },
+  modalStepNumText: { fontSize: 12, fontFamily: FONTS.bold, color: '#229ED9' },
+  modalStepText:    { flex: 1, fontSize: 14, fontFamily: FONTS.regular, color: COLORS.text },
+  modalCta: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: '#229ED9', borderRadius: RADIUS.md,
+    height: 50, gap: SPACING.sm, marginTop: SPACING.sm,
+  },
+  modalCtaText: { fontSize: 16, fontFamily: FONTS.bold, color: COLORS.bg },
 });

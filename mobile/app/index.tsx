@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
 import { COLORS, FONTS } from '../lib/constants';
 
 export default function SplashScreen() {
@@ -25,24 +27,25 @@ export default function SplashScreen() {
       ])
     ).start();
 
-    // Auto-navigate
-    const t = setTimeout(() => {
-      router.replace('/home');
-    }, 1800);
-    return () => clearTimeout(t);
+    // Auto-navigate: show onboarding first-time, else go straight to home
+    let cancelled = false;
+    const minDelay = new Promise<void>(r => setTimeout(r, 1500));
+    const check = SecureStore.getItemAsync('onboarding_done');
+    Promise.all([minDelay, check]).then(([, done]) => {
+      if (!cancelled) router.replace(done ? '/home' : '/onboarding');
+    });
+    return () => { cancelled = true; };
   }, []);
 
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-        <Animated.Text
-          style={[styles.emoji, { transform: [{ translateY: floatAnim }] }]}
-        >
-          🎨
-        </Animated.Text>
+        <Animated.View style={[styles.iconWrap, { transform: [{ translateY: floatAnim }] }]}>
+          <Ionicons name="color-palette" size={72} color={COLORS.primary} />
+        </Animated.View>
 
         <LinearGradient
-          colors={['#FF6B9D', '#845EF7', '#20C997']}
+          colors={[COLORS.primary, COLORS.pink]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.titleGradient}
@@ -68,8 +71,7 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
   },
-  emoji: {
-    fontSize: 72,
+  iconWrap: {
     marginBottom: 16,
   },
   titleGradient: {
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontFamily: FONTS.extraBold,
-    color: '#FFFFFF',
+    color: COLORS.text,
     letterSpacing: -1,
     paddingHorizontal: 4,
   },

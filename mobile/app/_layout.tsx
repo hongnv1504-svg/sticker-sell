@@ -3,6 +3,8 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_600SemiBold,
@@ -14,7 +16,9 @@ import {
   SpaceMono_700Bold,
   useFonts as useSpaceMono,
 } from '@expo-google-fonts/space-mono';
+import '../lib/i18n';
 import { configureRevenueCat } from '../lib/revenuecat';
+import { COLORS } from '../lib/constants';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,7 +32,9 @@ export default function RootLayout() {
 
   const [monoLoaded] = useSpaceMono({ SpaceMono_700Bold });
 
-  const fontsLoaded = plusLoaded && monoLoaded;
+  const [iconsLoaded] = useFonts({ ...Ionicons.font });
+
+  const fontsLoaded = plusLoaded && monoLoaded && iconsLoaded;
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -45,7 +51,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#06060A' },
+          contentStyle: { backgroundColor: COLORS.bg },
           animation: 'fade',
         }}
       />

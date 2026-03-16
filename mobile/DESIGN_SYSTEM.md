@@ -15,44 +15,40 @@
 
 ## 2. Màu sắc (Colors)
 
-### System Colors (tuân theo HIG — tự adapt Light/Dark mode)
+### Brand Palette — Pastel Dark Theme
+
+**Nền**: deep dark purple-black | **Accent**: pastel, ấm áp | **Vibe**: Locket Widget / BeReal
+
+| Token | Hex | Vai trò |
+|-------|-----|---------|
+| bg | `#16131E` | Near-black, purple undertone |
+| surface | `#1F1C2B` | Section backgrounds |
+| card | `#2B2739` | Cards, list items |
+| elevated | `#363348` | Modals, bottom sheets |
+| border | `#3E3A52` | Subtle dividers |
+| text | `#F2F8EF` | Moon Mint — warm near-white |
+| textSecondary | `#B8BBD5` | Soft Lavender — labels |
+| textMuted | `#8A8799` | Placeholders, disabled |
+| primary | `#F9C5B1` | Warm Peach — CTA (pastel!) |
+| pink | `#E8B4C8` | Soft Pink — tags, gradients |
+
+### Per-Style Accent Colors
+
+| Style | Hex | Vibe |
+|-------|-----|------|
+| 3D Cartoon | `#F9C5B1` | Warm Peach — ấm, cute, friendly |
+| Anime Kawaii | `#B8BBD5` | Soft Lavender — dreamy, Japanese |
+| Chibi Gamer | `#C8E6C0` | Mint Green — gaming nhưng pastel |
+| Watercolor | `#E8B4C8` | Soft Pink — romantic, dreamy |
+| Pop Art | `#F5D5A0` | Soft Yellow — energetic nhưng mềm |
+| Minimal Line | `#D0CDD4` | Cool Gray — neutral, elegant |
+
 ```ts
-// Dùng các màu hệ thống của iOS thay vì hardcode hex
-colors: {
-  // Accent / Primary action
-  primary:        '#007AFF',   // iOS Blue
-
-  // Backgrounds
-  background:     '#FFFFFF',   // Light | '#000000' Dark
-  secondaryBG:    '#F2F2F7',   // Light | '#1C1C1E' Dark
-  tertiaryBG:     '#FFFFFF',   // Light | '#2C2C2E' Dark
-
-  // Labels / Text
-  label:          '#000000',   // Light | '#FFFFFF' Dark
-  secondaryLabel: '#3C3C43',   // opacity 0.6
-  tertiaryLabel:  '#3C3C43',   // opacity 0.3
-  placeholderText:'#3C3C43',   // opacity 0.3
-
-  // Separators
-  separator:      '#3C3C43',   // opacity 0.29
-  opaqueSeparator:'#C6C6C8',
-
-  // Fills
-  fill:           '#787880',   // opacity 0.2
-  secondaryFill:  '#787880',   // opacity 0.16
-
-  // System tones
-  systemRed:      '#FF3B30',
-  systemGreen:    '#34C759',
-  systemYellow:   '#FFCC00',
-  systemOrange:   '#FF9500',
-  systemPurple:   '#AF52DE',
-  systemTeal:     '#5AC8FA',
-  systemGray:     '#8E8E93',
-}
+// Mỗi StickerStyle có field: accent: string
+// Dùng style.accent thay vì hardcode color
 ```
 
-> ⚠️ Không hardcode màu cố định — luôn dùng `useColorScheme()` để support Dark mode.
+> 📌 App dùng **Fixed Dark Theme** — không support Light mode. Không cần `useColorScheme()`.
 
 ---
 
@@ -163,9 +159,9 @@ shadow: {
 
 ### Button
 ```
-Primary:   backgroundColor #007AFF, text trắng, height 50, borderRadius 12, font Headline
-Secondary: backgroundColor #F2F2F7, text #007AFF, height 50, borderRadius 12
-Danger:    backgroundColor #FF3B30, text trắng
+Primary:   backgroundColor #F9C5B1 (Warm Peach), text #534C5A (Charcoal Plum), height 50, borderRadius 12, font Headline
+Secondary: backgroundColor #676072 (card), text #F2F8EF (Moon Mint), height 50, borderRadius 12
+Danger:    backgroundColor #FF453A, text #F2F8EF
 Disabled:  opacity 0.4
 ```
 - Touch target tối thiểu: **44×44pt** (HIG bắt buộc)
@@ -175,16 +171,18 @@ Disabled:  opacity 0.4
 ```
 height: 50
 borderRadius: 10
-backgroundColor: #F2F2F7 (light) / #1C1C1E (dark)
+backgroundColor: #676072 (card)
 padding: 12 16
 font: Body (17pt)
-focus: border 1.5px #007AFF
-error: border 1.5px #FF3B30 + message Caption1 #FF3B30
+color: #F2F8EF (Moon Mint)
+placeholderColor: #8B8D9E (textMuted)
+focus: border 1.5px #F9C5B1 (Warm Peach)
+error: border 1.5px #FF453A + message Caption1 #FF453A
 ```
 
 ### Card
 ```
-backgroundColor: #FFFFFF (light) / #1C1C1E (dark)
+backgroundColor: #676072 (card)
 borderRadius: 14
 padding: 16
 shadow: md
@@ -251,8 +249,9 @@ disclosure indicator: "chevron.right" cho item có drill-down
 
 ---
 
-## TODO khi có style tham khảo thêm
-- [ ] Cập nhật màu Primary nếu không dùng iOS Blue
-- [ ] Thêm custom font nếu không dùng SF Pro
-- [ ] Cập nhật vibe/mood (dark theme, colorful, minimal...)
-- [ ] Thêm brand colors
+## Changelog
+- **2026-03-13**: Redesign palette lần 2 — bỏ mid-tone washed-out
+  - bg #534C5A (mid-tone, muddy) → #0E0C14 (near-black, high contrast)
+  - primary #F9C5B1 (pastel, low contrast) → #FF8060 (coral, pops on dark)
+  - text #F2F8EF → #F4EFFF (warm off-white)
+  - Toàn bộ surface/card hierarchy rõ ràng hơn nhiều

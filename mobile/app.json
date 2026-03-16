@@ -35,6 +35,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.stickerme",
       "buildNumber": "2",
+      "usesAppleSignIn": false,
+      "usesIAP": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

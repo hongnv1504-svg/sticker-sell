@@ -1,16 +1,19 @@
 import { useRef, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, Animated,
+  StyleSheet, Animated, Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next';
+import { styleKey } from '../lib/i18n';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -33,8 +36,8 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Choose Style</Text>
-          <Text style={styles.subtitle}>Pick a style, upload selfie, get 6 stickers</Text>
+          <Text style={styles.title}>{t('home.title')}</Text>
+          <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
         </View>
 
         {/* Style Cards */}
@@ -60,17 +63,18 @@ function StyleCard({
   index: number;
   onPress: () => void;
 }) {
+  const { t } = useTranslation();
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(slideAnim, {
-        toValue: 0, duration: 350, delay: index * 60, useNativeDriver: true,
+      Animated.spring(slideAnim, {
+        toValue: 0, delay: index * 80, tension: 120, friction: 8, useNativeDriver: true,
       }),
       Animated.timing(opacityAnim, {
-        toValue: 1, duration: 350, delay: index * 60, useNativeDriver: true,
+        toValue: 1, duration: 300, delay: index * 80, useNativeDriver: true,
       }),
     ]).start();
   }, []);
@@ -94,34 +98,55 @@ function StyleCard({
         onPressOut={handlePressOut}
         activeOpacity={1}
       >
-        <View style={[styles.card, { borderColor: style.color + '22' }]}>
+        <View style={[
+          styles.card,
+          { borderColor: style.accent + '22' },
+          style.tag === 'Most Popular' && styles.cardFeatured,
+        ]}>
           {/* Tag */}
           {style.tag && (
-            <LinearGradient
-              colors={style.tag === 'Most Popular' ? ['#FF6B9D', '#845EF7'] : ['#20C997', '#0ca678']}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-              style={styles.tag}
-            >
-              <Text style={styles.tagText}>{style.tag}</Text>
-            </LinearGradient>
+            <View style={[
+              styles.tag,
+              { borderColor: style.tag === 'Most Popular' ? COLORS.primary + '55' : COLORS.success + '55' },
+            ]}>
+              <Ionicons
+                name={style.tag === 'Most Popular' ? 'star' : 'flash'}
+                size={9}
+                color={style.tag === 'Most Popular' ? COLORS.primary : COLORS.success}
+              />
+              <Text style={[
+                styles.tagText,
+                { color: style.tag === 'Most Popular' ? COLORS.primary : COLORS.success },
+              ]}>
+                {t(`home.${style.tag === 'Most Popular' ? 'mostPopular' : 'new'}`).toUpperCase()}
+              </Text>
+            </View>
           )}
 
           <View style={styles.cardRow}>
-            {/* Icon */}
-            <View style={[styles.iconBox, { backgroundColor: style.color + '18' }]}>
-              <Text style={styles.emoji}>{style.emoji}</Text>
+            {/* Sample image */}
+            <View style={[styles.iconBox, { backgroundColor: style.accent + '18' }]}>
+              <Image
+                source={{ uri: style.sampleImage }}
+                style={styles.sampleImg}
+                resizeMode="cover"
+              />
             </View>
 
             {/* Info */}
             <View style={styles.cardInfo}>
-              <Text style={styles.cardName}>{style.name}</Text>
-              <Text style={styles.cardDesc}>{style.desc}</Text>
+              <Text style={styles.cardName}>{t(`styles.${styleKey(style.id)}.name`)}</Text>
+              <Text style={styles.cardDesc}>{t(`styles.${styleKey(style.id)}.desc`)}</Text>
 
-              {/* Preview emojis */}
+              {/* Expression preview images — per-style */}
               <View style={styles.emojiRow}>
-                {style.expressions.slice(0, 6).map((expr, j) => (
+                {style.expressions.map((expr, j) => (
                   <View key={j} style={styles.emojiChip}>
-                    <Text style={styles.emojiChipText}>{expr.emoji}</Text>
+                    <Image
+                      source={{ uri: expr.imageUrl }}
+                      style={styles.exprImg}
+                      resizeMode="cover"
+                    />
                   </View>
                 ))}
               </View>
@@ -151,23 +176,35 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     borderWidth: 1,
     padding: SPACING.md,
-    overflow: 'hidden',
+  },
+  cardFeatured: {
+    borderColor: COLORS.primary + '70',
+    borderWidth: 1.5,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.45,
+    shadowRadius: 16,
   },
   tag: {
-    position: 'absolute', top: -1, right: 16,
-    borderRadius: 8, paddingHorizontal: 10, paddingVertical: 3, zIndex: 1,
+    position: 'absolute', top: 10, right: 12,
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    backgroundColor: COLORS.bg,
+    borderWidth: 1,
+    borderRadius: RADIUS.full,
+    paddingHorizontal: 8, paddingVertical: 3,
+    zIndex: 1,
   },
   tagText: {
-    fontSize: 10, fontFamily: FONTS.bold, color: '#fff',
+    fontSize: 9, fontFamily: FONTS.bold, letterSpacing: 0.6,
   },
   cardRow: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
   },
   iconBox: {
-    width: 52, height: 52, borderRadius: RADIUS.md,
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+    width: 64, height: 64, borderRadius: RADIUS.md,
+    overflow: 'hidden', flexShrink: 0,
   },
-  emoji: { fontSize: 28 },
+  sampleImg: { width: '100%', height: '100%' },
   cardInfo: { flex: 1 },
   cardName: {
     fontSize: 16, fontFamily: FONTS.bold, color: COLORS.text, marginBottom: 2,
@@ -179,8 +216,8 @@ const styles = StyleSheet.create({
   emojiChip: {
     width: 28, height: 28, borderRadius: 8,
     backgroundColor: COLORS.elevated,
-    alignItems: 'center', justifyContent: 'center',
+    overflow: 'hidden',
   },
-  emojiChipText: { fontSize: 14 },
+  exprImg: { width: '100%', height: '100%' },
   chevron: { fontSize: 20, color: COLORS.textMuted },
 });

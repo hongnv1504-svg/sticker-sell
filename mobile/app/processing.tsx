@@ -1,21 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  View, Text, StyleSheet, Animated,
+  View, Text, StyleSheet, Animated, Image,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 import { uploadImage, startGeneration, getJobStatus } from '../lib/api';
 
-const STEPS = [
-  { label: 'Uploading your photo', icon: '📤' },
-  { label: 'Analyzing your face', icon: '🔍' },
-  { label: 'Creating 6 stickers', icon: '✨' },
-  { label: 'Finalizing artwork', icon: '🎨' },
+const STEPS: Array<{ label: string; icon: React.ComponentProps<typeof Ionicons>['name'] }> = [
+  { label: 'Uploading your photo', icon: 'cloud-upload-outline' },
+  { label: 'Analyzing your face', icon: 'scan-outline' },
+  { label: 'Creating 6 stickers', icon: 'star-outline' },
+  { label: 'Finalizing artwork',  icon: 'color-palette-outline' },
 ];
 
 export default function ProcessingScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { styleId, imageUri } = useLocalSearchParams<{ styleId: string; imageUri: string }>();
   const style = STYLES.find(s => s.id === styleId) ?? STYLES[0];
 
@@ -31,8 +34,8 @@ export default function ProcessingScreen() {
     // Pulse the center icon continuously
     Animated.loop(
       Animated.sequence([
-        Animated.timing(pulseAnim, { toValue: 1.12, duration: 700, useNativeDriver: true }),
-        Animated.timing(pulseAnim, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1.08, duration: 800, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
       ])
     ).start();
 
@@ -55,7 +58,7 @@ export default function ProcessingScreen() {
   async function runPipeline() {
     const decodedUri = decodeURIComponent(imageUri ?? '');
     if (!decodedUri) {
-      setErrorMsg('No image selected. Please go back and choose a photo.');
+      setErrorMsg(t('processing.errorNoImage'));
       return;
     }
 
@@ -90,13 +93,13 @@ export default function ProcessingScreen() {
         return;
       }
       if (status.status === 'failed') {
-        throw new Error('Sticker generation failed. Please try again.');
+        throw new Error(t('processing.errorFailed'));
       }
 
-      // Update progress animation based on server-reported progress
+      // Update progress animation: progress is sticker count (0–6)
       if (status.progress > 0) {
         Animated.timing(progressAnim, {
-          toValue: 0.25 + (status.progress / 100) * 0.75, // 25%–100%
+          toValue: 0.25 + (Math.min(status.progress, 6) / 6) * 0.75, // 25%–100%
           duration: 400,
           useNativeDriver: false,
         }).start();
@@ -104,7 +107,7 @@ export default function ProcessingScreen() {
 
       await new Promise(r => setTimeout(r, 2000));
     }
-    throw new Error('Generation timed out. Please try again.');
+    throw new Error(t('processing.errorTimeout'));
   }
 
   return (
@@ -113,21 +116,21 @@ export default function ProcessingScreen() {
         {/* Center pulse icon */}
         <Animated.View style={[
           styles.iconCircle,
-          { backgroundColor: style.color + '20', transform: [{ scale: pulseAnim }] }
+          { backgroundColor: style.accent + '20', transform: [{ scale: pulseAnim }] }
         ]}>
-          <Text style={styles.iconEmoji}>{style.emoji}</Text>
+          <Image source={{ uri: style.sampleImage }} style={styles.iconImage} resizeMode="cover" />
         </Animated.View>
 
         {errorMsg ? (
           <View style={styles.errorBox}>
-            <Text style={styles.errorTitle}>Oops!</Text>
+            <Text style={styles.errorTitle}>{t('processing.errorTitle')}</Text>
             <Text style={styles.errorText}>{errorMsg}</Text>
-            <Text style={styles.errorAction}>← Go back and try again</Text>
+            <Text style={styles.errorAction}>{t('processing.errorAction')}</Text>
           </View>
         ) : (
           <>
-            <Text style={styles.title}>Creating your stickers…</Text>
-            <Text style={styles.subtitle}>This usually takes 20–30 seconds</Text>
+            <Text style={styles.title}>{t('processing.title')}</Text>
+            <Text style={styles.subtitle}>{t('processing.subtitle')}</Text>
 
             {/* Progress bar */}
             <View style={styles.progressTrack}>
@@ -135,7 +138,7 @@ export default function ProcessingScreen() {
                 style={[
                   styles.progressFill,
                   {
-                    backgroundColor: style.color,
+                    backgroundColor: style.accent,
                     width: progressAnim.interpolate({
                       inputRange: [0, 1],
                       outputRange: ['0%', '100%'],
@@ -158,19 +161,26 @@ export default function ProcessingScreen() {
                     <View style={[
                       styles.stepDot,
                       isDone && { backgroundColor: COLORS.success },
-                      isActive && { backgroundColor: style.color },
+                      isActive && { backgroundColor: style.accent },
                     ]}>
                       <Text style={styles.stepDotText}>
                         {isDone ? '✓' : isActive ? '•' : ''}
                       </Text>
                     </View>
-                    <Text style={[
-                      styles.stepLabel,
-                      isDone && styles.stepDone,
-                      isActive && { color: COLORS.text },
-                    ]}>
-                      {step.icon}  {step.label}
-                    </Text>
+                    <View style={styles.stepLabelRow}>
+                      <Ionicons
+                        name={step.icon}
+                        size={14}
+                        color={isDone ? COLORS.success : isActive ? COLORS.text : COLORS.textMuted}
+                      />
+                      <Text style={[
+                        styles.stepLabel,
+                        isDone && styles.stepDone,
+                        isActive && { color: COLORS.text },
+                      ]}>
+                        {'  '}{t(`processing.step${i}`)}
+                      </Text>
+                    </View>
                   </Animated.View>
                 );
               })}
@@ -198,7 +208,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     marginBottom: SPACING.sm,
   },
-  iconEmoji: { fontSize: 52 },
+  iconImage: { width: 68, height: 68, borderRadius: RADIUS.lg },
 
   title: {
     fontSize: 22, fontFamily: FONTS.extraBold, color: COLORS.text,
@@ -232,7 +242,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.elevated,
     alignItems: 'center', justifyContent: 'center',
   },
-  stepDotText: { fontSize: 12, color: '#fff', fontFamily: FONTS.bold },
+  stepDotText: { fontSize: 12, color: COLORS.text, fontFamily: FONTS.bold },
+  stepLabelRow: { flexDirection: 'row', alignItems: 'center' },
   stepLabel: {
     fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.textMuted,
   },

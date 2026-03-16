@@ -1,0 +1,162 @@
+{
+  "common": {
+    "back": "← Quay lại",
+    "skip": "Bỏ qua",
+    "cancel": "Hủy",
+    "ok": "OK",
+    "error": "Lỗi"
+  },
+  "onboarding": {
+    "screen1Title": "Khuôn mặt bạn.",
+    "screen1Highlight": "6 sticker.",
+    "screen1Desc": "Biến ảnh selfie thành bộ sticker AI\ntrong 10 giây",
+    "screen2Title": "6 phong cách.",
+    "screen2Highlight": "Một bạn.",
+    "screen2Desc": "Tự do lựa chọn phong cách\nđậm chất riêng của bạn",
+    "screen3Title": "Dùng mọi nơi.",
+    "screen3Highlight": "Chia sẻ với mọi người.",
+    "screen3Desc": "Telegram, WhatsApp, iMessage, Discord\nSticker của bạn, dùng khắp nơi",
+    "chatReceived": "Ê nhìn sticker mới nè",
+    "chatReply": "Cute quá làm ở đâu??",
+    "skip": "Bỏ qua",
+    "continue": "Tiếp tục",
+    "getStarted": "Tạo sticker ngay →"
+  },
+  "home": {
+    "title": "Chọn Phong Cách",
+    "subtitle": "Chọn style, upload selfie, nhận 6 sticker",
+    "mostPopular": "Phổ biến nhất",
+    "new": "Mới"
+  },
+  "styles": {
+    "3dCartoon": {
+      "name": "3D Cartoon",
+      "desc": "Nhân vật 3D dễ thương với đôi mắt biểu cảm"
+    },
+    "animeKawaii": {
+      "name": "Anime Kawaii",
+      "desc": "Phong cách anime Nhật với đôi mắt lấp lánh"
+    },
+    "chibiGamer": {
+      "name": "Chibi Gamer",
+      "desc": "Chibi phong cách gaming RPG"
+    },
+    "watercolor": {
+      "name": "Watercolor",
+      "desc": "Màu nước nhẹ nhàng với tông pastel mơ mộng"
+    },
+    "popArt": {
+      "name": "Pop Art",
+      "desc": "Phong cách truyện tranh đậm nét với halftone"
+    },
+    "minimalLine": {
+      "name": "Minimal Line",
+      "desc": "Nét vẽ đơn giản, thanh lịch, tối giản"
+    }
+  },
+  "preview": {
+    "expressionsLabel": "6 BIỂU CẢM BẠN SẼ NHẬN",
+    "cta": "Chọn Style Này →",
+    "infoStickers": "6 sticker độc đáo theo phong cách {{name}}",
+    "infoOptimized": "Tối ưu cho iMessage & WhatsApp",
+    "infoFast": "Sẵn sàng trong chưa đầy 30 giây",
+    "infoDownload": "Lưu vào Ảnh hoặc chia sẻ trực tiếp"
+  },
+  "upload": {
+    "title": "Ảnh selfie của bạn",
+    "subtitle": "Dùng ảnh rõ mặt, ánh sáng tốt",
+    "takePhoto": "Chụp ảnh selfie",
+    "tapToChange": "Nhấn để đổi ảnh",
+    "chooseLibrary": "Chọn từ thư viện",
+    "chooseDifferent": "Chọn ảnh khác",
+    "ctaReady": "Tạo Sticker Ngay →",
+    "ctaEmpty": "Chụp hoặc chọn ảnh",
+    "tipsLabel": "MẸO ĐỂ CÓ KẾT QUẢ TỐT NHẤT",
+    "tip1": "Nhìn thẳng camera, biểu cảm bình thường",
+    "tip2": "Ánh sáng tốt, tránh bóng tối",
+    "tip3": "Không đeo kính râm hoặc mũ",
+    "tip4": "Khuôn mặt chiếm phần lớn khung hình",
+    "cameraTitle": "Yêu cầu quyền camera",
+    "cameraMsg": "Vui lòng cho phép truy cập camera trong Cài đặt để chụp selfie.",
+    "cameraUnavailableTitle": "Camera không khả dụng",
+    "cameraUnavailableMsg": "Camera không có sẵn trên thiết bị này. Vui lòng chọn ảnh từ thư viện.",
+    "chooseFromLibrary": "Chọn từ thư viện",
+    "photosTitle": "Yêu cầu quyền truy cập Ảnh",
+    "photosMsg": "Vui lòng cho phép truy cập Ảnh trong Cài đặt để chọn ảnh."
+  },
+  "processing": {
+    "title": "Đang tạo sticker của bạn…",
+    "subtitle": "Thường mất khoảng 20–30 giây",
+    "step0": "Đang tải ảnh lên",
+    "step1": "Đang phân tích khuôn mặt",
+    "step2": "Đang tạo 6 sticker",
+    "step3": "Đang hoàn thiện tác phẩm",
+    "errorTitle": "Ôi không!",
+    "errorNoImage": "Chưa chọn ảnh. Vui lòng quay lại và chọn ảnh.",
+    "errorFailed": "Tạo sticker thất bại. Vui lòng thử lại.",
+    "errorTimeout": "Quá thời gian chờ. Vui lòng thử lại.",
+    "errorAction": "← Quay lại và thử lại"
+  },
+  "result": {
+    "title": "Sticker đã sẵn sàng!",
+    "subtitle": "Nhấn vào sticker bất kỳ để chia sẻ",
+    "stickersGenerated": "{{count}} sticker đã tạo",
+    "tryAnother": "Thử style khác",
+    "saveAll": "Lưu tất cả vào Ảnh",
+    "savedTitle": "Đã lưu!",
+    "savedMsg": "{{count}} sticker đã được lưu vào Ảnh.",
+    "saveErrorTitle": "Lưu thất bại",
+    "saveErrorMsg": "Không thể lưu một số sticker. Vui lòng thử lại.",
+    "shareUnavailableTitle": "Không thể chia sẻ",
+    "shareUnavailableMsg": "Tính năng chia sẻ không khả dụng trên thiết bị này.",
+    "permissionTitle": "Yêu cầu quyền truy cập",
+    "permissionMsg": "Vui lòng cho phép truy cập Ảnh trong Cài đặt để lưu sticker.",
+    "loadErrorMsg": "Không thể tải sticker. Vui lòng thử lại."
+  },
+  "pricing": {
+    "title": "Chọn gói của bạn",
+    "subtitle": "Mua một lần • Không đăng ký • Sở hữu mãi mãi",
+    "mostPopular": "PHỔ BIẾN NHẤT",
+    "bestValue": "GIÁ TỐT NHẤT",
+    "save22": "TIẾT KIỆM 22%",
+    "featureStickers": "{{count}} sticker độc đáo theo phong cách {{name}}",
+    "featureFast": "Tạo trong chưa đầy 30 giây",
+    "featureDownload": "Lưu vào Ảnh hoặc chia sẻ trực tiếp",
+    "featureOptimized": "Tối ưu cho iMessage & WhatsApp",
+    "securePay": "Thanh toán an toàn qua Apple Pay",
+    "moneyBack": "Hoàn tiền trong 30 ngày",
+    "restore": "Khôi phục mua hàng trước đó",
+    "legal": "Thanh toán sẽ được tính vào tài khoản Apple ID. Đây là mua hàng một lần, không phải đăng ký.",
+    "ctaPack": "Mua 1 Pack — {{price}}",
+    "ctaPacks": "Mua {{count}} Packs — {{price}}",
+    "purchaseErrorTitle": "Mua hàng thất bại",
+    "noRestoreTitle": "Không tìm thấy giao dịch",
+    "noRestoreMsg": "Không tìm thấy giao dịch nào cho Apple ID này.",
+    "restoreErrorTitle": "Khôi phục thất bại",
+    "restoreErrorMsg": "Không thể khôi phục giao dịch. Vui lòng thử lại.",
+    "allStyles": "Tất cả 6 Styles",
+    "allStylesDesc": "36 sticker • Mọi phong cách",
+    "threeStyles": "3 Style Packs",
+    "threeStylesDesc": "18 sticker • Chọn 3 bất kỳ",
+    "oneStyle": "1 Style Pack",
+    "oneStyleDesc": "6 sticker • Style hiện tại"
+  },
+  "success": {
+    "title": "Đã lưu sticker!",
+    "subtitle": "Sticker {{style}} của bạn đã có trong Ảnh.\nSẵn sàng gửi trên mọi app!",
+    "shareVia": "DÙNG ĐƯỢC VỚI",
+    "shareBtn": "Chia sẻ Sticker",
+    "moreStyles": "CÁC STYLE KHÁC",
+    "browseAll": "Xem tất cả 6 styles →",
+    "makeMore": "Tạo thêm Sticker",
+    "tgCardTitle": "Tạo Telegram Pack",
+    "tgCardSub": "512×512 PNG · 4 bước · miễn phí",
+    "modalTitle": "Tạo Telegram Sticker Pack",
+    "modalSub": "512×512 PNG — đã sẵn sàng cho Telegram!",
+    "modalStep0": "Bot @Stickers sẽ được mở",
+    "modalStep1": "Gõ /newpack → đặt tên pack",
+    "modalStep2": "Gửi ảnh sticker từ Ảnh của bạn",
+    "modalStep3": "Gõ /publish — pack đã live!",
+    "modalOpenBot": "Mở Bot @Stickers"
+  }
+}
