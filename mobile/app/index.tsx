@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 import { COLORS, FONTS } from '../lib/constants';
 
@@ -41,7 +40,7 @@ export default function SplashScreen() {
     <View style={styles.container}>
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
         <Animated.View style={[styles.iconWrap, { transform: [{ translateY: floatAnim }] }]}>
-          <Ionicons name="color-palette" size={72} color={COLORS.primary} />
+          <Image source={require('../assets/splash-logo.png')} style={styles.logoImage} />
         </Animated.View>
 
         <LinearGradient
@@ -73,6 +72,11 @@ const styles = StyleSheet.create({
   },
   iconWrap: {
     marginBottom: 16,
+  },
+  logoImage: {
+    width: 88,
+    height: 88,
+    borderRadius: 20,
   },
   titleGradient: {
     borderRadius: 8,

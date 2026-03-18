@@ -50,3 +50,9 @@ export async function restorePurchases(): Promise<CustomerInfo> {
   const Purchases = require('react-native-purchases').default;
   return await Purchases.restorePurchases();
 }
+
+export async function getAppUserID(): Promise<string> {
+  if (!RC_AVAILABLE) return 'dev-user';
+  const Purchases = require('react-native-purchases').default;
+  return await Purchases.getAppUserID();
+}

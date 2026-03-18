@@ -9,7 +9,7 @@
   "onboarding": {
     "screen1Title": "Your face.",
     "screen1Highlight": "6 stickers.",
-    "screen1Desc": "Turn your selfie into AI sticker pack\nin 10 seconds",
+    "screen1Desc": "Turn your selfie into an AI sticker pack\nOne photo is all you need",
     "screen2Title": "6 styles.",
     "screen2Highlight": "One you.",
     "screen2Desc": "Pick any style that feels like you",
@@ -20,11 +20,11 @@
     "chatReply": "Omg so cute, where'd you make it??",
     "skip": "Skip",
     "continue": "Continue",
-    "getStarted": "Create sticker now →"
+    "getStarted": "Create stickers now →"
   },
   "home": {
     "title": "Choose Style",
-    "subtitle": "Pick a style, upload selfie, get 6 stickers",
+    "subtitle": "Pick a style, upload a selfie, get 6 stickers",
     "mostPopular": "Most Popular",
     "new": "New"
   },
@@ -59,7 +59,7 @@
     "cta": "Get This Style →",
     "infoStickers": "6 unique stickers in {{name}} style",
     "infoOptimized": "Optimized for iMessage & WhatsApp",
-    "infoFast": "Ready in under 30 seconds",
+    "infoFast": "AI-powered, lightning fast",
     "infoDownload": "Save to Photos or share directly"
   },
   "upload": {
@@ -86,11 +86,13 @@
   },
   "processing": {
     "title": "Creating your stickers…",
-    "subtitle": "This usually takes 20–30 seconds",
-    "step0": "Uploading your photo",
-    "step1": "Analyzing your face",
-    "step2": "Creating 6 stickers",
-    "step3": "Finalizing artwork",
+    "subtitle": "Sit tight, AI is drawing you...",
+    "step0": "Uploading photo",
+    "step1": "Analyzing face",
+    "step2": "Applying style",
+    "step3": "Generating expressions",
+    "step4": "Finalizing stickers",
+    "done": "Done! 🎉",
     "errorTitle": "Oops!",
     "errorNoImage": "No image selected. Please go back and choose a photo.",
     "errorFailed": "Sticker generation failed. Please try again.",
@@ -120,7 +122,7 @@
     "bestValue": "BEST VALUE",
     "save22": "SAVE 22%",
     "featureStickers": "{{count}} unique stickers in {{name}} style",
-    "featureFast": "Generated in under 30 seconds",
+    "featureFast": "Powered by AI, instant results",
     "featureDownload": "Save to Photos or share directly",
     "featureOptimized": "Optimized for iMessage & WhatsApp",
     "securePay": "Secure payment via Apple Pay",

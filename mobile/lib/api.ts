@@ -12,7 +12,7 @@ export interface JobStatus {
   isPaid: boolean;
 }
 
-export async function uploadImage(imageUri: string, packId: string): Promise<string> {
+export async function uploadImage(imageUri: string, packId: string, userId: string): Promise<string> {
   const filename = imageUri.split('/').pop() ?? 'photo.jpg';
   const ext = filename.split('.').pop()?.toLowerCase() ?? 'jpg';
   const mimeType = ext === 'png' ? 'image/png' : 'image/jpeg';
@@ -20,6 +20,7 @@ export async function uploadImage(imageUri: string, packId: string): Promise<str
   const formData = new FormData();
   formData.append('file', { uri: imageUri, name: filename, type: mimeType } as any);
   formData.append('packId', packId);
+  formData.append('userId', userId);
 
   const res = await fetch(`${API_BASE}/api/upload`, {
     method: 'POST',
@@ -40,8 +41,15 @@ export async function uploadImage(imageUri: string, packId: string): Promise<str
 }
 
 export async function startGeneration(jobId: string): Promise<void> {
-  // Fire-and-forget — server runs generation for up to 5 min
-  fetch(`${API_BASE}/api/generate/${jobId}`, { method: 'POST' }).catch(() => {});
+  // We only await the initial response to catch credit errors.
+  // The actual generation continues server-side for up to 5 min.
+  const res = await fetch(`${API_BASE}/api/generate/${jobId}`, { method: 'POST' });
+
+  if (res.status === 402) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error === 'NO_CREDITS' ? 'NO_CREDITS' : 'Payment required');
+  }
+  // Don't await body for success — generation runs in background
 }
 
 export async function getJobStatus(jobId: string): Promise<JobStatus> {

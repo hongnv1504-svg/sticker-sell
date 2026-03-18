@@ -38,7 +38,8 @@
       "usesAppleSignIn": false,
       "usesIAP": true,
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "LSApplicationQueriesSchemes": ["tg"]
       }
     },
     "android": {

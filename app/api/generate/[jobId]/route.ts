@@ -13,22 +13,36 @@ export async function POST(
     const { jobId } = await params;
     const supabase = getSupabaseAdmin();
 
-    // Mark job as processing
-    await supabase
-        .from('sticker_jobs')
-        .update({ status: 'processing' })
-        .eq('id', jobId);
-
     try {
         const { data: job } = await supabase
             .from('sticker_jobs')
-            .select('source_image_url, style_key')
+            .select('source_image_url, style_key, user_id')
             .eq('id', jobId)
             .single();
 
         if (!job) {
             return NextResponse.json({ success: false, error: 'Job not found' }, { status: 404 });
         }
+
+        // Credit check: deduct 1 credit before generating
+        if (job.user_id) {
+            const { data: creditOk, error: creditError } = await supabase.rpc('check_and_deduct_credit', {
+                p_user_id: job.user_id,
+            });
+
+            if (creditError || !creditOk) {
+                console.error(`[GENERATE] No credits for user ${job.user_id}:`, creditError);
+                await supabase.from('sticker_jobs').update({ status: 'failed' }).eq('id', jobId);
+                return NextResponse.json({ success: false, error: 'NO_CREDITS' }, { status: 402 });
+            }
+            console.log(`[GENERATE] Deducted 1 credit from user ${job.user_id}`);
+        }
+
+        // Mark job as processing (after credit check passes)
+        await supabase
+            .from('sticker_jobs')
+            .update({ status: 'processing' })
+            .eq('id', jobId);
 
         const { STICKER_EMOTIONS } = await import('@/lib/types');
         const { STICKER_STYLES } = await import('@/lib/ai/sticker-styles');

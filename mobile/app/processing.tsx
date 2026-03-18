@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  View, Text, StyleSheet, Animated, Image,
+  View, Text, StyleSheet, Animated, Image, Easing,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -8,13 +8,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 import { uploadImage, startGeneration, getJobStatus } from '../lib/api';
+import { getAppUserID } from '../lib/revenuecat';
 
-const STEPS: Array<{ label: string; icon: React.ComponentProps<typeof Ionicons>['name'] }> = [
-  { label: 'Uploading your photo', icon: 'cloud-upload-outline' },
-  { label: 'Analyzing your face', icon: 'scan-outline' },
-  { label: 'Creating 6 stickers', icon: 'star-outline' },
-  { label: 'Finalizing artwork',  icon: 'color-palette-outline' },
+const STEP_ICONS: Array<React.ComponentProps<typeof Ionicons>['name']> = [
+  'cloud-upload-outline',    // Uploading photo
+  'scan-outline',            // Analyzing face
+  'color-palette-outline',   // Applying style
+  'sparkles-outline',        // Generating expressions
+  'checkmark-done-outline',  // Finalizing stickers
 ];
+const STEP_COUNT = STEP_ICONS.length;
 
 export default function ProcessingScreen() {
   const router = useRouter();
@@ -24,11 +27,18 @@ export default function ProcessingScreen() {
 
   const [currentStep, setCurrentStep] = useState(0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
 
   // Animations
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
-  const stepAnims = useRef(STEPS.map(() => new Animated.Value(0))).current;
+  const stepAnims = useRef(Array.from({ length: STEP_COUNT }, () => new Animated.Value(0))).current;
+  const doneScale = useRef(new Animated.Value(0)).current;
+  const doneOpacity = useRef(new Animated.Value(0)).current;
+
+  // Track pipeline start time + completion time for staggering steps
+  const pipelineStart = useRef(Date.now());
+  const stepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     // Pulse the center icon continuously
@@ -39,20 +49,55 @@ export default function ProcessingScreen() {
       ])
     ).start();
 
-    // Animate first step in
+    // Show first step immediately
     Animated.timing(stepAnims[0], { toValue: 1, duration: 350, useNativeDriver: true }).start();
 
     runPipeline();
+
+    return () => {
+      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
+    };
   }, []);
 
-  function animateStep(step: number) {
-    setCurrentStep(step);
-    Animated.timing(stepAnims[step], { toValue: 1, duration: 350, useNativeDriver: true }).start();
+  /** Ease-out progress: fast to 70%, slow for last 30% */
+  function animateProgress(target: number, duration: number) {
     Animated.timing(progressAnim, {
-      toValue: (step + 1) / STEPS.length,
-      duration: 500,
+      toValue: target,
+      duration,
+      easing: Easing.out(Easing.cubic),
       useNativeDriver: false,
     }).start();
+  }
+
+  function completeStep(step: number) {
+    setCurrentStep(step);
+    // Reveal step row
+    Animated.timing(stepAnims[Math.min(step, STEP_COUNT - 1)], {
+      toValue: 1, duration: 350, useNativeDriver: true,
+    }).start();
+  }
+
+  /**
+   * Stagger intermediate step checkmarks (steps 1-3) evenly
+   * across elapsed time while API is working.
+   * Steps 0 and 4 are driven by actual pipeline events.
+   */
+  function startStepStagger() {
+    // We'll advance steps 1→2→3 at even intervals
+    // Estimate ~25s total, so advance every ~5s after step 0
+    let nextStep = 1;
+    stepTimerRef.current = setInterval(() => {
+      if (nextStep > 3) {
+        if (stepTimerRef.current) clearInterval(stepTimerRef.current);
+        return;
+      }
+      completeStep(nextStep);
+      // Ease-out progress: fast early, slow later
+      const fraction = (nextStep + 1) / STEP_COUNT;
+      const eased = fraction <= 0.6 ? fraction : 0.6 + (fraction - 0.6) * 0.5;
+      animateProgress(eased, 800);
+      nextStep++;
+    }, 5000);
   }
 
   async function runPipeline() {
@@ -62,25 +107,59 @@ export default function ProcessingScreen() {
       return;
     }
 
+    pipelineStart.current = Date.now();
+
     try {
       // Step 0: Upload
-      animateStep(0);
-      const jobId = await uploadImage(decodedUri, style.id);
+      completeStep(0);
+      animateProgress(0.15, 600);
+      const userId = await getAppUserID();
+      const jobId = await uploadImage(decodedUri, style.id, userId);
 
-      // Step 1: Start generation (fire-and-forget)
-      animateStep(1);
-      startGeneration(jobId);
+      // Step 1: Start generation
+      completeStep(1);
+      animateProgress(0.3, 500);
+      await startGeneration(jobId);
 
-      // Step 2: Poll until done
-      animateStep(2);
-      const stickers = await pollUntilDone(jobId);
+      // Start staggering steps 2-3 while polling
+      startStepStagger();
 
-      // Step 3: Finalize
-      animateStep(3);
-      await new Promise(r => setTimeout(r, 600)); // brief beat for UX
+      // Poll until done
+      await pollUntilDone(jobId);
 
+      // Clear stagger timer
+      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
+
+      // Step 4: Finalize — mark all steps complete
+      for (let i = 0; i < STEP_COUNT; i++) {
+        completeStep(i);
+        stepAnims[i].setValue(1);
+      }
+      completeStep(STEP_COUNT); // all done
+      animateProgress(1, 400);
+
+      // Show "Done! 🎉" with scale animation
+      await new Promise(r => setTimeout(r, 300));
+      setDone(true);
+      Animated.parallel([
+        Animated.spring(doneScale, {
+          toValue: 1, tension: 150, friction: 8, useNativeDriver: true,
+        }),
+        Animated.timing(doneOpacity, {
+          toValue: 1, duration: 250, useNativeDriver: true,
+        }),
+      ]).start();
+
+      // Hold 0.5s then navigate
+      await new Promise(r => setTimeout(r, 500));
       router.replace(`/result?jobId=${jobId}&styleId=${style.id}`);
     } catch (err: any) {
+      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
+      if (err.message === 'NO_CREDITS') {
+        // No credits — redirect to pricing to buy more
+        router.replace(`/pricing?styleId=${style.id}`);
+        return;
+      }
       setErrorMsg(err.message ?? 'Something went wrong. Please try again.');
     }
   }
@@ -96,13 +175,11 @@ export default function ProcessingScreen() {
         throw new Error(t('processing.errorFailed'));
       }
 
-      // Update progress animation: progress is sticker count (0–6)
+      // Progress from API: map sticker count to 30%-90% range (ease-out zone)
       if (status.progress > 0) {
-        Animated.timing(progressAnim, {
-          toValue: 0.25 + (Math.min(status.progress, 6) / 6) * 0.75, // 25%–100%
-          duration: 400,
-          useNativeDriver: false,
-        }).start();
+        const apiProgress = Math.min(status.progress, 6) / 6; // 0..1
+        const mapped = 0.3 + apiProgress * 0.6; // 30%–90%
+        animateProgress(mapped, 400);
       }
 
       await new Promise(r => setTimeout(r, 2000));
@@ -129,8 +206,19 @@ export default function ProcessingScreen() {
           </View>
         ) : (
           <>
-            <Text style={styles.title}>{t('processing.title')}</Text>
-            <Text style={styles.subtitle}>{t('processing.subtitle')}</Text>
+            {done ? (
+              <Animated.Text style={[
+                styles.doneText,
+                { transform: [{ scale: doneScale }], opacity: doneOpacity },
+              ]}>
+                {t('processing.done')}
+              </Animated.Text>
+            ) : (
+              <>
+                <Text style={styles.title}>{t('processing.title')}</Text>
+                <Text style={styles.subtitle}>{t('processing.subtitle')}</Text>
+              </>
+            )}
 
             {/* Progress bar */}
             <View style={styles.progressTrack}>
@@ -150,7 +238,7 @@ export default function ProcessingScreen() {
 
             {/* Steps */}
             <View style={styles.steps}>
-              {STEPS.map((step, i) => {
+              {STEP_ICONS.map((icon, i) => {
                 const isDone = i < currentStep;
                 const isActive = i === currentStep;
                 return (
@@ -169,7 +257,7 @@ export default function ProcessingScreen() {
                     </View>
                     <View style={styles.stepLabelRow}>
                       <Ionicons
-                        name={step.icon}
+                        name={icon}
                         size={14}
                         color={isDone ? COLORS.success : isActive ? COLORS.text : COLORS.textMuted}
                       />
@@ -217,6 +305,10 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14, fontFamily: FONTS.regular, color: COLORS.textSecondary,
     textAlign: 'center', marginTop: -SPACING.sm,
+  },
+  doneText: {
+    fontSize: 28, fontFamily: FONTS.extraBold, color: COLORS.success,
+    textAlign: 'center',
   },
 
   progressTrack: {

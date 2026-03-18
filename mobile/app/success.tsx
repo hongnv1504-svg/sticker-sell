@@ -32,6 +32,7 @@ export default function SuccessScreen() {
   const [stickers, setStickers] = useState<JobStatus['stickers']>([]);
   const [sharing, setSharing] = useState(false);
   const [tgModal, setTgModal] = useState(false);
+  const [shareIdx, setShareIdx] = useState(0);
 
   const checkAnim  = useRef(new Animated.Value(0)).current;
   const fadeAnim   = useRef(new Animated.Value(0)).current;
@@ -63,19 +64,17 @@ export default function SuccessScreen() {
     return uri;
   }
 
-  // Share first sticker using local file path (native iOS share sheet)
-  async function handleShare() {
-    if (stickers.length === 0) return;
+  // Share selected sticker using local file path (native iOS share sheet)
+  async function handleShare(idx: number) {
+    if (stickers.length === 0 || !stickers[idx]) return;
     const available = await Sharing.isAvailableAsync();
     if (!available) return;
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSharing(true);
     try {
-      const localPath = await downloadToCache(
-        stickers[0].imageUrl,
-        `sticker_${stickers[0].emotion}.png`,
-      );
+      const s = stickers[idx];
+      const localPath = await downloadToCache(s.imageUrl, `sticker_${s.emotion}.png`);
       await Sharing.shareAsync(localPath, { mimeType: 'image/png' });
     } catch {
       // User cancelled or sharing failed — silent
@@ -130,9 +129,33 @@ export default function SuccessScreen() {
               ))}
             </View>
 
-            {/* Single Share button */}
+            {/* Sticker picker — tap to select, then share */}
+            {stickers.length > 1 && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.stickerPickerRow}
+                style={styles.stickerPicker}
+              >
+                {stickers.map((s, i) => (
+                  <TouchableOpacity
+                    key={s.emotion}
+                    onPress={() => { Haptics.selectionAsync(); setShareIdx(i); }}
+                    activeOpacity={0.8}
+                    style={[
+                      styles.stickerThumb,
+                      shareIdx === i && styles.stickerThumbSelected,
+                    ]}
+                  >
+                    <Image source={{ uri: s.imageUrl }} style={styles.stickerThumbImg} />
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+
+            {/* Share button */}
             <TouchableOpacity
-              onPress={handleShare}
+              onPress={() => handleShare(shareIdx)}
               disabled={sharing || stickers.length === 0}
               activeOpacity={0.85}
               style={styles.shareBtn}
@@ -287,6 +310,18 @@ const styles = StyleSheet.create({
   appIndicatorName: {
     fontSize: 9, fontFamily: FONTS.semiBold, color: COLORS.textMuted,
   },
+
+  stickerPicker: { marginBottom: SPACING.md },
+  stickerPickerRow: { gap: SPACING.sm },
+  stickerThumb: {
+    width: 56, height: 56, borderRadius: RADIUS.sm,
+    borderWidth: 2, borderColor: 'transparent',
+    overflow: 'hidden',
+  },
+  stickerThumbSelected: {
+    borderColor: COLORS.primary,
+  },
+  stickerThumbImg: { width: '100%', height: '100%' },
 
   shareBtn: {
     flexDirection: 'row',

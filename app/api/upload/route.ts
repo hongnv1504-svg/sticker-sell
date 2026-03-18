@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
         const file = formData.get('file') as File | null;
         const packId = formData.get('packId') as string | null;
+        const userId = formData.get('userId') as string | null;
         const telegramToken = formData.get('telegram_token') as string | null;
 
         if (!file) {
@@ -85,6 +86,7 @@ export async function POST(request: NextRequest) {
                 progress: 0,
                 source_image_url: sourceImageUrl,
                 style_key: pack.styleKey,
+                ...(userId ? { user_id: userId } : {}),
                 ...(telegramToken ? { telegram_token: telegramToken } : {})
             });
 
