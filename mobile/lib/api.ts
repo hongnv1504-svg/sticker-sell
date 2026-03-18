@@ -52,6 +52,13 @@ export async function startGeneration(jobId: string): Promise<void> {
   // Don't await body for success — generation runs in background
 }
 
+export async function checkCredits(userId: string): Promise<number> {
+  const res = await fetch(`${API_BASE}/api/credits?userId=${encodeURIComponent(userId)}`);
+  if (!res.ok) return 0;
+  const data = await res.json();
+  return data.credits ?? 0;
+}
+
 export async function getJobStatus(jobId: string): Promise<JobStatus> {
   const res = await fetch(`${API_BASE}/api/job/${jobId}`, {
     headers: { 'Accept': 'application/json' },

@@ -1,7 +1,7 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, Animated, Image,
+  ScrollView, Animated, Image, ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -11,6 +11,8 @@ import * as Haptics from 'expo-haptics';
 import { useTranslation } from 'react-i18next';
 import { styleKey } from '../lib/i18n';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
+import { checkCredits } from '../lib/api';
+import { getAppUserID } from '../lib/revenuecat';
 
 export default function PreviewScreen() {
   const router = useRouter();
@@ -28,9 +30,26 @@ export default function PreviewScreen() {
     ]).start();
   }, []);
 
-  const handleCTA = () => {
+  const [checking, setChecking] = useState(false);
+
+  const handleCTA = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.push(`/pricing?styleId=${style.id}`);
+    setChecking(true);
+    try {
+      const userId = await getAppUserID();
+      const credits = await checkCredits(userId);
+      if (credits > 0) {
+        // Has credits — skip pricing, go straight to upload
+        router.push(`/upload?styleId=${style.id}`);
+      } else {
+        router.push(`/pricing?styleId=${style.id}`);
+      }
+    } catch {
+      // On error, fallback to pricing
+      router.push(`/pricing?styleId=${style.id}`);
+    } finally {
+      setChecking(false);
+    }
   };
 
   return (
@@ -91,13 +110,17 @@ export default function PreviewScreen() {
 
       {/* CTA */}
       <View style={styles.ctaContainer}>
-        <TouchableOpacity onPress={handleCTA} activeOpacity={0.85}>
+        <TouchableOpacity onPress={handleCTA} activeOpacity={0.85} disabled={checking}>
           <LinearGradient
             colors={style.gradient}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             style={styles.ctaButton}
           >
-            <Text style={styles.ctaText}>{t('preview.cta')}</Text>
+            {checking ? (
+              <ActivityIndicator color={COLORS.text} />
+            ) : (
+              <Text style={styles.ctaText}>{t('preview.cta')}</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
       </View>
