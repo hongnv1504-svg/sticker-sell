@@ -113,7 +113,10 @@
     "shareUnavailableMsg": "Sharing is not available on this device.",
     "permissionTitle": "Permission required",
     "permissionMsg": "Please allow Photos access in Settings to save stickers.",
-    "loadErrorMsg": "Failed to load your stickers. Please try again."
+    "loadErrorMsg": "Failed to load your stickers. Please try again.",
+    "emptyTitle": "No stickers found",
+    "emptyMsg": "Generation may have failed. Please try again.",
+    "retryBtn": "Retry"
   },
   "pricing": {
     "title": "Choose your pack",

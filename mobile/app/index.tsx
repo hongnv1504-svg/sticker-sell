@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Image } from 'react-native';
+import { View, Text, StyleSheet, Animated, Image, Easing } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as SecureStore from 'expo-secure-store';
@@ -8,7 +8,8 @@ import { COLORS, FONTS } from '../lib/constants';
 export default function SplashScreen() {
   const router = useRouter();
   const floatAnim = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim  = useRef(new Animated.Value(0)).current;
+  const spinAnim  = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // Fade in
@@ -26,9 +27,16 @@ export default function SplashScreen() {
       ])
     ).start();
 
+    // Spinner rotation
+    Animated.loop(
+      Animated.timing(spinAnim, { toValue: 1, duration: 900, easing: Easing.linear, useNativeDriver: true })
+    ).start();
+
     // Auto-navigate: show onboarding first-time, else go straight to home
     let cancelled = false;
     const minDelay = new Promise<void>(r => setTimeout(r, 1500));
+    // DEV ONLY: reset onboarding — remove this line after testing
+    SecureStore.deleteItemAsync('onboarding_done');
     const check = SecureStore.getItemAsync('onboarding_done');
     Promise.all([minDelay, check]).then(([, done]) => {
       if (!cancelled) router.replace(done ? '/home' : '/onboarding');
@@ -49,12 +57,14 @@ export default function SplashScreen() {
           end={{ x: 1, y: 0 }}
           style={styles.titleGradient}
         >
-          <Text style={styles.title}>Stickerify</Text>
+          <Text style={styles.title}>StickerMe</Text>
         </LinearGradient>
 
         <Text style={styles.subtitle}>Your face → Your stickers</Text>
 
-        <View style={styles.spinner} />
+        <Animated.View style={[styles.spinner, {
+          transform: [{ rotate: spinAnim.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '360deg'] }) }],
+        }]} />
       </Animated.View>
     </View>
   );

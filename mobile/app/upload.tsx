@@ -152,7 +152,7 @@ export default function UploadScreen() {
           {([
             ['happy-outline',        t('upload.tip1')],
             ['sunny-outline',        t('upload.tip2')],
-            ['glasses-outline',      t('upload.tip3')],
+            ['ban-outline',          t('upload.tip3')],
             ['scan-outline',         t('upload.tip4')],
           ] as const).map(([icon, text], i) => (
             <View key={i} style={styles.tipRow}>

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,7 +7,12 @@ import * as Haptics from 'expo-haptics';
 import * as SecureStore from 'expo-secure-store';
 import { useTranslation } from 'react-i18next';
 import { styleKey } from '../lib/i18n';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES, SAMPLE_EXPRESSIONS } from '../lib/constants';
+
+// 3D Cartoon is the hero style for onboarding Screen 0
+const HERO_STYLE   = STYLES.find(s => s.id === '3d-cartoon')!;
+const HERO_EXPRS   = HERO_STYLE.expressions;  // 6 expressions of the 3D Cartoon style
 
 // Sticker chip positions for Screen 0 burst
 // Center of 280×320 container = (140, 160), chip 56×56, radius 120
@@ -164,13 +168,13 @@ export default function OnboardingScreen() {
           <View style={styles.screen}>
             {/* Burst container */}
             <View style={styles.burstWrap}>
-              {/* Avatar */}
+              {/* Avatar — reference photo of the 3D Cartoon subject */}
               <View style={styles.avatar}>
-                <Ionicons name="person" size={44} color={COLORS.textMuted} />
+                <Image source={{ uri: HERO_STYLE.referenceImage }} style={{ width: '100%', height: '100%', borderRadius: 50 }} resizeMode="cover" />
               </View>
 
-              {/* 6 sticker chips pop out */}
-              {SAMPLE_EXPRESSIONS.map((expr, i) => (
+              {/* 6 sticker chips pop out — all 3D Cartoon expressions */}
+              {HERO_EXPRS.map((expr, i) => (
                 <Animated.View
                   key={i}
                   style={[
@@ -178,8 +182,8 @@ export default function OnboardingScreen() {
                     {
                       left:            BURST[i].x,
                       top:             BURST[i].y,
-                      backgroundColor: STYLES[i].accent + '18',
-                      borderColor:     STYLES[i].accent + '50',
+                      backgroundColor: HERO_STYLE.accent + '18',
+                      borderColor:     HERO_STYLE.accent + '50',
                       opacity:         stickerAnims[i],
                       transform:       [{ scale: stickerAnims[i] }],
                     },

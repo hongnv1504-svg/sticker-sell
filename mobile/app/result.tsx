@@ -107,15 +107,15 @@ export default function ResultScreen() {
             <Text style={styles.errorTitle}>{t('common.error')}</Text>
             <Text style={styles.errorMsg}>{t('result.loadErrorMsg')}</Text>
             <TouchableOpacity style={[styles.retryBtn, { backgroundColor: style.accent }]} onPress={() => loadStickers(3)}>
-              <Text style={styles.retryText}>Retry</Text>
+              <Text style={styles.retryText}>{t('result.retryBtn')}</Text>
             </TouchableOpacity>
           </Animated.View>
         ) : stickers.length === 0 ? (
           <Animated.View style={[styles.errorCard, { opacity: fadeAnim }]}>
-            <Text style={styles.errorTitle}>{t('result.emptyTitle', 'No stickers found')}</Text>
-            <Text style={styles.errorMsg}>{t('result.emptyMsg', 'Generation may have failed. Please try again.')}</Text>
+            <Text style={styles.errorTitle}>{t('result.emptyTitle')}</Text>
+            <Text style={styles.errorMsg}>{t('result.emptyMsg')}</Text>
             <TouchableOpacity style={[styles.retryBtn, { backgroundColor: style.accent }]} onPress={() => loadStickers(3)}>
-              <Text style={styles.retryText}>Retry</Text>
+              <Text style={styles.retryText}>{t('result.retryBtn')}</Text>
             </TouchableOpacity>
           </Animated.View>
         ) : (

@@ -9,7 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 import { getJobStatus, JobStatus } from '../lib/api';
