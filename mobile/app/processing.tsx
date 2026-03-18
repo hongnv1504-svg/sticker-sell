@@ -49,8 +49,12 @@ export default function ProcessingScreen() {
       ])
     ).start();
 
-    // Show first step immediately
-    Animated.timing(stepAnims[0], { toValue: 1, duration: 350, useNativeDriver: true }).start();
+    // Show ALL steps immediately (staggered entrance)
+    stepAnims.forEach((anim, i) => {
+      Animated.timing(anim, {
+        toValue: 1, duration: 350, delay: i * 120, useNativeDriver: true,
+      }).start();
+    });
 
     runPipeline();
 
@@ -71,10 +75,6 @@ export default function ProcessingScreen() {
 
   function completeStep(step: number) {
     setCurrentStep(step);
-    // Reveal step row
-    Animated.timing(stepAnims[Math.min(step, STEP_COUNT - 1)], {
-      toValue: 1, duration: 350, useNativeDriver: true,
-    }).start();
   }
 
   /**
@@ -83,21 +83,19 @@ export default function ProcessingScreen() {
    * Steps 0 and 4 are driven by actual pipeline events.
    */
   function startStepStagger() {
-    // We'll advance steps 1→2→3 at even intervals
-    // Estimate ~25s total, so advance every ~5s after step 0
-    let nextStep = 1;
+    // Advance steps 2→3→4 at even intervals (steps 0-1 already done)
+    let nextStep = 2;
     stepTimerRef.current = setInterval(() => {
-      if (nextStep > 3) {
+      if (nextStep > 4) {
         if (stepTimerRef.current) clearInterval(stepTimerRef.current);
         return;
       }
       completeStep(nextStep);
-      // Ease-out progress: fast early, slow later
       const fraction = (nextStep + 1) / STEP_COUNT;
       const eased = fraction <= 0.6 ? fraction : 0.6 + (fraction - 0.6) * 0.5;
       animateProgress(eased, 800);
       nextStep++;
-    }, 5000);
+    }, 4000);
   }
 
   async function runPipeline() {
