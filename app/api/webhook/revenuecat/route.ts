@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         console.log(`[RevenueCat] Event received: ${eventType}`);
 
         // Handle purchase events
-        if (eventType === 'INITIAL_PURCHASE' || eventType === 'NON_SUBSCRIPTION_PURCHASE') {
+        if (eventType === 'INITIAL_PURCHASE' || eventType === 'NON_SUBSCRIPTION_PURCHASE' || eventType === 'NON_RENEWING_PURCHASE') {
             const userId: string = event.app_user_id;
             const productId: string = event.product_id;
             const transactionId: string = event.transaction_id;

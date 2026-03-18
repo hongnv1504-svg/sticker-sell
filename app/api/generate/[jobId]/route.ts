@@ -32,7 +32,7 @@ export async function POST(
 
             if (creditError || !creditOk) {
                 console.error(`[GENERATE] No credits for user ${job.user_id}:`, creditError);
-                await supabase.from('sticker_jobs').update({ status: 'failed' }).eq('id', jobId);
+                // Don't mark job as failed — mobile will retry while waiting for webhook credits
                 return NextResponse.json({ success: false, error: 'NO_CREDITS' }, { status: 402 });
             }
             console.log(`[GENERATE] Deducted 1 credit from user ${job.user_id}`);

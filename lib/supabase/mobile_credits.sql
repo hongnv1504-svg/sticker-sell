@@ -1,22 +1,24 @@
 -- mobile_credits.sql
 -- Run this in Supabase SQL Editor if not already done in Step 1 migration
+-- NOTE: user_id is TEXT (RevenueCat anonymous ID), not UUID
 
 -- 1. User credits table
 CREATE TABLE IF NOT EXISTS user_credits (
-  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT PRIMARY KEY,
   credits INTEGER NOT NULL DEFAULT 0,
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
 ALTER TABLE user_credits ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can read own credits"
-  ON user_credits FOR SELECT
-  USING (auth.uid() = user_id);
+CREATE POLICY "Service role only on user_credits"
+  ON user_credits FOR ALL
+  USING (true)
+  WITH CHECK (true);
 
 -- 2. Credit transactions (for idempotency)
 CREATE TABLE IF NOT EXISTS credit_transactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   product_id TEXT NOT NULL,
   transaction_id TEXT UNIQUE NOT NULL,
   credits_added INTEGER NOT NULL,
@@ -31,7 +33,7 @@ CREATE POLICY "Service role only on credit_transactions"
   WITH CHECK (true);
 
 -- 3. RPC function to atomically add credits
-CREATE OR REPLACE FUNCTION add_user_credits(p_user_id UUID, p_credits INTEGER)
+CREATE OR REPLACE FUNCTION add_user_credits(p_user_id TEXT, p_credits INTEGER)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -43,5 +45,31 @@ BEGIN
   DO UPDATE SET
     credits = user_credits.credits + p_credits,
     updated_at = now();
+END;
+$$;
+
+-- 4. RPC function to atomically check and deduct 1 credit
+CREATE OR REPLACE FUNCTION check_and_deduct_credit(p_user_id TEXT)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  current_credits INTEGER;
+BEGIN
+  SELECT credits INTO current_credits
+  FROM user_credits
+  WHERE user_id = p_user_id
+  FOR UPDATE;
+
+  IF current_credits IS NULL OR current_credits < 1 THEN
+    RETURN FALSE;
+  END IF;
+
+  UPDATE user_credits
+  SET credits = credits - 1, updated_at = now()
+  WHERE user_id = p_user_id;
+
+  RETURN TRUE;
 END;
 $$;

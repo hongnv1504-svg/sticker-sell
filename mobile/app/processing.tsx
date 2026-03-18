@@ -116,10 +116,27 @@ export default function ProcessingScreen() {
       const userId = await getAppUserID();
       const jobId = await uploadImage(decodedUri, style.id, userId);
 
-      // Step 1: Start generation
+      // Step 1: Start generation (retry if webhook hasn't delivered credits yet)
       completeStep(1);
       animateProgress(0.3, 500);
-      await startGeneration(jobId);
+
+      const MAX_CREDIT_RETRIES = 5;
+      const CREDIT_RETRY_DELAY = 3000; // 3s between retries
+      let creditRetries = 0;
+      while (true) {
+        try {
+          await startGeneration(jobId);
+          break; // success — exit retry loop
+        } catch (genErr: any) {
+          if (genErr.message === 'NO_CREDITS' && creditRetries < MAX_CREDIT_RETRIES) {
+            creditRetries++;
+            console.log(`[Processing] Waiting for credits (attempt ${creditRetries}/${MAX_CREDIT_RETRIES})...`);
+            await new Promise(r => setTimeout(r, CREDIT_RETRY_DELAY));
+          } else {
+            throw genErr; // non-credit error or retries exhausted
+          }
+        }
+      }
 
       // Start staggering steps 2-3 while polling
       startStepStagger();
