@@ -36,6 +36,14 @@
 4. **Explain Changes**: High-level summary at each step
 5. **Document Results**: Add review section to 'tasks/todo.md*
 6. **Capture Lessons**: Update 'tasks/lessons.md" after corrections
+## Worktree & Branch Safety
+- **1 worktree tại 1 thời điểm** — KHÔNG mở 2 phiên Claude Code cùng sửa mobile hoặc backend code song song
+- **Merge ngay sau khi xong** — sửa xong → commit → merge vào main → xóa worktree. Không để code treo trên branch riêng
+- **Pull trước khi bắt đầu** — luôn chạy `git pull origin main` trước khi tạo worktree mới hoặc bắt đầu sửa code
+- **Không stash quan trọng** — nếu có thay đổi local chưa commit, commit trước khi merge branch khác. Tránh dùng stash cho code production
+- **Resolve conflict giữ phiên bản mới** — khi conflict giữa stash cũ và code mới trên main, ưu tiên giữ phiên bản đã được review/audit (Updated upstream)
+- **Xóa worktree cũ** — sau khi merge xong, chạy `git worktree remove <path>` để tránh rác
+
 ## Core Principles
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
