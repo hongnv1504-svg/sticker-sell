@@ -58,7 +58,7 @@
     "expressionsLabel": "6 BIỂU CẢM BẠN SẼ NHẬN",
     "cta": "Chọn Style Này →",
     "infoStickers": "6 sticker độc đáo theo phong cách {{name}}",
-    "infoOptimized": "Tối ưu cho iMessage & WhatsApp",
+    "infoOptimized": "Tối ưu cho Telegram & WhatsApp",
     "infoFast": "AI tạo tự động, nhanh như chớp",
     "infoDownload": "Lưu vào Ảnh hoặc chia sẻ trực tiếp"
   },
@@ -124,7 +124,7 @@
     "featureStickers": "{{count}} sticker độc đáo theo phong cách {{name}}",
     "featureFast": "AI xử lý, kết quả tức thì",
     "featureDownload": "Lưu vào Ảnh hoặc chia sẻ trực tiếp",
-    "featureOptimized": "Tối ưu cho iMessage & WhatsApp",
+    "featureOptimized": "Tối ưu cho Telegram & WhatsApp",
     "securePay": "Thanh toán an toàn qua Apple Pay",
     "moneyBack": "Hoàn tiền trong 30 ngày",
     "restore": "Khôi phục mua hàng trước đó",

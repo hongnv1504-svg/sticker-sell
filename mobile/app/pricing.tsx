@@ -89,6 +89,8 @@ export default function PricingScreen() {
   }
 
   const selectedRC = RC_PACKAGES.find(p => p.productId === selected) ?? RC_PACKAGES[1];
+  const selectedRCPkg = packages.find(p => p.product.identifier === selected);
+  const ctaPrice = selectedRCPkg?.product.priceString ?? selectedRC.price;
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
@@ -187,7 +189,7 @@ export default function PricingScreen() {
               <ActivityIndicator color={COLORS.text} />
             ) : (
               <Text style={styles.ctaText}>
-                {selectedRC.credits === 1 ? t('pricing.ctaPack', { price: selectedRC.price }) : t('pricing.ctaPacks', { count: selectedRC.credits, price: selectedRC.price })}
+                {selectedRC.credits === 1 ? t('pricing.ctaPack', { price: ctaPrice }) : t('pricing.ctaPacks', { count: selectedRC.credits, price: ctaPrice })}
               </Text>
             )}
           </LinearGradient>
