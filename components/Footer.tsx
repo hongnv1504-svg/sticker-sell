@@ -14,7 +14,7 @@ export default function Footer() {
                             <span className="text-xl font-bold text-[#222222]">StickerMe</span>
                         </Link>
                         <p className="text-[#a7a7a7] max-w-sm text-sm leading-relaxed">
-                            Biến ảnh của bạn thành sticker 3D dễ thương. Hoàn hảo cho Telegram & WhatsApp.
+                            Biến ảnh của bạn thành sticker dễ thương. Hoàn hảo cho Telegram & WhatsApp.
                         </p>
                     </div>
 

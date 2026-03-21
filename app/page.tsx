@@ -24,14 +24,14 @@ export default function Home() {
 
             {/* Headline */}
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#222222]">
-              Biến Bạn Thành Sticker.<br />
-              <span className="gradient-text">AI Lo Phần Kỳ Diệu.</span>
+              Biến Hình Sticker –<br />
+              <span className="gradient-text">Tỏa Sáng Chất Riêng.</span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-xl text-[#a7a7a7] mb-10 max-w-2xl mx-auto">
-              Tải ảnh selfie, chọn phong cách, nhận 6 sticker AI độc đáo
-              cho Telegram &amp; WhatsApp.
+              Chỉ cần 1 tấm ảnh, AI tự động tạo ngay 6 sticker biểu cảm.
+              Dùng làm Avatar cực chất, add vào Telegram/WhatsApp hoặc &apos;flex&apos; cùng bạn bè chỉ trong tích tắc.
             </p>
 
             {/* CTA Buttons */}
@@ -77,7 +77,7 @@ export default function Home() {
                         { file: 'affectionate', emoji: '🥰', name: 'Yêu thương' },
                         { file: 'thinking', emoji: '🤔', name: 'Suy nghĩ' },
                         { file: 'winking', emoji: '😉', name: 'Nháy mắt' },
-                        { file: 'blowing_kiss', emoji: '😘', name: 'Thổi hôn' },
+                        { file: 'blowing_kiss', emoji: '😘', name: 'Hôn gió' },
                         { file: 'crying', emoji: '😢', name: 'Khóc' },
                       ].map((item, i) => (
                         <div
@@ -239,7 +239,7 @@ export default function Home() {
         <section id="pricing" className="py-20 px-6 bg-[#f8f8f8]">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Bảng Giá Đơn Giản</h2>
+              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Bảng Giá</h2>
               <p className="text-[#a7a7a7] text-lg">Thanh toán một lần, không đăng ký</p>
             </div>
 
