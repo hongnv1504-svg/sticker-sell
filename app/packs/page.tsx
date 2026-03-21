@@ -18,8 +18,8 @@ export default function PacksPage() {
                             Chọn Phong Cách <span className="gradient-text">Sticker</span>
                         </h1>
                         <p className="text-[#a7a7a7] text-lg max-w-2xl mx-auto">
-                            Mỗi bộ biến ảnh của bạn thành 6 sticker với các biểu cảm khác nhau.
-                            Chọn phong cách phù hợp với bạn!
+                            Nhận ngay bộ 6 sticker độc bản với đầy đủ biểu cảm từ chính ảnh của bạn.
+                            Chọn phong cách bạn yêu thích nhất!
                         </p>
                     </div>
 
