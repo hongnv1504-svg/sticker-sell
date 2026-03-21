@@ -7,9 +7,7 @@ export default function Header() {
         <header className="fixed top-0 left-0 right-0 z-50">
             <div className="glass-card mx-4 mt-4 px-6 py-4 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-10 h-10 rounded-xl bg-[#FA5D29] flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform">
-                        🎨
-                    </div>
+                    <img src="/logo.png" alt="StickerMe" className="w-10 h-10 rounded-xl shadow-sm group-hover:scale-110 transition-transform" />
                     <span className="text-xl font-bold text-[#222222]">StickerMe</span>
                 </Link>
 
