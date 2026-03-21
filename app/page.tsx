@@ -54,7 +54,7 @@ export default function Home() {
                   <div className="text-center group h-full flex flex-col">
                     <div className="flex-grow rounded-2xl mb-3 overflow-hidden relative border border-[#ededed] transition-shadow duration-300 group-hover:shadow-md min-h-[140px]">
                       <img
-                        src="/sample-photo.jpg"
+                        src="/stickers/3d-cartoon/reference.jpg"
                         alt="Sample person"
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
@@ -85,7 +85,7 @@ export default function Home() {
                           className="group relative aspect-square rounded-xl overflow-hidden bg-[#FA5D29]/10 border border-[#FA5D29]/25"
                         >
                           <img
-                            src={`/stickers/${item.file}.png`}
+                            src={`/stickers/3d-cartoon/${item.file}.png`}
                             alt={item.name}
                             className="w-full h-full object-contain p-1 transition-opacity duration-200 group-hover:opacity-0"
                           />

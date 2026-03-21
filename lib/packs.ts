@@ -25,7 +25,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'pixar3d',
         icon: '🎬',
         previewEmojis: ['😂', '🥰', '🤔', '😉', '😘', '😢'],
-        sampleImage: '/stickers/laughing.png',
+        sampleImage: '/stickers/3d-cartoon/laughing.png',
         price: 499,
         popular: true,
         colors: {
@@ -41,7 +41,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'anime_kawaii',
         icon: '🌸',
         previewEmojis: ['✨', '💖', '🎀', '💕', '🌟', '😊'],
-        sampleImage: '/stickers/sample-anime-kawaii.png',
+        sampleImage: '/stickers/anime-kawaii/laughing.png',
         price: 499,
         colors: {
             primary: '#f472b6',
@@ -56,7 +56,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'chibi_gamer',
         icon: '🎮',
         previewEmojis: ['⚔️', '🛡️', '💎', '🔥', '⭐', '🎯'],
-        sampleImage: '/stickers/sample-chibi-gamer.png',
+        sampleImage: '/stickers/chibi-game/laughing.png',
         price: 599,
         colors: {
             primary: '#22d3ee',
@@ -71,7 +71,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'watercolor_soft',
         icon: '🎨',
         previewEmojis: ['🌈', '☁️', '🦋', '🌷', '💫', '🍃'],
-        sampleImage: '/stickers/sample-watercolor-soft.png',
+        sampleImage: '/stickers/watercolor-soft/laughing.png',
         price: 499,
         colors: {
             primary: '#86efac',
@@ -86,7 +86,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'pop_art',
         icon: '💥',
         previewEmojis: ['💢', '💬', '⚡', '💣', '🔊', '👊'],
-        sampleImage: '/stickers/sample-pop-art.png',
+        sampleImage: '/stickers/pop-art/laughing.png',
         price: 499,
         colors: {
             primary: '#f97316',
@@ -101,7 +101,7 @@ export const STICKER_PACKS: StickerPack[] = [
         styleKey: 'minimalist_line',
         icon: '✏️',
         previewEmojis: ['〰️', '◯', '△', '□', '✦', '⬡'],
-        sampleImage: '/stickers/sample-minimalist-line.png',
+        sampleImage: '/stickers/minimalist-line/laughing.png',
         price: 399,
         colors: {
             primary: '#64748b',
