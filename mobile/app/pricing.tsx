@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES, RC_PACKAGES } from '../lib/constants';
 import { getOfferings, purchasePackage, restorePurchases } from '../lib/revenuecat';
 import { styleKey } from '../lib/i18n';
+import BackButton from '../components/BackButton';
 
 export default function PricingScreen() {
   const router = useRouter();
@@ -95,10 +96,7 @@ export default function PricingScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Back */}
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={styles.backText}>{t('common.back')}</Text>
-        </TouchableOpacity>
+        <BackButton />
 
         <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
           {/* Header */}
@@ -179,7 +177,7 @@ export default function PricingScreen() {
 
       {/* CTA */}
       <View style={styles.ctaContainer}>
-        <TouchableOpacity onPress={handlePurchase} disabled={purchasing} activeOpacity={0.85}>
+        <TouchableOpacity onPress={handlePurchase} disabled={purchasing} activeOpacity={0.85} accessibilityRole="button" accessibilityLabel={`Purchase ${selectedRC.credits} packs`}>
           <LinearGradient
             colors={style.gradient}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
@@ -285,13 +283,6 @@ function PackageCard({
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bg },
   scroll: { paddingHorizontal: SPACING.screen, paddingBottom: SPACING.xl },
-  backBtn: {
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.sm,
-    alignSelf: 'flex-start',
-    marginTop: SPACING.sm,
-  },
-  backText: { fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.textMuted },
 
   header: { alignItems: 'center', paddingVertical: SPACING.lg },
   styleChip: {
@@ -405,7 +396,7 @@ const styles = StyleSheet.create({
   trustRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   trustText: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textMuted },
 
-  restoreBtn: { alignItems: 'center', paddingVertical: SPACING.sm },
+  restoreBtn: { alignItems: 'center', minHeight: 44, justifyContent: 'center' },
   restoreText: { fontSize: 13, fontFamily: FONTS.semiBold, color: COLORS.primary },
 
   legal: {

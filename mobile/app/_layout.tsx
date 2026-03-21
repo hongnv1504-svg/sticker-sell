@@ -54,7 +54,10 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: COLORS.bg },
           animation: 'fade',
         }}
-      />
+      >
+        <Stack.Screen name="result" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="success" options={{ gestureEnabled: false }} />
+      </Stack>
     </SafeAreaProvider>
   );
 }

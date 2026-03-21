@@ -202,10 +202,10 @@ export default function PaywallPage({ params }: Props) {
                     {/* Title */}
                     <div className="text-center mb-8">
                         <h1 className="text-4xl font-bold mb-4 text-[#222222]">
-                            Create Your AI Stickers 🎨
+                            Tạo Sticker AI Của Bạn 🎨
                         </h1>
                         <p className="text-[#a7a7a7] text-lg">
-                            Pay to generate your personalized sticker pack
+                            Thanh toán để tạo bộ sticker của bạn
                         </p>
                     </div>
 
@@ -228,8 +228,8 @@ export default function PaywallPage({ params }: Props) {
                             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 mb-4">
                                 <span className="text-5xl">✨</span>
                             </div>
-                            <h2 className="text-2xl font-bold mb-2 text-[#222222]">AI Sticker Pack</h2>
-                            <p className="text-[#a7a7a7]">6 personalized AI stickers</p>
+                            <h2 className="text-2xl font-bold mb-2 text-[#222222]">Bộ Sticker AI</h2>
+                            <p className="text-[#a7a7a7]">6 sticker AI cá nhân hóa</p>
                         </div>
 
                         {/* Price */}
@@ -237,14 +237,14 @@ export default function PaywallPage({ params }: Props) {
                             {paymentMethod === 'international' ? (
                                 <>
                                     <div className="text-5xl font-bold gradient-text mb-1">$4.99</div>
-                                    <p className="text-[#a7a7a7] text-sm">One-time payment</p>
+                                    <p className="text-[#a7a7a7] text-sm">Thanh toán một lần</p>
                                 </>
                             ) : (
                                 <>
                                     <div className="text-5xl font-bold mb-1" style={{ background: 'linear-gradient(135deg, #ef4444, #eab308)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                                         39.000đ
                                     </div>
-                                    <p className="text-[#a7a7a7] text-sm">Bank Transfer · One-time payment</p>
+                                    <p className="text-[#a7a7a7] text-sm">Chuyển khoản · Thanh toán một lần</p>
                                 </>
                             )}
                         </div>
@@ -252,11 +252,11 @@ export default function PaywallPage({ params }: Props) {
                         {/* Features */}
                         <ul className="space-y-3 mb-8">
                             {[
-                                'High-resolution PNG files',
-                                'Transparent background',
-                                'Works on Telegram & WhatsApp',
-                                'Download as ZIP',
-                                'Generated immediately after payment',
+                                'File PNG chất lượng cao',
+                                'Nền trong suốt',
+                                'Dùng được trên Telegram & WhatsApp',
+                                'Tải về dạng ZIP',
+                                'Tạo ngay sau khi thanh toán',
                             ].map((feature, i) => (
                                 <li key={i} className="flex items-center gap-3 text-[#555555]">
                                     <span className="text-green-400">✓</span>
@@ -283,15 +283,15 @@ export default function PaywallPage({ params }: Props) {
                                     {isCheckingOut ? (
                                         <>
                                             <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                            Processing...
+                                            Đang xử lý...
                                         </>
                                     ) : (
-                                        <>Pay &amp; Generate Stickers <span>🚀</span></>
+                                        <>Thanh Toán & Tạo Sticker <span>🚀</span></>
                                     )}
                                 </button>
                                 <div className="mt-6 flex items-center justify-center gap-4 text-sm text-[#a7a7a7]">
-                                    <span>🔒 Secure</span>
-                                    <span>⚡ Instant</span>
+                                    <span>🔒 Bảo mật</span>
+                                    <span>⚡ Tức thì</span>
                                     <span>🍋 Lemon Squeezy</span>
                                 </div>
                             </>
@@ -311,8 +311,8 @@ export default function PaywallPage({ params }: Props) {
                                 {vnStatus === 'paid' && (
                                     <div className="flex flex-col items-center gap-4 py-6 text-center">
                                         <span className="text-5xl animate-bounce">✅</span>
-                                        <h3 className="text-xl font-bold text-green-600">Payment Successful!</h3>
-                                        <p className="text-[#888] text-sm">Redirecting to generate stickers...</p>
+                                        <h3 className="text-xl font-bold text-green-600">Thanh Toán Thành Công!</h3>
+                                        <p className="text-[#888] text-sm">Đang chuyển hướng tạo sticker...</p>
                                         <span className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
                                     </div>
                                 )}
@@ -393,7 +393,7 @@ export default function PaywallPage({ params }: Props) {
                                             <>
                                                 {/* QR Code */}
                                                 <div className="flex flex-col items-center gap-3">
-                                                    <p className="text-sm font-medium text-[#555]">Scan QR with banking app or MoMo</p>
+                                                    <p className="text-sm font-medium text-[#555]">Quét QR bằng app ngân hàng hoặc MoMo</p>
                                                     <div className="relative">
                                                         <div className="border-4 border-white shadow-xl rounded-2xl overflow-hidden">
                                                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -412,7 +412,7 @@ export default function PaywallPage({ params }: Props) {
                                                     </div>
                                                     <p className="text-xs text-green-600 font-medium flex items-center gap-1">
                                                         <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                                                        Waiting for payment... (auto-confirms)
+                                                        Đang chờ thanh toán... (tự động xác nhận)
                                                     </p>
                                                 </div>
 
@@ -423,15 +423,15 @@ export default function PaywallPage({ params }: Props) {
                                                         <span className="font-semibold text-[#222]">ACB (Ngân hàng Á Châu)</span>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <span className="text-[#888]">Account Number</span>
+                                                        <span className="text-[#888]">Số tài khoản</span>
                                                         <span className="font-mono font-semibold text-[#222]">{vnPaymentInfo.accountNumber}</span>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <span className="text-[#888]">Amount</span>
+                                                        <span className="text-[#888]">Số tiền</span>
                                                         <span className="font-semibold text-red-500">{vnPaymentInfo.amountFormatted}</span>
                                                     </div>
                                                     <div className="flex justify-between items-center gap-2">
-                                                        <span className="text-[#888] shrink-0">Transfer Note</span>
+                                                        <span className="text-[#888] shrink-0">Nội dung chuyển khoản</span>
                                                         <button
                                                             onClick={() => copyToClipboard(vnPaymentInfo.transferContent, 'note')}
                                                             className="font-mono font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg hover:bg-purple-100 transition-colors cursor-copy flex items-center gap-1"
@@ -448,8 +448,8 @@ export default function PaywallPage({ params }: Props) {
                                 )}
 
                                 <div className="flex items-center justify-center gap-4 text-sm text-[#a7a7a7] pt-2">
-                                    <span>🔒 Secure</span>
-                                    <span>⚡ Auto-confirm</span>
+                                    <span>🔒 Bảo mật</span>
+                                    <span>⚡ Tự động xác nhận</span>
                                     <span>🇻🇳 VietQR Napas</span>
                                 </div>
                             </div>

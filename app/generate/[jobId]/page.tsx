@@ -126,9 +126,9 @@ export default function GeneratePage({ params }: Props) {
                                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
                                     <span className="text-4xl">✨</span>
                                 </div>
-                                <h1 className="text-4xl font-bold mb-4">Stickers Ready!</h1>
+                                <h1 className="text-4xl font-bold mb-4">Sticker Đã Sẵn Sàng!</h1>
                                 <p className="text-gray-400 text-lg">
-                                    Redirecting to preview...
+                                    Đang chuyển hướng...
                                 </p>
                             </>
                         ) : status === 'failed' ? (
@@ -136,7 +136,7 @@ export default function GeneratePage({ params }: Props) {
                                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/20 mb-4">
                                     <span className="text-4xl">😕</span>
                                 </div>
-                                <h1 className="text-4xl font-bold mb-4">Generation Failed</h1>
+                                <h1 className="text-4xl font-bold mb-4">Tạo Sticker Thất Bại</h1>
                                 <p className="text-gray-400 text-lg">
                                     {error || 'Something went wrong'}
                                 </p>
@@ -146,9 +146,9 @@ export default function GeneratePage({ params }: Props) {
                                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-500/20 mb-4">
                                     <span className="text-4xl animate-spin">⏳</span>
                                 </div>
-                                <h1 className="text-4xl font-bold mb-4">Checking Status...</h1>
+                                <h1 className="text-4xl font-bold mb-4">Đang Kiểm Tra...</h1>
                                 <p className="text-gray-400 text-lg">
-                                    Verifying payment and job status...
+                                    Đang xác nhận thanh toán...
                                 </p>
                             </>
                         ) : (
@@ -156,9 +156,9 @@ export default function GeneratePage({ params }: Props) {
                                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500/20 mb-4 animate-pulse-glow">
                                     <span className="text-4xl animate-spin">✨</span>
                                 </div>
-                                <h1 className="text-4xl font-bold mb-4">Creating Your Stickers</h1>
+                                <h1 className="text-4xl font-bold mb-4">Đang Tạo Sticker Cho Bạn</h1>
                                 <p className="text-gray-400 text-lg">
-                                    AI is transforming you into a cute 3D character...
+                                    AI đang biến bạn thành nhân vật dễ thương...
                                 </p>
                             </>
                         )}
@@ -172,13 +172,13 @@ export default function GeneratePage({ params }: Props) {
                                 total={STICKER_EMOTIONS.length}
                                 label={
                                     progress === 0
-                                        ? `Starting AI generation...`
-                                        : `${progress} of ${STICKER_EMOTIONS.length} stickers ready ✨`
+                                        ? `Bắt đầu tạo sticker...`
+                                        : `${progress}/${STICKER_EMOTIONS.length} sticker hoàn thành ✨`
                                 }
                             />
 
                             <p className="text-center text-sm text-gray-400 mt-4">
-                                ⏱️ ~{estimatedSeconds}s remaining — stickers appear as they finish
+                                ⏱️ ~{estimatedSeconds}s còn lại
                             </p>
                         </div>
                     )}
@@ -200,7 +200,7 @@ export default function GeneratePage({ params }: Props) {
                                 onClick={handleRetry}
                                 className="btn btn-primary"
                             >
-                                Try Again with New Photo
+                                Thử Lại Với Ảnh Mới
                             </button>
                         </div>
                     )}
@@ -208,7 +208,7 @@ export default function GeneratePage({ params }: Props) {
                     {/* Processing info */}
                     {status === 'processing' && (
                         <div className="mt-8 text-center text-gray-400 text-sm">
-                            <p>Please don&apos;t close this page while generating.</p>
+                            <p>Vui lòng không đóng trang này khi đang tạo sticker.</p>
                         </div>
                     )}
                 </div>

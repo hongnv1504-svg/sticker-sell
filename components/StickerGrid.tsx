@@ -67,7 +67,7 @@ export default function StickerGrid({
                             {isGenerating ? (
                                 <div className="flex flex-col items-center gap-2">
                                     <div className="w-8 h-8 border-2 border-[#FA5D29] border-t-transparent rounded-full animate-spin" />
-                                    <span className="text-xs text-[#a7a7a7]">Generating...</span>
+                                    <span className="text-xs text-[#a7a7a7]">Đang tạo...</span>
                                 </div>
                             ) : isGenerated ? (
                                 <>
@@ -91,7 +91,7 @@ export default function StickerGrid({
                                             }}
                                             disabled={downloading === emotion}
                                             className="absolute top-2 right-2 p-2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-lg text-[#222222] transition-all border border-[#ededed] shadow-sm"
-                                            title="Download PNG"
+                                            title="Tải PNG"
                                         >
                                             {downloading === emotion ? (
                                                 <div className="w-[18px] h-[18px] border-2 border-[#FA5D29] border-t-transparent rounded-full animate-spin" />

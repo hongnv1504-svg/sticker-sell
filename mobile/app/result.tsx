@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   ScrollView, Animated, Image, ActivityIndicator,
-  Alert,
+  Alert, Dimensions,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -71,7 +71,7 @@ export default function ResultScreen() {
         await MediaLibrary.saveToLibraryAsync(sticker.imageUrl);
       }
       Alert.alert(t('result.savedTitle'), t('result.savedMsg', { count: stickers.length }), [
-        { text: t('common.ok'), onPress: () => router.push(`/success?jobId=${jobId}&styleId=${style.id}`) },
+        { text: t('common.ok'), onPress: () => router.replace(`/success?jobId=${jobId}&styleId=${style.id}`) },
       ]);
     } catch {
       Alert.alert(t('result.saveErrorTitle'), t('result.saveErrorMsg'));
@@ -150,7 +150,7 @@ export default function ResultScreen() {
       <View style={styles.actions}>
         <TouchableOpacity
           style={styles.tryAnotherBtn}
-          onPress={() => router.push('/home')}
+          onPress={() => router.dismissAll()}
         >
           <Text style={[styles.tryAnotherText, { color: style.accent }]}>{t('result.tryAnother')}</Text>
         </TouchableOpacity>
@@ -207,6 +207,8 @@ function StickerTile({
         onPress={onShare}
         activeOpacity={0.8}
         style={styles.tileTouch}
+        accessibilityRole="button"
+        accessibilityLabel={`Share ${sticker.emotion} sticker`}
       >
         <Image
           source={{ uri: sticker.imageUrl }}
@@ -221,7 +223,7 @@ function StickerTile({
   );
 }
 
-const TILE_SIZE = '31%';
+const TILE_SIZE = (Dimensions.get('window').width - SPACING.screen * 2 - SPACING.sm * 2) / 3;
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bg },
@@ -245,7 +247,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: SPACING.sm,
     marginBottom: SPACING.lg,
-    justifyContent: 'space-between',
   },
 
   tile: { width: TILE_SIZE },
@@ -297,7 +298,8 @@ const styles = StyleSheet.create({
   },
   tryAnotherBtn: {
     alignItems: 'center',
-    paddingVertical: SPACING.sm,
+    minHeight: 44,
+    justifyContent: 'center',
   },
   tryAnotherText: { fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.primary },
   saveButton: {

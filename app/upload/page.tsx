@@ -98,24 +98,24 @@ function UploadContent() {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-[#222222]">{selectedPack.name}</h3>
-                                <p className="text-sm text-[#a7a7a7]">6 stickers</p>
+                                <p className="text-sm text-[#a7a7a7]">6 sticker</p>
                             </div>
                         </div>
                         <Link
                             href="/packs"
                             className="text-sm text-[#a7a7a7] hover:text-[#222222] transition-colors"
                         >
-                            Change Style →
+                            Đổi Phong Cách →
                         </Link>
                     </div>
 
                     {/* Title */}
                     <div className="text-center mb-12">
                         <h1 className="text-4xl font-bold mb-4 text-[#222222]">
-                            Upload Your Photo
+                            Tải Ảnh Lên
                         </h1>
                         <p className="text-[#a7a7a7] text-lg">
-                            Choose a clear selfie with good lighting for best results
+                            Chọn ảnh selfie rõ nét, ánh sáng tốt để có kết quả đẹp nhất
                         </p>
                     </div>
 
@@ -144,18 +144,17 @@ function UploadContent() {
                                 {isUploading ? (
                                     <>
                                         <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        Uploading...
+                                        Đang tải...
                                     </>
                                 ) : (
                                     <>
-                                        Generate {selectedPack.name} Stickers
-                                        <span>✨</span>
+                                        Tạo Sticker {selectedPack.name} ✨
                                     </>
                                 )}
                             </button>
 
                             <p className="mt-4 text-sm text-[#a7a7a7]">
-                                One-time payment · Stickers generated immediately after payment
+                                Thanh toán một lần · Sticker được tạo ngay sau khi thanh toán
                             </p>
                         </div>
                     )}
@@ -163,24 +162,24 @@ function UploadContent() {
                     {/* Tips */}
                     <div className="mt-12 glass-card p-6">
                         <h3 className="font-semibold text-[#222222] mb-4 flex items-center gap-2">
-                            <span>💡</span> Tips for Best Results
+                            <span>💡</span> Mẹo Để Có Kết Quả Đẹp
                         </h3>
                         <ul className="space-y-2 text-[#a7a7a7]">
                             <li className="flex items-start gap-2">
                                 <span className="text-green-400">✓</span>
-                                Use a photo with just one face clearly visible
+                                Dùng ảnh có một khuôn mặt rõ ràng
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-green-400">✓</span>
-                                Good lighting helps capture facial features better
+                                Ánh sáng tốt giúp nhận diện khuôn mặt tốt hơn
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-green-400">✓</span>
-                                Front-facing photos work best
+                                Ảnh chụp thẳng mặt cho kết quả tốt nhất
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-red-400">✗</span>
-                                Avoid blurry or heavily filtered photos
+                                Tránh ảnh mờ hoặc filter nặng
                             </li>
                         </ul>
                     </div>

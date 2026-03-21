@@ -35,8 +35,6 @@ export default function SplashScreen() {
     // Auto-navigate: show onboarding first-time, else go straight to home
     let cancelled = false;
     const minDelay = new Promise<void>(r => setTimeout(r, 1500));
-    // DEV ONLY: reset onboarding — remove this line after testing
-    SecureStore.deleteItemAsync('onboarding_done');
     const check = SecureStore.getItemAsync('onboarding_done');
     Promise.all([minDelay, check]).then(([, done]) => {
       if (!cancelled) router.replace(done ? '/home' : '/onboarding');

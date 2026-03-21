@@ -5,6 +5,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 import { uploadImage, startGeneration, getJobStatus } from '../lib/api';
@@ -175,6 +176,7 @@ export default function ProcessingScreen() {
         router.replace(`/pricing?styleId=${style.id}`);
         return;
       }
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       setErrorMsg(err.message ?? 'Something went wrong. Please try again.');
     }
   }

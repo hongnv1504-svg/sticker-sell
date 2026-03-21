@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, Animated, Image, ActivityIndicator,
+  ScrollView, Animated, Image, ActivityIndicator, Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -13,6 +13,7 @@ import { styleKey } from '../lib/i18n';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
 import { checkCredits } from '../lib/api';
 import { getAppUserID } from '../lib/revenuecat';
+import BackButton from '../components/BackButton';
 
 export default function PreviewScreen() {
   const router = useRouter();
@@ -55,10 +56,7 @@ export default function PreviewScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Back */}
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={styles.backText}>{t('common.back')}</Text>
-        </TouchableOpacity>
+        <BackButton />
 
         <Animated.View style={{ opacity: fadeAnim }}>
           {/* Style Hero — real reference photo */}
@@ -119,7 +117,7 @@ export default function PreviewScreen() {
             {checking ? (
               <ActivityIndicator color={COLORS.text} />
             ) : (
-              <Text style={styles.ctaText}>{t('preview.cta')}</Text>
+              <Text style={styles.ctaText} accessibilityRole="button">{t('preview.cta')}</Text>
             )}
           </LinearGradient>
         </TouchableOpacity>
@@ -166,13 +164,6 @@ function ExpressionTile({
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bg },
   scroll: { paddingHorizontal: SPACING.screen, paddingBottom: SPACING.xl },
-  backBtn: {
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.sm,
-    alignSelf: 'flex-start',
-    marginTop: SPACING.sm,
-  },
-  backText: { fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.textMuted },
   hero: { alignItems: 'center', paddingVertical: SPACING.lg },
   heroPhotoWrap: {
     width: 120, height: 120, borderRadius: RADIUS.xl,
@@ -205,7 +196,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row', flexWrap: 'wrap',
     gap: SPACING.sm, marginBottom: SPACING.lg,
   },
-  tile: { width: '30%' },
+  tile: {
+    width: (Dimensions.get('window').width - SPACING.screen * 2 - SPACING.sm * 2) / 3,
+  },
   tileInner: {
     borderRadius: RADIUS.md, borderWidth: 1,
     paddingVertical: SPACING.sm, alignItems: 'center',

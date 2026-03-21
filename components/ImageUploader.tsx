@@ -27,11 +27,11 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
 
         const file = acceptedFiles[0];
         if (!file.type.startsWith('image/')) {
-            setError('Please upload an image file (JPG, PNG)');
+            setError('Vui lòng tải file ảnh (JPG, PNG)');
             return;
         }
         if (file.size > 10 * 1024 * 1024) {
-            setError('Image size must be less than 10MB');
+            setError('Kích thước ảnh phải dưới 10MB');
             return;
         }
 
@@ -78,7 +78,7 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
     if (imageToCrop) {
         return (
             <div className="glass-card p-6 rounded-2xl max-w-xl mx-auto">
-                <h3 className="text-xl font-semibold text-[#222222] mb-4 text-center">Adjust Your Photo</h3>
+                <h3 className="text-xl font-semibold text-[#222222] mb-4 text-center">Chỉnh Sửa Ảnh</h3>
                 <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#f0f0f0] mb-6">
                     <Cropper
                         image={imageToCrop}
@@ -93,7 +93,7 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
 
                 <div className="space-y-6">
                     <div className="flex items-center gap-4">
-                        <span className="text-[#a7a7a7] text-sm">Zoom</span>
+                        <span className="text-[#a7a7a7] text-sm">Phóng To</span>
                         <input
                             type="range"
                             value={zoom}
@@ -108,12 +108,12 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
 
                     <div className="flex gap-4">
                         <button onClick={cancelCrop} className="btn btn-ghost flex-1 py-3" disabled={isProcessing}>
-                            Cancel
+                            Hủy
                         </button>
                         <button onClick={handleConfirmCrop} className="btn btn-primary flex-1 py-3" disabled={isProcessing}>
                             {isProcessing ? (
                                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            ) : 'Apply Crop'}
+                            ) : 'Áp Dụng'}
                         </button>
                     </div>
                 </div>
@@ -133,14 +133,14 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
 
                     <div className="mt-4 flex items-center justify-between">
                         <p className="text-sm text-[#a7a7a7]">
-                            ✓ Image ready for sticker generation
+                            ✓ Ảnh sẵn sàng tạo sticker
                         </p>
                         <button
                             onClick={removeImage}
                             className="btn btn-ghost text-sm py-2 px-4 underline hover:text-[#FA5D29]"
                             disabled={disabled}
                         >
-                            Change Photo
+                            Đổi Ảnh
                         </button>
                     </div>
                 </div>
@@ -169,15 +169,15 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
 
                     <div>
                         <p className="text-xl font-semibold text-[#222222] mb-2">
-                            {isDragActive ? 'Drop your photo here' : 'Select a photo to begin'}
+                            {isDragActive ? 'Thả ảnh vào đây' : 'Chọn ảnh để bắt đầu'}
                         </p>
                         <p className="text-[#a7a7a7] text-sm">
-                            Drag & drop or click to browse • JPG, PNG up to 10MB
+                            Kéo thả hoặc nhấn để chọn • JPG, PNG tối đa 10MB
                         </p>
                     </div>
 
                     <button type="button" className="btn btn-secondary px-8" disabled={disabled}>
-                        Browse Files
+                        Chọn File
                     </button>
                 </div>
             </div>
@@ -191,15 +191,15 @@ export default function ImageUploader({ onImageSelect, disabled }: ImageUploader
             <div className="mt-8 grid grid-cols-3 gap-4 text-center text-sm text-[#a7a7a7]">
                 <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[#ededed] bg-[#f8f8f8]">
                     <User size={24} className="text-[#FA5D29]" />
-                    <span>One face clearly visible</span>
+                    <span>Một khuôn mặt rõ ràng</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[#ededed] bg-[#f8f8f8]">
                     <Lightbulb size={24} className="text-[#FA5D29]" />
-                    <span>Good natural lighting</span>
+                    <span>Ánh sáng tự nhiên tốt</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[#ededed] bg-[#f8f8f8]">
                     <Camera size={24} className="text-[#FA5D29]" />
-                    <span>High quality selfie</span>
+                    <span>Ảnh selfie chất lượng cao</span>
                 </div>
             </div>
         </div>

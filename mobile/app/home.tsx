@@ -97,6 +97,8 @@ function StyleCard({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={1}
+        accessibilityRole="button"
+        accessibilityLabel={`${t(`styles.${styleKey(style.id)}.name`)} style`}
       >
         <View style={[
           styles.card,

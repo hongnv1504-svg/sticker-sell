@@ -116,7 +116,7 @@ export default function ResultPage({ params }: Props) {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                    <p className="text-gray-400">Loading your stickers...</p>
+                    <p className="text-gray-400">Đang tải sticker của bạn...</p>
                 </div>
             </div>
         );
@@ -139,16 +139,16 @@ export default function ResultPage({ params }: Props) {
                                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4 text-green-600">
                                     <PartyPopper size={32} />
                                 </div>
-                                <h1 className="text-3xl font-bold mb-2 text-[#222222]">Your Stickers Are Ready!</h1>
-                                <p className="text-[#a7a7a7]">Thank you for your purchase. Enjoy your personalized stickers!</p>
+                                <h1 className="text-3xl font-bold mb-2 text-[#222222]">Sticker Của Bạn Đã Sẵn Sàng!</h1>
+                                <p className="text-[#a7a7a7]">Cảm ơn bạn! Hãy tận hưởng bộ sticker của riêng mình!</p>
                             </>
                         ) : (
                             <>
                                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500/20 mb-4">
                                     <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
                                 </div>
-                                <h1 className="text-3xl font-bold mb-2 text-[#222222]">Generating Stickers...</h1>
-                                <p className="text-[#a7a7a7]">Please wait while we create your personalized pack. {progress}/6 stickers done.</p>
+                                <h1 className="text-3xl font-bold mb-2 text-[#222222]">Đang Tạo Sticker...</h1>
+                                <p className="text-[#a7a7a7]">Vui lòng chờ trong khi chúng tôi tạo bộ sticker cho bạn. {progress}/6 sticker xong.</p>
                             </>
                         )}
                     </div>
@@ -156,7 +156,7 @@ export default function ResultPage({ params }: Props) {
                     {/* Stickers Grid */}
                     <div className="glass-card p-6 mb-8">
                         <h3 className="font-semibold text-[#222222] mb-4 flex items-center gap-2">
-                            <Sparkles className="text-yellow-500" size={20} /> Your Sticker Pack
+                            <Sparkles className="text-yellow-500" size={20} /> Bộ Sticker Của Bạn
                         </h3>
                         <StickerGrid
                             stickers={stickers}
@@ -169,10 +169,10 @@ export default function ResultPage({ params }: Props) {
                     {/* Download Section */}
                     <div className="glass-card p-6 mb-8">
                         <h3 className="font-semibold text-[#222222] mb-2 flex items-center gap-2">
-                            <Download className="text-blue-500" size={20} /> Download Sticker Pack
+                            <Download className="text-blue-500" size={20} /> Tải Bộ Sticker
                         </h3>
                         <p className="text-[#a7a7a7] text-sm mb-6">
-                            We&apos;ll bundle your stickers into a ZIP file for you to download directly.
+                            Chúng tôi sẽ đóng gói sticker thành file ZIP để bạn tải về.
                         </p>
 
                         {error && (
@@ -190,7 +190,7 @@ export default function ResultPage({ params }: Props) {
                                     className="btn w-full flex items-center justify-center gap-2 bg-[#0088cc] hover:bg-[#0077b3] text-white border-transparent"
                                 >
                                     <Send size={20} />
-                                    Add to Telegram
+                                    Thêm Vào Telegram
                                 </a>
                             </div>
                         )}
@@ -201,11 +201,11 @@ export default function ResultPage({ params }: Props) {
                                 <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center gap-3">
                                     <CheckCircle2 className="text-green-500" size={24} />
                                     <div>
-                                        <p className="text-green-600 font-semibold">Download started!</p>
+                                        <p className="text-green-600 font-semibold">Đã bắt đầu tải!</p>
                                         <p className="text-green-700/60 text-sm">
                                             {email
-                                                ? `A backup link was also sent to ${email}.`
-                                                : "If it didn't start automatically, click the button below."}
+                                                ? `Link dự phòng đã gửi tới ${email}.`
+                                                : "Nếu chưa tải tự động, nhấn nút bên dưới."}
                                         </p>
                                     </div>
                                 </div>
@@ -218,12 +218,12 @@ export default function ResultPage({ params }: Props) {
                                     {isDownloading ? (
                                         <>
                                             <Loader2 className="w-5 h-5 animate-spin" />
-                                            Bundling Pack...
+                                            Đang đóng gói...
                                         </>
                                     ) : (
                                         <>
                                             <Package size={20} />
-                                            Download Again
+                                            Tải Lại
                                         </>
                                     )}
                                 </button>
@@ -239,7 +239,7 @@ export default function ResultPage({ params }: Props) {
                             <div className="space-y-4">
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium text-[#a7a7a7] mb-2">
-                                        Email Address (optional, for backup link)
+                                        Email (không bắt buộc, để nhận link dự phòng)
                                     </label>
                                     <input
                                         type="email"
@@ -259,12 +259,12 @@ export default function ResultPage({ params }: Props) {
                                     {isDownloading ? (
                                         <>
                                             <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                            Bundling Pack...
+                                            Đang đóng gói...
                                         </>
                                     ) : (
                                         <>
                                             <span>📦</span>
-                                            Bundle & Download Pack
+                                            Đóng Gói & Tải Về
                                         </>
                                     )}
                                 </button>
@@ -281,7 +281,7 @@ export default function ResultPage({ params }: Props) {
                     {/* Tutorial Section */}
                     <div className="glass-card p-6">
                         <h3 className="font-semibold text-[#222222] mb-6 flex items-center gap-2">
-                            <span>📚</span> How to Use Your Stickers
+                            <span>📚</span> Cách Sử Dụng Sticker
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -296,23 +296,23 @@ export default function ResultPage({ params }: Props) {
                                 <ol className="space-y-2 text-sm text-[#a7a7a7]">
                                     <li className="flex gap-2">
                                         <span className="text-purple-400">1.</span>
-                                        Open Telegram and search for @Stickers bot
+                                        Mở Telegram và tìm bot @Stickers
                                     </li>
                                     <li className="flex gap-2">
                                         <span className="text-purple-400">2.</span>
-                                        Send /newpack to create a new sticker pack
+                                        Gửi /newpack để tạo bộ sticker mới
                                     </li>
                                     <li className="flex gap-2">
                                         <span className="text-purple-400">3.</span>
-                                        Upload each sticker image when prompted
+                                        Tải lên từng ảnh sticker khi được yêu cầu
                                     </li>
                                     <li className="flex gap-2">
                                         <span className="text-purple-400">4.</span>
-                                        Choose an emoji for each sticker
+                                        Chọn emoji cho mỗi sticker
                                     </li>
                                     <li className="flex gap-2">
                                         <span className="text-purple-400">5.</span>
-                                        Use /publish to finish
+                                        Dùng /publish để hoàn tất
                                     </li>
                                 </ol>
                             </div>
@@ -328,23 +328,23 @@ export default function ResultPage({ params }: Props) {
                                 <ol className="space-y-2 text-sm text-[#a7a7a7]">
                                     <li className="flex gap-2">
                                         <span className="text-green-400">1.</span>
-                                        Install a sticker maker app (e.g., Sticker Maker Studio)
+                                        Cài app tạo sticker (ví dụ: Sticker Maker Studio)
                                     </li>
                                     <li className="flex gap-2">
                                         <span className="text-green-400">2.</span>
-                                        Create a new sticker pack in the app
+                                        Tạo bộ sticker mới trong app
                                     </li>
                                     <li className="flex gap-2">
                                         <span className="text-green-400">3.</span>
-                                        Import your downloaded sticker images
+                                        Nhập các ảnh sticker đã tải về
                                     </li>
                                     <li className="flex gap-2">
                                         <span className="text-green-400">4.</span>
-                                        Tap &quot;Add to WhatsApp&quot;
+                                        Nhấn &quot;Add to WhatsApp&quot;
                                     </li>
                                     <li className="flex gap-2">
                                         <span className="text-green-400">5.</span>
-                                        Find them in your WhatsApp stickers
+                                        Tìm sticker trong WhatsApp của bạn
                                     </li>
                                 </ol>
                             </div>
@@ -353,9 +353,9 @@ export default function ResultPage({ params }: Props) {
 
                     {/* Create More */}
                     <div className="mt-8 text-center">
-                        <p className="text-[#a7a7a7] mb-4">Want to create more stickers?</p>
+                        <p className="text-[#a7a7a7] mb-4">Muốn tạo thêm sticker?</p>
                         <Link href="/upload" className="btn btn-secondary">
-                            Create Another Pack
+                            Tạo Bộ Mới
                         </Link>
                     </div>
                 </div>

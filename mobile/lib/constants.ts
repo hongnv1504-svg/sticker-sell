@@ -13,7 +13,7 @@ export const COLORS = {
   // Text
   text: '#F2F8EF',          // Moon Mint — warm near-white
   textSecondary: '#B8BBD5', // Soft Lavender — labels, hints
-  textMuted: '#8A8799',     // placeholders, disabled
+  textMuted: '#9E9BB0',     // placeholders, disabled — 4.5:1 on bg
 
   // Accent / CTA — Warm Peach (pastel, not neon)
   primary: '#F9C5B1',  // Warm Peach — CTA buttons
@@ -53,7 +53,7 @@ export const SPACING = {
   lg: 24,
   xl: 32,
   xxl: 48,
-  screen: 18,
+  screen: 16,
 };
 
 const CDN = 'https://stickermeapp.ink/stickers';

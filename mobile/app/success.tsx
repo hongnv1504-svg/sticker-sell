@@ -195,6 +195,7 @@ export default function SuccessScreen() {
                   style={styles.upsellCard}
                   onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    router.dismissAll();
                     router.push(`/preview?styleId=${s.id}`);
                   }}
                   activeOpacity={0.8}
@@ -216,7 +217,7 @@ export default function SuccessScreen() {
                 </TouchableOpacity>
               ))}
             </View>
-            <TouchableOpacity style={styles.browseAllBtn} onPress={() => router.push('/home')}>
+            <TouchableOpacity style={styles.browseAllBtn} onPress={() => router.dismissAll()}>
               <Text style={styles.browseAllText}>{t('success.browseAll')}</Text>
             </TouchableOpacity>
           </View>
@@ -254,7 +255,7 @@ export default function SuccessScreen() {
 
       {/* Make More Stickers CTA */}
       <View style={styles.ctaContainer}>
-        <TouchableOpacity onPress={() => router.push('/home')} activeOpacity={0.85}>
+        <TouchableOpacity onPress={() => router.dismissAll()} activeOpacity={0.85}>
           <LinearGradient
             colors={style.gradient}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
   upsellTag:   { borderRadius: RADIUS.full, paddingHorizontal: 6, paddingVertical: 2 },
   upsellTagText: { fontSize: 9, fontFamily: FONTS.bold },
 
-  browseAllBtn:  { alignItems: 'center', paddingVertical: SPACING.sm },
+  browseAllBtn:  { alignItems: 'center', minHeight: 44, justifyContent: 'center' },
   browseAllText: { fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.primary },
 
   // CTA

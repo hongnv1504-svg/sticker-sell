@@ -14,50 +14,50 @@ export default function Footer() {
                             <span className="text-xl font-bold text-[#222222]">StickerMe</span>
                         </Link>
                         <p className="text-[#a7a7a7] max-w-sm text-sm leading-relaxed">
-                            Transform your photos into adorable Pixar-style 3D stickers. Perfect for Telegram & WhatsApp.
+                            Biến ảnh của bạn thành sticker 3D dễ thương. Hoàn hảo cho Telegram & WhatsApp.
                         </p>
                     </div>
 
                     {/* Links */}
                     <div>
-                        <h4 className="font-semibold text-[#222222] mb-4 text-sm">Product</h4>
+                        <h4 className="font-semibold text-[#222222] mb-4 text-sm">Sản Phẩm</h4>
                         <ul className="space-y-2">
                             <li>
                                 <Link href="/#how-it-works" className="text-[#a7a7a7] hover:text-[#FA5D29] transition-colors text-sm">
-                                    How It Works
+                                    Cách Hoạt Động
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/#pricing" className="text-[#a7a7a7] hover:text-[#FA5D29] transition-colors text-sm">
-                                    Pricing
+                                    Bảng Giá
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/#examples" className="text-[#a7a7a7] hover:text-[#FA5D29] transition-colors text-sm">
-                                    Examples
+                                    Mẫu
                                 </Link>
                             </li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-semibold text-[#222222] mb-4 text-sm">Legal</h4>
+                        <h4 className="font-semibold text-[#222222] mb-4 text-sm">Pháp Lý</h4>
                         <ul className="space-y-2">
                             <li>
                                 <Link href="/privacy" className="text-[#a7a7a7] hover:text-[#FA5D29] transition-colors text-sm">
-                                    Privacy Policy
+                                    Chính Sách Bảo Mật
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/terms" className="text-[#a7a7a7] hover:text-[#FA5D29] transition-colors text-sm">
-                                    Terms of Service
+                                    Điều Khoản Sử Dụng
                                 </Link>
                             </li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-semibold text-[#222222] mb-4 text-sm">Contact Us</h4>
+                        <h4 className="font-semibold text-[#222222] mb-4 text-sm">Liên Hệ</h4>
                         <ul className="space-y-2">
                             <li>
                                 <span className="text-[#a7a7a7] text-sm flex items-center gap-2">
@@ -74,7 +74,7 @@ export default function Footer() {
                 </div>
 
                 <div className="border-t border-[#ededed] mt-8 pt-8 text-center text-[#a7a7a7] text-sm">
-                    © {new Date().getFullYear()} StickerMe. All rights reserved.
+                    © {new Date().getFullYear()} StickerMe. Bảo lưu mọi quyền.
                 </div>
             </div>
         </footer>

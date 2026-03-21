@@ -13,18 +13,18 @@ export default function Header() {
 
                 <nav className="hidden md:flex items-center gap-6">
                     <Link href="/packs" className="text-[#a7a7a7] hover:text-[#222222] transition-colors text-sm font-medium">
-                        Styles
+                        Phong Cách
                     </Link>
                     <Link href="/#how-it-works" className="text-[#a7a7a7] hover:text-[#222222] transition-colors text-sm font-medium">
-                        How It Works
+                        Cách Hoạt Động
                     </Link>
                     <Link href="/#pricing" className="text-[#a7a7a7] hover:text-[#222222] transition-colors text-sm font-medium">
-                        Pricing
+                        Bảng Giá
                     </Link>
                 </nav>
 
                 <Link href="/packs" className="btn btn-primary text-sm py-2 px-5">
-                    Get Started
+                    Bắt Đầu
                 </Link>
             </div>
         </header>

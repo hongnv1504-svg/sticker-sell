@@ -11,6 +11,7 @@ import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { COLORS, FONTS, RADIUS, SPACING, STYLES } from '../lib/constants';
+import BackButton from '../components/BackButton';
 
 export default function UploadScreen() {
   const router = useRouter();
@@ -100,10 +101,9 @@ export default function UploadScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      {/* Back */}
-      <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-        <Text style={styles.backText}>{t('common.back')}</Text>
-      </TouchableOpacity>
+      <View style={{ paddingHorizontal: SPACING.screen }}>
+        <BackButton />
+      </View>
 
       <Animated.View style={[styles.content, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
         {/* Header */}
@@ -126,6 +126,8 @@ export default function UploadScreen() {
               style={styles.photoPlaceholder}
               onPress={pickFromCamera}
               activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel={t('upload.takePhoto')}
             >
               <LinearGradient
                 colors={[COLORS.surface, COLORS.card]}
@@ -202,13 +204,6 @@ const PHOTO_SIZE = 260;
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bg },
-  backBtn: {
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.screen,
-    alignSelf: 'flex-start',
-    marginTop: SPACING.sm,
-  },
-  backText: { fontSize: 14, fontFamily: FONTS.semiBold, color: COLORS.textMuted },
 
   content: {
     flex: 1,
@@ -302,7 +297,8 @@ const styles = StyleSheet.create({
   },
   retakeBtn: {
     alignItems: 'center',
-    paddingVertical: SPACING.sm,
+    minHeight: 44,
+    justifyContent: 'center',
   },
   retakeText: {
     fontSize: 13, fontFamily: FONTS.semiBold, color: COLORS.primary,

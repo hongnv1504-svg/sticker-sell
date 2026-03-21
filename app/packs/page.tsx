@@ -15,11 +15,11 @@ export default function PacksPage() {
                     {/* Title */}
                     <div className="text-center mb-12">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#222222]">
-                            Choose Your <span className="gradient-text">Sticker Style</span>
+                            Chọn Phong Cách <span className="gradient-text">Sticker</span>
                         </h1>
                         <p className="text-[#a7a7a7] text-lg max-w-2xl mx-auto">
-                            Each pack transforms your photo into 6 unique stickers with different emotions.
-                            Pick the style that matches your vibe!
+                            Mỗi bộ biến ảnh của bạn thành 6 sticker với các biểu cảm khác nhau.
+                            Chọn phong cách phù hợp với bạn!
                         </p>
                     </div>
 
@@ -43,7 +43,7 @@ export default function PacksPage() {
                                             className="absolute top-0 right-0 text-white text-xs font-medium px-3 py-1 rounded-bl-xl"
                                             style={{ background: `linear-gradient(135deg, ${pack.colors.primary}, ${pack.colors.secondary})` }}
                                         >
-                                            Most Popular
+                                            Phổ Biến Nhất
                                         </div>
                                     )}
 
@@ -110,7 +110,7 @@ export default function PacksPage() {
                                         className="w-full py-3 rounded-full text-center font-medium text-white"
                                         style={{ background: `linear-gradient(135deg, ${pack.colors.primary}, ${pack.colors.secondary})` }}
                                     >
-                                        Select This Style →
+                                        Chọn Phong Cách Này →
                                     </div>
                                 </div>
                             </Link>
@@ -119,7 +119,7 @@ export default function PacksPage() {
 
                     {/* Info */}
                     <div className="mt-12 text-center text-[#a7a7a7]">
-                        <p>All packs include 6 different expressions • Transparent PNG • Instant download</p>
+                        <p>Tất cả đều có 6 biểu cảm • PNG trong suốt • Tải ngay</p>
                     </div>
                 </div>
             </main>

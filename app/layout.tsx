@@ -4,12 +4,12 @@ import { GoogleAnalytics } from "@/lib/analytics";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  title: "StickerMe - Sticker Yourself. AI Does the Magic.",
-  description: "Upload a selfie, pick a style, get 6 custom AI stickers for Telegram & WhatsApp.",
+  title: "StickerMe - Biến Bạn Thành Sticker. AI Lo Phần Kỳ Diệu.",
+  description: "Tải ảnh selfie, chọn phong cách, nhận 6 sticker AI độc đáo cho Telegram & WhatsApp.",
   keywords: ["stickers", "AI", "Pixar", "3D", "Telegram", "WhatsApp", "photo", "avatar"],
   openGraph: {
-    title: "StickerMe - Sticker Yourself. AI Does the Magic.",
-    description: "Upload a selfie, pick a style, get 6 custom AI stickers for Telegram & WhatsApp.",
+    title: "StickerMe - Biến Bạn Thành Sticker. AI Lo Phần Kỳ Diệu.",
+    description: "Tải ảnh selfie, chọn phong cách, nhận 6 sticker AI độc đáo cho Telegram & WhatsApp.",
     type: "website",
   },
 };
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <body className="antialiased bg-mesh min-h-screen">
         {children}
         <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''} />

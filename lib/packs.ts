@@ -20,7 +20,7 @@ export const STICKER_PACKS: StickerPack[] = [
     {
         id: '3d-cartoon',
         name: '3D Cartoon',
-        description: 'Adorable 3D cartoon characters with big expressive eyes',
+        description: 'Nhân vật 3D dễ thương với đôi mắt biểu cảm',
         style: '3D cartoon character, big eyes, chibi proportions, cute friendly',
         styleKey: 'pixar3d',
         icon: '🎬',
@@ -36,7 +36,7 @@ export const STICKER_PACKS: StickerPack[] = [
     {
         id: 'anime-kawaii',
         name: 'Anime Kawaii',
-        description: 'Japanese anime style with sparkly eyes and kawaii expressions',
+        description: 'Phong cách anime Nhật Bản với đôi mắt long lanh',
         style: 'Anime kawaii style, sparkling eyes, japanese manga, cute blush cheeks',
         styleKey: 'anime_kawaii',
         icon: '🌸',
@@ -51,7 +51,7 @@ export const STICKER_PACKS: StickerPack[] = [
     {
         id: 'chibi-game',
         name: 'Chibi Gamer',
-        description: 'Gaming-inspired chibi characters with RPG vibes',
+        description: 'Nhân vật chibi phong cách game RPG',
         style: 'Chibi game character style, RPG hero, pixel-inspired, colorful gaming aesthetic',
         styleKey: 'chibi_gamer',
         icon: '🎮',
@@ -66,7 +66,7 @@ export const STICKER_PACKS: StickerPack[] = [
     {
         id: 'watercolor-soft',
         name: 'Watercolor Soft',
-        description: 'Gentle watercolor art style with dreamy pastel vibes',
+        description: 'Phong cách màu nước nhẹ nhàng, mộng mơ',
         style: 'Soft watercolor painting style, pastel colors, dreamy aesthetic, artistic brush strokes',
         styleKey: 'watercolor_soft',
         icon: '🎨',
@@ -81,7 +81,7 @@ export const STICKER_PACKS: StickerPack[] = [
     {
         id: 'pop-art',
         name: 'Pop Art',
-        description: 'Bold comic book style with vibrant colors and halftone dots',
+        description: 'Phong cách truyện tranh đậm nét, màu sắc sống động',
         style: 'Pop art comic book style, bold colors, halftone dots, retro 60s aesthetic',
         styleKey: 'pop_art',
         icon: '💥',
@@ -96,7 +96,7 @@ export const STICKER_PACKS: StickerPack[] = [
     {
         id: 'minimalist-line',
         name: 'Minimalist Line',
-        description: 'Clean single-line art with elegant simplicity',
+        description: 'Nghệ thuật nét đơn giản, thanh lịch',
         style: 'Minimalist line art style, single continuous line, simple elegant, modern aesthetic',
         styleKey: 'minimalist_line',
         icon: '✏️',

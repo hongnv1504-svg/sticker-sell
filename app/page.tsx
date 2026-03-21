@@ -19,29 +19,29 @@ export default function Home() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FA5D29]/10 border border-[#FA5D29]/20 mb-8">
               <Sparkles className="text-[#FA5D29]" size={16} />
-              <span className="text-sm text-[#FA5D29] font-medium">AI-Powered Stickers</span>
+              <span className="text-sm text-[#FA5D29] font-medium">Sticker Tạo Bởi AI</span>
             </div>
 
             {/* Headline */}
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#222222]">
-              Sticker Yourself.<br />
-              <span className="gradient-text">AI Does the Magic.</span>
+              Biến Bạn Thành Sticker.<br />
+              <span className="gradient-text">AI Lo Phần Kỳ Diệu.</span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-xl text-[#a7a7a7] mb-10 max-w-2xl mx-auto">
-              Upload a selfie, pick a style, and get 6 custom AI stickers
-              ready for Telegram &amp; WhatsApp.
+              Tải ảnh selfie, chọn phong cách, nhận 6 sticker AI độc đáo
+              cho Telegram &amp; WhatsApp.
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <Link href="/packs" className="btn btn-primary text-lg py-4 px-8">
-                Choose Your Style
+                Chọn Phong Cách
                 <span>→</span>
               </Link>
               <a href="#styles" className="btn btn-secondary text-lg py-4 px-8">
-                See All Styles
+                Xem Tất Cả
               </a>
             </div>
 
@@ -59,7 +59,7 @@ export default function Home() {
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
-                    <span className="text-sm text-[#a7a7a7] mt-auto">Your Photo</span>
+                    <span className="text-sm text-[#a7a7a7] mt-auto">Ảnh Của Bạn</span>
                   </div>
 
                   {/* Arrow / Decoration */}
@@ -73,12 +73,12 @@ export default function Home() {
                   <div className="text-center h-full flex flex-col">
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       {[
-                        { file: 'laughing', emoji: '😂', name: 'Laughing' },
-                        { file: 'affectionate', emoji: '🥰', name: 'Loving' },
-                        { file: 'thinking', emoji: '🤔', name: 'Thinking' },
-                        { file: 'winking', emoji: '😉', name: 'Winking' },
-                        { file: 'blowing_kiss', emoji: '😘', name: 'Blowing Kiss' },
-                        { file: 'crying', emoji: '😢', name: 'Crying' },
+                        { file: 'laughing', emoji: '😂', name: 'Cười' },
+                        { file: 'affectionate', emoji: '🥰', name: 'Yêu thương' },
+                        { file: 'thinking', emoji: '🤔', name: 'Suy nghĩ' },
+                        { file: 'winking', emoji: '😉', name: 'Nháy mắt' },
+                        { file: 'blowing_kiss', emoji: '😘', name: 'Thổi hôn' },
+                        { file: 'crying', emoji: '😢', name: 'Khóc' },
                       ].map((item, i) => (
                         <div
                           key={i}
@@ -96,7 +96,7 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
-                    <span className="text-sm text-[#a7a7a7] mt-auto">6 Unique Stickers</span>
+                    <span className="text-sm text-[#a7a7a7] mt-auto">6 Sticker Độc Đáo</span>
                   </div>
 
                 </div>
@@ -109,8 +109,8 @@ export default function Home() {
         <section id="styles" className="py-20 px-6 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Choose Your Style</h2>
-              <p className="text-[#a7a7a7] text-lg">6 unique artistic styles to match your personality</p>
+              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Chọn Phong Cách</h2>
+              <p className="text-[#a7a7a7] text-lg">6 phong cách nghệ thuật phù hợp với cá tính của bạn</p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -125,7 +125,7 @@ export default function Home() {
                       className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 text-xs px-3 py-0.5 rounded-full text-white font-medium whitespace-nowrap shadow-sm"
                       style={{ background: `linear-gradient(135deg, ${pack.colors.primary}, ${pack.colors.secondary})` }}
                     >
-                      Popular
+                      Phổ biến
                     </div>
                   )}
                   <div
@@ -161,7 +161,7 @@ export default function Home() {
 
             <div className="text-center mt-8">
               <Link href="/packs" className="text-[#FA5D29] hover:text-[#d94a1a] transition-colors text-sm font-medium">
-                View all styles with details →
+                Xem tất cả phong cách chi tiết →
               </Link>
             </div>
           </div>
@@ -171,26 +171,26 @@ export default function Home() {
         <section id="how-it-works" className="py-20 px-6 bg-[#f8f8f8]">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4 text-[#222222]">How It Works</h2>
-              <p className="text-[#a7a7a7] text-lg">Three simple steps to get your personalized sticker pack</p>
+              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Cách Hoạt Động</h2>
+              <p className="text-[#a7a7a7] text-lg">Ba bước đơn giản để có bộ sticker của riêng bạn</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
                   icon: <Palette size={48} className="text-[#FA5D29]" />,
-                  title: 'Pick Your Style',
-                  description: 'Choose from 6 artistic styles: Pixar 3D, Anime, Chibi, Watercolor, Pop Art, or Minimalist.'
+                  title: 'Chọn Phong Cách',
+                  description: 'Chọn từ 6 phong cách: 3D Cartoon, Anime, Chibi, Watercolor, Pop Art hoặc Minimalist.'
                 },
                 {
                   icon: <Camera size={48} className="text-blue-500" />,
-                  title: 'Upload Your Photo',
-                  description: 'Choose a clear selfie with good lighting. Works best with one face clearly visible.'
+                  title: 'Tải Ảnh Lên',
+                  description: 'Chọn ảnh selfie rõ nét, ánh sáng tốt. Hiệu quả nhất với một khuôn mặt rõ ràng.'
                 },
                 {
                   icon: <Wand2 size={48} className="text-purple-500" />,
-                  title: 'Get Your Stickers',
-                  description: 'Our AI creates 6 unique expressions. Download as PNG or add directly to your messenger!'
+                  title: 'Nhận Sticker',
+                  description: 'AI tạo 6 biểu cảm độc đáo. Tải PNG hoặc thêm trực tiếp vào ứng dụng nhắn tin!'
                 }
               ].map((step, i) => (
                 <div key={i} className="glass-card p-8 text-center relative group hover:-translate-y-2 transition-transform duration-300">
@@ -211,18 +211,18 @@ export default function Home() {
         <section id="examples" className="py-20 px-6 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4 text-[#222222]">6 Expressive Emotions</h2>
-              <p className="text-[#a7a7a7] text-lg">Every sticker pack includes all these expressions</p>
+              <h2 className="text-4xl font-bold mb-4 text-[#222222]">6 Biểu Cảm Sống Động</h2>
+              <p className="text-[#a7a7a7] text-lg">Mỗi bộ sticker đều có đủ các biểu cảm này</p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-6 gap-4 max-w-4xl mx-auto">
               {[
-                { emoji: '😂', name: 'Laughing' },
-                { emoji: '🥰', name: 'Affectionate' },
-                { emoji: '🤔', name: 'Thinking' },
-                { emoji: '😉', name: 'Winking' },
-                { emoji: '😘', name: 'Blowing Kiss' },
-                { emoji: '😢', name: 'Crying' }
+                { emoji: '😂', name: 'Cười' },
+                { emoji: '🥰', name: 'Yêu thương' },
+                { emoji: '🤔', name: 'Suy nghĩ' },
+                { emoji: '😉', name: 'Nháy mắt' },
+                { emoji: '😘', name: 'Thổi hôn' },
+                { emoji: '😢', name: 'Khóc' }
               ].map((emotion, i) => (
                 <div key={i} className="flex flex-col items-center gap-2 group">
                   <div className="w-full aspect-square glass-card flex items-center justify-center text-4xl group-hover:scale-110 transition-transform cursor-default border border-[#ededed]">
@@ -239,8 +239,8 @@ export default function Home() {
         <section id="pricing" className="py-20 px-6 bg-[#f8f8f8]">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Simple Pricing</h2>
-              <p className="text-[#a7a7a7] text-lg">One-time payment per pack, no subscriptions</p>
+              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Bảng Giá Đơn Giản</h2>
+              <p className="text-[#a7a7a7] text-lg">Thanh toán một lần, không đăng ký</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -255,7 +255,7 @@ export default function Home() {
                       className="absolute top-0 right-0 text-white text-xs font-medium px-3 py-1 rounded-bl-xl"
                       style={{ background: `linear-gradient(135deg, ${pack.colors.primary}, ${pack.colors.secondary})` }}
                     >
-                      Most Popular
+                      Phổ biến nhất
                     </div>
                   )}
 
@@ -270,11 +270,11 @@ export default function Home() {
                     >
                       39,000đ
                     </span>
-                    <span className="text-[#a7a7a7] ml-1 text-sm">limited time</span>
+                    <span className="text-[#a7a7a7] ml-1 text-sm">ưu đãi</span>
                   </div>
 
                   <ul className="text-left space-y-2 mb-6 text-sm">
-                    {['6 unique expressions', 'Transparent PNGs', 'Instant download'].map((feature, i) => (
+                    {['6 biểu cảm độc đáo', 'PNG trong suốt', 'Tải ngay'].map((feature, i) => (
                       <li key={i} className="flex items-center gap-2">
                         <span className="text-[#FA5D29] font-bold">✓</span>
                         <span className="text-[#a7a7a7]">{feature}</span>
@@ -287,7 +287,7 @@ export default function Home() {
                     className="btn w-full py-3 text-white font-semibold rounded-full"
                     style={{ background: `linear-gradient(135deg, ${pack.colors.primary}, ${pack.colors.secondary})` }}
                   >
-                    Get {pack.name}
+                    Chọn {pack.name}
                   </Link>
                 </div>
               ))}
@@ -295,7 +295,7 @@ export default function Home() {
 
             <div className="text-center mt-8">
               <Link href="/packs" className="text-[#FA5D29] hover:text-[#d94a1a] transition-colors text-sm font-medium">
-                See all {STICKER_PACKS.length} styles →
+                Xem tất cả {STICKER_PACKS.length} phong cách →
               </Link>
             </div>
           </div>
@@ -305,12 +305,12 @@ export default function Home() {
         <section className="py-20 px-6 bg-white">
           <div className="max-w-4xl mx-auto text-center">
             <div className="glass-card p-12 border border-[#FA5D29]/20 bg-[#FA5D29]/5">
-              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Ready to Create Your Stickers?</h2>
+              <h2 className="text-4xl font-bold mb-4 text-[#222222]">Sẵn Sàng Tạo Sticker?</h2>
               <p className="text-[#a7a7a7] text-lg mb-8">
-                Join thousands of happy users who express themselves with custom stickers
+                Cùng hàng nghìn người dùng thể hiện bản thân qua sticker
               </p>
               <Link href="/packs" className="btn btn-primary text-lg py-4 px-10">
-                Choose Your Style — It&apos;s Quick!
+                Chọn Phong Cách — Nhanh Thôi!
               </Link>
             </div>
           </div>
