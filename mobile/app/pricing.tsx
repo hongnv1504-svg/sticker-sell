@@ -56,11 +56,10 @@ export default function PricingScreen() {
       const pkg = packages.find(p => p.product.identifier === selected);
       if (pkg) {
         await purchasePackage(pkg);
-      } else if (packages.length > 0) {
-        // Packages loaded but selected ID not found — shouldn't happen
-        throw new Error('Selected package unavailable. Please restart the app.');
+      } else {
+        // Packages not loaded or selected ID not found
+        throw new Error(t('pricing.purchaseErrorMsg'));
       }
-      // packages.length === 0 → dev / RC unavailable → allow through for testing
       // Purchase succeeded → navigate to upload
       router.push(`/upload?styleId=${style.id}`);
     } catch (err: any) {
