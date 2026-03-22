@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  View, Text, StyleSheet, Animated, Image, Easing,
+  View, Text, StyleSheet, Animated, Image, Easing, AppState,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -40,6 +40,8 @@ export default function ProcessingScreen() {
   // Track pipeline start time + completion time for staggering steps
   const pipelineStart = useRef(Date.now());
   const stepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const jobIdRef = useRef<string | null>(null);
+  const isPollingRef = useRef(false);
 
   useEffect(() => {
     // Pulse the center icon continuously
@@ -59,8 +61,16 @@ export default function ProcessingScreen() {
 
     runPipeline();
 
+    // Resume polling when app comes back to foreground
+    const sub = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'active' && jobIdRef.current && !isPollingRef.current && !errorMsg && !done) {
+        resumePolling();
+      }
+    });
+
     return () => {
       if (stepTimerRef.current) clearInterval(stepTimerRef.current);
+      sub.remove();
     };
   }, []);
 
@@ -99,6 +109,53 @@ export default function ProcessingScreen() {
     }, 4000);
   }
 
+  async function resumePolling() {
+    if (!jobIdRef.current || isPollingRef.current) return;
+    try {
+      setErrorMsg(null);
+      isPollingRef.current = true;
+      startStepStagger();
+      await pollUntilDone(jobIdRef.current);
+      finishPipeline(jobIdRef.current);
+    } catch (err: any) {
+      if (err.message === 'NO_CREDITS') {
+        router.replace(`/pricing?styleId=${style.id}`);
+        return;
+      }
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      setErrorMsg(err.message ?? 'Something went wrong. Please try again.');
+    } finally {
+      isPollingRef.current = false;
+    }
+  }
+
+  function finishPipeline(jobId: string) {
+    if (stepTimerRef.current) clearInterval(stepTimerRef.current);
+
+    for (let i = 0; i < STEP_COUNT; i++) {
+      completeStep(i);
+      stepAnims[i].setValue(1);
+    }
+    completeStep(STEP_COUNT);
+    animateProgress(1, 400);
+
+    setTimeout(() => {
+      setDone(true);
+      Animated.parallel([
+        Animated.spring(doneScale, {
+          toValue: 1, tension: 150, friction: 8, useNativeDriver: true,
+        }),
+        Animated.timing(doneOpacity, {
+          toValue: 1, duration: 250, useNativeDriver: true,
+        }),
+      ]).start();
+
+      setTimeout(() => {
+        router.replace(`/result?jobId=${jobId}&styleId=${style.id}`);
+      }, 500);
+    }, 300);
+  }
+
   async function runPipeline() {
     const decodedUri = decodeURIComponent(imageUri ?? '');
     if (!decodedUri) {
@@ -114,61 +171,24 @@ export default function ProcessingScreen() {
       animateProgress(0.15, 600);
       const userId = await getAppUserID();
       const jobId = await uploadImage(decodedUri, style.id, userId);
+      jobIdRef.current = jobId;
 
-      // Step 1: Start generation (retry if webhook hasn't delivered credits yet)
+      // Step 1: Start generation
       completeStep(1);
       animateProgress(0.3, 500);
-
-      const MAX_CREDIT_RETRIES = 5;
-      const CREDIT_RETRY_DELAY = 3000; // 3s between retries
-      let creditRetries = 0;
-      while (true) {
-        try {
-          await startGeneration(jobId);
-          break; // success — exit retry loop
-        } catch (genErr: any) {
-          if (genErr.message === 'NO_CREDITS' && creditRetries < MAX_CREDIT_RETRIES) {
-            creditRetries++;
-            await new Promise(r => setTimeout(r, CREDIT_RETRY_DELAY));
-          } else {
-            throw genErr; // non-credit error or retries exhausted
-          }
-        }
-      }
+      await startGeneration(jobId);
 
       // Start staggering steps 2-3 while polling
       startStepStagger();
+      isPollingRef.current = true;
 
       // Poll until done
       await pollUntilDone(jobId);
+      isPollingRef.current = false;
 
-      // Clear stagger timer
-      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
-
-      // Step 4: Finalize — mark all steps complete
-      for (let i = 0; i < STEP_COUNT; i++) {
-        completeStep(i);
-        stepAnims[i].setValue(1);
-      }
-      completeStep(STEP_COUNT); // all done
-      animateProgress(1, 400);
-
-      // Show "Done! 🎉" with scale animation
-      await new Promise(r => setTimeout(r, 300));
-      setDone(true);
-      Animated.parallel([
-        Animated.spring(doneScale, {
-          toValue: 1, tension: 150, friction: 8, useNativeDriver: true,
-        }),
-        Animated.timing(doneOpacity, {
-          toValue: 1, duration: 250, useNativeDriver: true,
-        }),
-      ]).start();
-
-      // Hold 0.5s then navigate
-      await new Promise(r => setTimeout(r, 500));
-      router.replace(`/result?jobId=${jobId}&styleId=${style.id}`);
+      finishPipeline(jobId);
     } catch (err: any) {
+      isPollingRef.current = false;
       if (stepTimerRef.current) clearInterval(stepTimerRef.current);
       if (err.message === 'NO_CREDITS') {
         // No credits — redirect to pricing to buy more
