@@ -145,5 +145,13 @@ function getEmotionColor(emotion: StickerEmotion): string {
 }
 
 function formatEmotion(emotion: string): string {
-    return emotion.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const emotionMap: Record<string, string> = {
+        laughing: 'Cười',
+        affectionate: 'Yêu thương',
+        thinking: 'Suy nghĩ',
+        winking: 'Nháy mắt',
+        blowing_kiss: 'Hôn gió',
+        crying: 'Khóc',
+    };
+    return emotionMap[emotion] || emotion.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
