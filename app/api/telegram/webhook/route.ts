@@ -68,7 +68,7 @@ async function handleStart(chatId: number, telegramUserId: number) {
             { onConflict: 'telegram_user_id' }
         );
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.stickermeapp.ink';
     const link = `${appUrl}?tg=${token}`;
 
     await sendMessage(

@@ -129,7 +129,6 @@ export default function ProcessingScreen() {
         } catch (genErr: any) {
           if (genErr.message === 'NO_CREDITS' && creditRetries < MAX_CREDIT_RETRIES) {
             creditRetries++;
-            console.log(`[Processing] Waiting for credits (attempt ${creditRetries}/${MAX_CREDIT_RETRIES})...`);
             await new Promise(r => setTimeout(r, CREDIT_RETRY_DELAY));
           } else {
             throw genErr; // non-credit error or retries exhausted

@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
             if (job && job.status === 'pending') {
                 console.log(`[VN Confirm] Job ${jobId} is paid but pending, triggering generation`);
-                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stickermeapp.ink';
+                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.stickermeapp.ink';
                 fetch(`${appUrl}/api/generate/background`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

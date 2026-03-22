@@ -1,4 +1,4 @@
-export const API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'https://stickermeapp.ink';
+export const API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'https://www.stickermeapp.ink';
 
 export const COLORS = {
   // Backgrounds — deep dark purple-black
@@ -56,7 +56,7 @@ export const SPACING = {
   screen: 16,
 };
 
-const CDN = 'https://stickermeapp.ink/stickers';
+const CDN = 'https://www.stickermeapp.ink/stickers';
 
 export interface StickerStyle {
   id: string;           // backend packId
