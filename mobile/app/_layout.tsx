@@ -55,6 +55,7 @@ export default function RootLayout() {
           animation: 'fade',
         }}
       >
+        <Stack.Screen name="processing" options={{ gestureEnabled: false }} />
         <Stack.Screen name="result" options={{ gestureEnabled: false }} />
         <Stack.Screen name="success" options={{ gestureEnabled: false }} />
       </Stack>

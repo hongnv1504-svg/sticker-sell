@@ -32,7 +32,7 @@ export default function SuccessScreen() {
   const [stickers, setStickers] = useState<JobStatus['stickers']>([]);
   const [sharing, setSharing] = useState(false);
   const [tgModal, setTgModal] = useState(false);
-  const [shareIdx, setShareIdx] = useState(0);
+  const [selectedIdxs, setSelectedIdxs] = useState<Set<number>>(new Set());
 
   const checkAnim  = useRef(new Animated.Value(0)).current;
   const fadeAnim   = useRef(new Animated.Value(0)).current;
@@ -53,7 +53,11 @@ export default function SuccessScreen() {
     ]).start();
 
     if (jobId) {
-      getJobStatus(jobId).then(s => setStickers(s.stickers)).catch(() => {});
+      getJobStatus(jobId).then(s => {
+        setStickers(s.stickers);
+        // Select all stickers by default
+        setSelectedIdxs(new Set(s.stickers.map((_, i) => i)));
+      }).catch(() => {});
     }
   }, []);
 
@@ -64,18 +68,37 @@ export default function SuccessScreen() {
     return uri;
   }
 
-  // Share selected sticker using local file path (native iOS share sheet)
-  async function handleShare(idx: number) {
-    if (stickers.length === 0 || !stickers[idx]) return;
+  function toggleSelect(idx: number) {
+    setSelectedIdxs(prev => {
+      const next = new Set(prev);
+      if (next.has(idx)) {
+        next.delete(idx);
+      } else {
+        next.add(idx);
+      }
+      return next;
+    });
+  }
+
+  // Share selected stickers using local file paths (native iOS share sheet)
+  async function handleShare() {
+    if (stickers.length === 0 || selectedIdxs.size === 0) return;
     const available = await Sharing.isAvailableAsync();
     if (!available) return;
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSharing(true);
     try {
-      const s = stickers[idx];
-      const localPath = await downloadToCache(s.imageUrl, `sticker_${s.emotion}.png`);
-      await Sharing.shareAsync(localPath, { mimeType: 'image/png' });
+      // Download all selected stickers
+      const selected = [...selectedIdxs].sort().map(i => stickers[i]);
+      const localPaths = await Promise.all(
+        selected.map(s => downloadToCache(s.imageUrl, `sticker_${s.emotion}.png`))
+      );
+      // iOS share sheet: share first, others saved to activity items
+      // expo-sharing only supports single file, so share them sequentially
+      for (const path of localPaths) {
+        await Sharing.shareAsync(path, { mimeType: 'image/png' });
+      }
     } catch {
       // User cancelled or sharing failed — silent
     } finally {
@@ -140,14 +163,19 @@ export default function SuccessScreen() {
                 {stickers.map((s, i) => (
                   <TouchableOpacity
                     key={s.emotion}
-                    onPress={() => { Haptics.selectionAsync(); setShareIdx(i); }}
+                    onPress={() => { Haptics.selectionAsync(); toggleSelect(i); }}
                     activeOpacity={0.8}
                     style={[
                       styles.stickerThumb,
-                      shareIdx === i && styles.stickerThumbSelected,
+                      selectedIdxs.has(i) && styles.stickerThumbSelected,
                     ]}
                   >
                     <Image source={{ uri: s.imageUrl }} style={styles.stickerThumbImg} />
+                    {selectedIdxs.has(i) && (
+                      <View style={styles.stickerCheckMark}>
+                        <Ionicons name="checkmark-circle" size={18} color={COLORS.success} />
+                      </View>
+                    )}
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -155,10 +183,10 @@ export default function SuccessScreen() {
 
             {/* Share button */}
             <TouchableOpacity
-              onPress={() => handleShare(shareIdx)}
-              disabled={sharing || stickers.length === 0}
+              onPress={() => handleShare()}
+              disabled={sharing || stickers.length === 0 || selectedIdxs.size === 0}
               activeOpacity={0.85}
-              style={styles.shareBtn}
+              style={[styles.shareBtn, selectedIdxs.size === 0 && { opacity: 0.5 }]}
             >
               <Ionicons
                 name={sharing ? 'hourglass-outline' : 'share-outline'}
@@ -323,6 +351,10 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
   },
   stickerThumbImg: { width: '100%', height: '100%' },
+  stickerCheckMark: {
+    position: 'absolute', top: -4, right: -4,
+    backgroundColor: COLORS.bg, borderRadius: 10,
+  },
 
   shareBtn: {
     flexDirection: 'row',
