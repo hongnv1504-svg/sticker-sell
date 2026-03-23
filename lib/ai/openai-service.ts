@@ -80,7 +80,13 @@ OUTPUT REQUIREMENTS (CRITICAL):
 - The character's skin, face, hands, and all body details must be clearly visible with proper colors.
 - Clean cutout: the boundary between the character and the transparent background should be sharp and precise.
 - No background scene, no floor, no shadows — only the character on a transparent background.
-- Suitable for Telegram / WhatsApp sticker packs.`;
+- Suitable for Telegram / WhatsApp sticker packs.
+
+ABSOLUTE FRAMING RULE (DO NOT VIOLATE):
+- The ENTIRE head, hair, and face MUST be fully visible — ZERO cropping on top, left, or right edges.
+- Leave at least 15% empty space above the head and on both sides.
+- If anything must be cropped, crop ONLY from the bottom (waist/legs). NEVER from top or sides.
+- This rule overrides all other composition decisions.`;
     }
 
     static isConfigured(): boolean {
