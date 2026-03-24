@@ -82,7 +82,11 @@
     "cameraUnavailableMsg": "Camera không có sẵn trên thiết bị này. Vui lòng chọn ảnh từ thư viện.",
     "chooseFromLibrary": "Chọn từ thư viện",
     "photosTitle": "Yêu cầu quyền truy cập Ảnh",
-    "photosMsg": "Vui lòng cho phép truy cập Ảnh trong Cài đặt để chọn ảnh."
+    "photosMsg": "Vui lòng cho phép truy cập Ảnh trong Cài đặt để chọn ảnh.",
+    "consentTitle": "Thông báo xử lý AI",
+    "consentMsg": "Để tạo sticker, ảnh của bạn sẽ được gửi đến OpenAI — dịch vụ AI bên thứ ba — để xử lý. Ảnh chỉ được dùng để tạo sticker và không được lưu trữ sau khi xử lý. Tiếp tục đồng nghĩa bạn đồng ý với việc chuyển dữ liệu này.\n\nXem thêm trong Chính sách Bảo mật tại stickermeapp.ink/privacy",
+    "consentAgree": "Đồng ý — Tạo Sticker",
+    "consentDecline": "Hủy"
   },
   "processing": {
     "title": "Đang tạo sticker của bạn…",

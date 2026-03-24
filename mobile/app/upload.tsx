@@ -89,14 +89,21 @@ export default function UploadScreen() {
     if (!image) return;
     animateTap();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setUploading(true);
 
-    try {
-      // Navigate to processing — it handles upload + generation
-      router.push(`/processing?styleId=${style.id}&imageUri=${encodeURIComponent(image)}`);
-    } finally {
-      setUploading(false);
-    }
+    // Show AI processing consent dialog (Apple guideline 5.1.1)
+    Alert.alert(
+      t('upload.consentTitle'),
+      t('upload.consentMsg'),
+      [
+        { text: t('upload.consentDecline'), style: 'cancel' },
+        {
+          text: t('upload.consentAgree'),
+          onPress: () => {
+            router.push(`/processing?styleId=${style.id}&imageUri=${encodeURIComponent(image)}`);
+          },
+        },
+      ],
+    );
   }
 
   return (

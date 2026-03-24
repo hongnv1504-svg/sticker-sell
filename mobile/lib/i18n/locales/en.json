@@ -82,7 +82,11 @@
     "cameraUnavailableMsg": "Camera is not available on this device. Please choose a photo from your library instead.",
     "chooseFromLibrary": "Choose from Library",
     "photosTitle": "Photos access required",
-    "photosMsg": "Please allow Photos access in Settings to choose a photo."
+    "photosMsg": "Please allow Photos access in Settings to choose a photo.",
+    "consentTitle": "AI Processing Disclosure",
+    "consentMsg": "To create your stickers, your photo will be sent to OpenAI, a third-party AI service, for processing. Your photo is used only to generate stickers and is not stored after processing. By continuing, you agree to this data transfer.\n\nLearn more in our Privacy Policy at stickermeapp.ink/privacy",
+    "consentAgree": "I Agree — Create Stickers",
+    "consentDecline": "Cancel"
   },
   "processing": {
     "title": "Creating your stickers…",
