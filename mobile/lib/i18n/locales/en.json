@@ -133,7 +133,7 @@
     "featureDownload": "Save to Photos or share directly",
     "featureOptimized": "Optimized for Telegram & WhatsApp",
     "securePay": "Secure payment via Apple Pay",
-    "moneyBack": "30-day money-back guarantee",
+    "oneTimePurchase": "Payment will be charged to your Apple ID account. This is a one-time purchase, not a subscription.",
     "restore": "Restore previous purchases",
     "legal": "Payment will be charged to your Apple ID account. This is a one-time purchase, not a subscription.",
     "ctaPack": "Get 1 Pack — {{price}}",

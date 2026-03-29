@@ -38,6 +38,20 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section>
+                            <h2 className="text-2xl font-bold text-[#222222] mb-4">Face Data</h2>
+                            <p className="mb-4">
+                                StickerMe uses your uploaded selfie photo to generate AI-powered stickers. Here is how we handle your face data:
+                            </p>
+                            <ul className="space-y-3 list-disc pl-5">
+                                <li><strong>What face data we collect:</strong> We collect only the selfie photo you explicitly upload. We do not perform facial recognition, face mapping, or collect any biometric data.</li>
+                                <li><strong>How we use it:</strong> Your photo is sent to OpenAI&apos;s image generation API solely to create cartoon/artistic sticker illustrations based on your appearance. No facial features are analyzed, stored, or used for identification purposes.</li>
+                                <li><strong>Third-party sharing:</strong> Your photo is transmitted to OpenAI (api.openai.com) for real-time image generation only. OpenAI processes the image and does not retain API data per their <a href="https://openai.com/policies/api-data-usage-policies" className="underline text-[#222]" target="_blank" rel="noopener noreferrer">API Data Usage Policy</a>. No other third parties receive your face data.</li>
+                                <li><strong>Storage:</strong> Your photo is not stored on our servers. It is transmitted directly to OpenAI for processing and discarded immediately after sticker generation is complete.</li>
+                                <li><strong>Retention:</strong> We retain your face data for zero (0) seconds after processing. Photos are not stored, cached, or backed up on our servers at any point.</li>
+                            </ul>
+                        </section>
+
+                        <section>
                             <h2 className="text-2xl font-bold text-[#222222] mb-4">Photo & Camera Access</h2>
                             <p>
                                 StickerMe requests access to your photo library to allow you to select a selfie for sticker generation. We only access photos you explicitly choose to share. We do not access your camera roll automatically or upload any photos without your action.

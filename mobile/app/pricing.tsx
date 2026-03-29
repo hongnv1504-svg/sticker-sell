@@ -158,8 +158,8 @@ export default function PricingScreen() {
               <Text style={styles.trustText}>{t('pricing.securePay')}</Text>
             </View>
             <View style={styles.trustRow}>
-              <Ionicons name="refresh-outline" size={13} color={COLORS.textMuted} />
-              <Text style={styles.trustText}>{t('pricing.moneyBack')}</Text>
+              <Ionicons name="card-outline" size={13} color={COLORS.textMuted} />
+              <Text style={styles.trustText}>{t('pricing.oneTimePurchase')}</Text>
             </View>
           </View>
 
