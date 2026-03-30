@@ -163,9 +163,6 @@ export default function PricingScreen() {
             </View>
           </View>
 
-          <Text style={styles.legal}>
-            {t('pricing.legal')}
-          </Text>
         </Animated.View>
       </ScrollView>
 
