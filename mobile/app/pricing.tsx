@@ -163,11 +163,6 @@ export default function PricingScreen() {
             </View>
           </View>
 
-          {/* Restore */}
-          <TouchableOpacity onPress={handleRestore} style={styles.restoreBtn} disabled={purchasing}>
-            <Text style={[styles.restoreText, { color: style.accent }]}>{t('pricing.restore')}</Text>
-          </TouchableOpacity>
-
           <Text style={styles.legal}>
             {t('pricing.legal')}
           </Text>
